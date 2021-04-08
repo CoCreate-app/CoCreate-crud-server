@@ -31,14 +31,8 @@ class CoCreateOrganization extends CoCreateBase {
 					const anotherCollection = self.getDB(orgId).collection(data['collection']);
 					anotherCollection.insertOne(result.ops[0]);
 					
-					const response  = {
-						'db': data['db'],
-						'collection': data['collection'],
-						'element': data['element'],
-						'document_id': result.ops[0]._id,
-						'data': result.ops[0],
-						'metadata': data['metadata'],
-					}
+					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0] }
+
 					self.wsManager.send(socket, 'createOrg', response, );
 					if (data.room) {
 						self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'createDocument', response, true);
@@ -66,14 +60,8 @@ class CoCreateOrganization extends CoCreateBase {
 						anotherCollection.insertOne(result.ops[0]);
 					}
 
-					const response  = {
-						'db': data['db'],
-						'collection': data['collection'],
-						'element': data['element'],
-						'document_id': result.ops[0]._id,
-						'data': result.ops[0],
-						'metadata': data['metadata'],
-					}
+					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
+
 					self.wsManager.send(socket, 'createUser', response, data['organization_id']);
 					// if (data.room) {
 					// 	self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'createDocument', response, true);
@@ -100,14 +88,8 @@ class CoCreateOrganization extends CoCreateBase {
 					const anotherCollection = self.getDB(orgId).collection(data['collection']);
 					anotherCollection.insertOne(result.ops[0]);
 					
-					const response  = {
-						'db': data['db'],
-						'collection': data['collection'],
-						'element': data['element'],
-						'document_id': result.ops[0]._id,
-						'data': result.ops[0],
-						'metadata': data['metadata'],
-					}
+					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
+
 					self.wsManager.send(socket, 'createOrg', response);
 					if (data.room) {
 						self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'createDocument', response, true);

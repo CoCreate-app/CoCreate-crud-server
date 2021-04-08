@@ -31,18 +31,18 @@ class CoCreateUser extends CoCreateBase {
 			organization_id: string
 		}
 	**/
-	async checkUnique(socket, data) {
-		const securityRes = await this.checkSecurity(data)
+	async checkUnique(socket, req_data) {
+		const securityRes = await this.checkSecurity(req_data)
 		const self = this;
 		if (!securityRes.result) {
 			this.wsManager.send(socket, 'securityError', 'error');
 			return;   
 		}
 
-		const collection = this.getDB(data['namespace']).collection(data["collection"]);
+		const collection = this.getDB(req_data['namespace']).collection(req_data["collection"]);
 			
 		const query = {
-			[data['name']]: data['value']
+			[req_data['name']]: req_data['value']
 		};
 		
 		if (securityRes['organization_id']) {
@@ -53,14 +53,14 @@ class CoCreateUser extends CoCreateBase {
 			collection.find(query).toArray(function(error, result) {
 				if (!error && result) {
 					let response = {
-						request_id: data['request_id'],
-						name: data['name'],
+						request_id: req_data['request_id'],
+						name: req_data['name'],
 						unique: false
 					}
 					if (result.length == 0) {
 						response.unique = true;
 					}
-					self.wsManager.send(socket, 'checkedUnique', response, data['organization_id'])
+					self.wsManager.send(socket, 'checkedUnique', response, req_data['organization_id'])
 				}
 			})
 		} catch (error) {
@@ -81,43 +81,45 @@ class CoCreateUser extends CoCreateBase {
 			organization_id: string
 		}
 	**/	
-	async login(socket, data) {
-		const securityRes = await this.checkSecurity(data);
+	async login(socket, req_data) {
+		const securityRes = await this.checkSecurity(req_data);
 		const self = this;
 		if (!securityRes.result) {
-			self.wsManager.send(socket, 'securityError', 'error', data['organization_id']);
+			self.wsManager.send(socket, 'securityError', 'error', req_data['organization_id']);
 			return;   
 		}
 		try {
-			const {organization_id, db} = data
+			const {organization_id, db} = req_data
 			const selectedDB = db || organization_id;
-			const collection = self.getDB(selectedDB).collection(data["data-collection"]);
+			const collection = self.getDB(selectedDB).collection(req_data["data-collection"]);
 			const query = new Object();
 			
 			// query['connected_orgs'] = data['organization_id'];
 
-			for (var key in data['loginData']) {
-				query[key] = data['loginData'][key];
+			for (var key in req_data['loginData']) {
+				query[key] = req_data['loginData'][key];
 			}
 			
 			collection.find(query).toArray(function(error, result) {
 				let response = {
-					form_id: data['form_id'],
+					eId: req_data['eId'],
+					uid: req_data['uid'],
+					form_id: req_data['form_id'],
 					success: false,
 					message: "We can't login",
 					status: "failure"
 				}
 				if (!error && result && result.length > 0) {
-					response = {
-						eId: data['eId'],
+					response = { ...response,  
 						success: true,
 						id: result[0]['_id'],
+						document_id: result[0]['_id'],
 						current_org: result[0]['current_org'],
 						message: "Login successfuly",
 						status: "success"
 					};
 				} 
-				self.wsManager.send(socket, 'login', response, data['organization_id'])
+				self.wsManager.send(socket, 'login', response, req_data['organization_id'])
 			});
 		} catch (error) {
 			console.log(error);
@@ -132,16 +134,16 @@ class CoCreateUser extends CoCreateBase {
 			href: string
 		}
 	**/		
-	async usersCurrentOrg(socket, data) {
+	async usersCurrentOrg(socket, req_data) {
 		try {
 			const self = this;
-			const {organization_id, db} = data
+			const {organization_id, db} = req_data
 			const selectedDB = db || organization_id;
-			const collection = this.getDB(selectedDB).collection(data["data-collection"]);
+			const collection = this.getDB(selectedDB).collection(req_data["data-collection"]);
 			
 			let query = new Object();
 			
-			query['_id'] = new ObjectID(data['user_id']);
+			query['_id'] = new ObjectID(req_data['user_id']);
 
 			collection.find(query).toArray(function(error, result) {
 			
@@ -154,15 +156,17 @@ class CoCreateUser extends CoCreateBase {
 						orgCollection.find({"_id": new ObjectID(org_id),}).toArray(function(err, res) {
 							if (!err && res && res.length > 0) {
 								self.wsManager.send(socket, 'usersCurrentOrg', {
+									id: 				req_data['id'],
+									uid:				req_data['uid'],
 									success:			true,
 									user_id:			result[0]['_id'],
-									current_org:	result[0]['current_org'],
+									current_org:		result[0]['current_org'],
 									apiKey: 			res[0]['apiKey'],
-									securityKey:	res[0]['securityKey'],
-									adminUI_id: 	res[0]['adminUI_id'],
-									builderUI_id: res[0]['builderUI_id'],
-									href: data['href']
-								}, data['organization_id'])
+									securityKey:		res[0]['securityKey'],
+									adminUI_id: 		res[0]['adminUI_id'],
+									builderUI_id:		res[0]['builderUI_id'],
+									href: req_data['href']
+								}, req_data['organization_id'])
 							}
 						});
 					}
@@ -189,19 +193,19 @@ class CoCreateUser extends CoCreateBase {
 			organization_id: string
 		}
 	**/		
-	async fetchUser(socket, data) {
+	async fetchUser(socket, req_data) {
 		const self = this;
-		const securityRes = await this.checkSecurity(data);
+		const securityRes = await this.checkSecurity(req_data);
 		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', data['organization_id']);
+			this.wsManager.send(socket, 'securityError', 'error', req_data['organization_id']);
 			return;   
 		}
 		
 		try {
-			const {organization_id, db} = data
+			const {organization_id, db} = req_data
 			const selectedDB = db || organization_id;
-			const collection = self.getDB(selectedDB).collection(data['data-collection']);
-			const user_id = data['user_id'];
+			const collection = self.getDB(selectedDB).collection(req_data['data-collection']);
+			const user_id = req_data['user_id'];
 			const query = {
 				"_id": new ObjectID(user_id),
 			}
@@ -212,7 +216,7 @@ class CoCreateUser extends CoCreateBase {
 			
 			collection.findOne(query, function(error, result) {
 				if (!error) {
-					self.wsManager.send(socket, 'fetchedUser', result, data['organization_id']);
+					self.wsManager.send(socket, 'fetchedUser', result, req_data['organization_id']);
 				}
 			})
 		} catch (error) {
@@ -223,14 +227,14 @@ class CoCreateUser extends CoCreateBase {
 	/**
 	 * status: 'on/off/idle'
 	 */
-	async setUserStatus(socket, data, roomInfo) {
+	async setUserStatus(socket, req_data, roomInfo) {
 		const self = this;
 		// const securityRes = await this.checkSecurity(data);
 		// if (!securityRes.result) {
 		// 	this.wsManager.send(socket, 'securityError', 'error');
 		// 	return;   
 		// }
-		const {info, status} = data;
+		const {info, status} = req_data;
 
 		const items = info.split('/');
 
@@ -241,7 +245,7 @@ class CoCreateUser extends CoCreateBase {
 		if (!items[1]) return;
 
 		try {
-			const {organization_id, db} = data
+			const {organization_id, db} = req_data
 			const selectedDB = db || organization_id;
 			const collection = self.getDB(selectedDB).collection('users');
 			const user_id = items[1];
@@ -250,8 +254,6 @@ class CoCreateUser extends CoCreateBase {
 			}
 			collection.update(query, {$set: {status: status}}, function(err, res) {
 				if (!err) {
-					console.log('update success! ', user_id)
-					// self.wsManager.send(socket, 'changeUser', result);
 					self.wsManager.broadcast(socket, '', null, 'changedUserStatus', 
 					{
 						user_id,

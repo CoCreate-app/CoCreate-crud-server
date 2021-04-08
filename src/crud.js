@@ -50,8 +50,8 @@ class CoCreateCrud extends CoCreateBase {
 
 	/** Create Document **/
 	// data param needs organization_id field added to pass security check
-	async createDocument(socket, data, roomInfo){
-		const securityRes = await this.checkSecurity(data);
+	async createDocument(socket, req_data, roomInfo){
+		const securityRes = await this.checkSecurity(req_data);
 		const self = this;
 		
 		if (!securityRes.result) {
@@ -59,31 +59,23 @@ class CoCreateCrud extends CoCreateBase {
 			return;
 		}
 		
-		if(!data.data) return;
+		if(!req_data.data) return;
 		
 		try{
-			const collection = this.db.collection(data['collection']);
-			let insertData = replaceArray(data.data);
+			const collection = this.db.collection(req_data['collection']);
+			let insertData = replaceArray(req_data.data);
 
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
-					const response  = {
-						'collection'	: data['collection'],
-						'element'		: data['element'],
-						'document_id'	: result.ops[0]._id,
-						'data'			: result.ops[0],
-						'async'			: data['async'],
-						'event'			: data['event'],
-						'metadata'		: data['metadata']
-					};
-					if (data.broadcast_sender !== false) {
-						self.wsManager.send(socket, 'createDocument', response, data['organization_id'], roomInfo);
+					const response  = {...req_data, document_id: result.ops[0]._id, data:result.ops[0] }  
+					if (req_data.broadcast_sender !== false) {
+						self.wsManager.send(socket, 'createDocument', response, req_data['organization_id'], roomInfo);
 					}
-					if (data.broadcast !== false) {
-						if (data.room) {
-							self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'createDocument', response, true, roomInfo);
+					if (req_data.broadcast !== false) {
+						if (req_data.room) {
+							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, 'createDocument', response, true, roomInfo);
 						} else {
-							self.wsManager.broadcast(socket, data.namespace || data['organization_id'], null, 'createDocument', response, false, roomInfo)	
+							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'createDocument', response, false, roomInfo)	
 						}
 					}
 				} else {
@@ -97,12 +89,12 @@ class CoCreateCrud extends CoCreateBase {
 	}
 	
 	/** Read Document **/
-	async readDocument(socket, data, roomInfo) {
-		if (!data['collection'] || data['collection'] == 'null' || typeof data['collection'] !== 'string') {
+	async readDocument(socket, req_data, roomInfo) {
+		if (!req_data['collection'] || req_data['collection'] == 'null' || typeof req_data['collection'] !== 'string') {
 			return;
 		} 
 		const self = this;
-		const securityRes = await this.checkSecurity(data);
+		const securityRes = await this.checkSecurity(req_data);
 		if (!securityRes.result) {
 			this.wsManager.send(socket, 'securityError', 'error', null, roomInfo);
 			return;   
@@ -110,10 +102,10 @@ class CoCreateCrud extends CoCreateBase {
 		
 		try {
 			
-			const collection = this.db.collection(data["collection"]);
+			const collection = this.db.collection(req_data["collection"]);
 			
 			const query = {
-				"_id": new ObjectID(data["document_id"])
+				"_id": new ObjectID(req_data["document_id"])
 			};
 			if (securityRes['organization_id']) {
 				query['organization_id'] = securityRes['organization_id'];
@@ -122,20 +114,12 @@ class CoCreateCrud extends CoCreateBase {
 			collection.find(query).toArray(function(error, result) {
 				if (!error && result && result.length > 0) {
 					let tmp = result[0];
-					if (data['exclude_fields']) {
-						data['exclude_fields'].forEach(function(field) {
+					if (req_data['exclude_fields']) {
+						req_data['exclude_fields'].forEach(function(field) {
 							delete tmp[field];
 						})
 					}
-					self.wsManager.send(socket, 'readDocument', {
-						'collection'  : data['collection'],
-						'document_id' : data['document_id'],
-						'data'        : encodeObject(tmp),
-						'element'	  : data['element'],
-						'async'		  : data['async'],
-						'event'		  : data['event'],
-						'metadata'    : data['metadata']
-					}, data['organization_id'], roomInfo);
+					self.wsManager.send(socket, 'readDocument', { ...req_data, data: encodeObject(tmp)}, req_data['organization_id'], roomInfo);
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
@@ -147,52 +131,45 @@ class CoCreateCrud extends CoCreateBase {
 	}
 
 	/** Update Document **/
-	async updateDocument(socket, data, roomInfo) {
-		const  securityRes = await this.checkSecurity(data);
+	async updateDocument(socket, req_data, roomInfo) {
+		const  securityRes = await this.checkSecurity(req_data);
 		const self = this;
 		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', data['organization_id'], roomInfo);
+			this.wsManager.send(socket, 'securityError', 'error', req_data['organization_id'], roomInfo);
 			return;
 		}
 		
 		try {
 			
-			const collection = this.db.collection(data["collection"]);
-			const query = {"_id": new ObjectID(data["document_id"]) };
+			const collection = this.db.collection(req_data["collection"]);
+			const query = {"_id": new ObjectID(req_data["document_id"]) };
 			
 			const update = {};
-			if( data['set'] )   update['$set'] = replaceArray(data['set']);
-			if( data['unset'] ) update['$unset'] = data['unset'].reduce((r, d) => {r[d] = ""; return r}, {});
+			if( req_data['set'] )   update['$set'] = replaceArray(req_data['set']);
+			if( req_data['unset'] ) update['$unset'] = req_data['unset'].reduce((r, d) => {r[d] = ""; return r}, {});
 	
 			collection.findOneAndUpdate(
 				query,
 				update,
 				{
 					returnOriginal : false,
-					upsert: data.upsert || false
+					upsert: req_data.upsert || false
 				}
 			).then((result) => {
 	
-				let response = {
-					'collection'  : data['collection'],
-					'document_id' : data['document_id'],
-					'data'        : encodeObject(result.value || {}),
-					'async'		  : data['async'],
-					'event'		  : data['event'],
-					'metadata'    : data['metadata']
-				};
+				let response = { ...req_data, data: encodeObject(result.value || {}) };
+
+				if(req_data['unset']) response['delete_fields'] = req_data['unset'];
 				
-				if(data['unset']) response['delete_fields'] = data['unset'];
-				
-				if (data.broadcast_sender != false) {
-					self.wsManager.send(socket, 'updateDocument', { ...response, element: data['element']}, data['organization_id'], roomInfo);
+				if (req_data.broadcast_sender != false) {
+					self.wsManager.send(socket, 'updateDocument', { ...response, element: req_data['element']}, req_data['organization_id'], roomInfo);
 				}
 					
-				if (data.broadcast !== false) {
-					if (data.room) {
-						self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'updateDocument', response, true, roomInfo);
+				if (req_data.broadcast !== false) {
+					if (req_data.room) {
+						self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, 'updateDocument', response, true, roomInfo);
 					} else {
-						self.wsManager.broadcast(socket, data.namespace || data['organization_id'], null, 'updateDocument', response, false, roomInfo)	
+						self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'updateDocument', response, false, roomInfo)	
 					}
 				}
 			}).catch((error) => {
@@ -201,23 +178,23 @@ class CoCreateCrud extends CoCreateBase {
 			
 		} catch (error) {
 			console.log(error)
-			self.wsManager.send(socket, 'updateDocumentError', error, data['organization_id']);
+			self.wsManager.send(socket, 'updateDocumentError', error, req_data['organization_id']);
 		}
 	}
 	
 	/** Delete Document **/
-	async deleteDocument(socket, data, roomInfo) {
+	async deleteDocument(socket, req_data, roomInfo) {
 		const self = this;
-		const securityRes = await this.checkSecurity(data);
+		const securityRes = await this.checkSecurity(req_data);
 		if (!securityRes.result) {
 			this.wsManager.send(socket, 'securityError', 'error', null, roomInfo);
 			return;   
 		}
 	
 		try {
-			const collection = this.db.collection(data["collection"]);
+			const collection = this.db.collection(req_data["collection"]);
 			const query = {
-				"_id": new ObjectID(data["document_id"])
+				"_id": new ObjectID(req_data["document_id"])
 			};
 			// if (securityRes['organization_id']) {
 			// 	query['organization_id'] = securityRes['organization_id'];
@@ -225,21 +202,15 @@ class CoCreateCrud extends CoCreateBase {
 			
 			collection.deleteOne(query, function(error, result) {
 				if (!error) {
-					let response = {
-							'collection': data['collection'],
-							'document_id': data['document_id'],
-							'metadata': data['metadata'],
-							'async'	  : data['async'],
-							'event'	  : data['event'],
-						}
-					if (data.broadcast_sender !== false) {
-						self.wsManager.send(socket, 'deleteDocument', { ...response, element: data['element']}, data['organization_id'], roomInfo);
+					let response = { ...req_data }
+					if (req_data.broadcast_sender !== false) {
+						self.wsManager.send(socket, 'deleteDocument', { ...response, element: req_data['element']}, req_data['organization_id'], roomInfo);
 					}
-					if (data.broadcast !== false) {
-						if (data.room) {
-							self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'deleteDocument', response, true, roomInfo);
+					if (req_data.broadcast !== false) {
+						if (req_data.room) {
+							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, 'deleteDocument', response, true, roomInfo);
 						} else {
-							self.wsManager.broadcast(socket, data.namespace || data['organization_id'], null, 'deleteDocument', response, false, roomInfo)	
+							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'deleteDocument', response, false, roomInfo)	
 						}
 					}
 				} else {

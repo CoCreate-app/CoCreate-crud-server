@@ -54,8 +54,8 @@ class CoCreateList extends CoCreateBase {
 			data: [] // array
 	 }
 	 **/
-	async readDocumentList(socket, data, roomInfo) {
-		const securityRes = await this.checkSecurity(data);
+	async readDocumentList(socket, req_data, roomInfo) {
+		const securityRes = await this.checkSecurity(req_data);
 		
 		function sleep(ms) {
 			return new Promise((resolve) => {
@@ -67,18 +67,18 @@ class CoCreateList extends CoCreateBase {
 
 		const self = this;
 		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', data['organization_id'], roomInfo);
+			this.wsManager.send(socket, 'securityError', 'error', req_data['organization_id'], roomInfo);
 			return;   
 		}
 		
-		if (data['is_collection']) {
-			var result = await this.readCollectionList(socket, data, roomInfo);
+		if (req_data['is_collection']) {
+			var result = await this.readCollectionList(socket, req_data, roomInfo);
 			return;
 		}
 		
 		try {
-			var collection = this.db.collection(data['collection']);
-			const operator = data.operator;
+			var collection = this.db.collection(req_data['collection']);
+			const operator = req_data.operator;
 			
 			var query = {};
 			query = this.readQuery(operator);
@@ -114,19 +114,19 @@ class CoCreateList extends CoCreateBase {
 					let result_data = [];
 					
 					//. export process
-					if (data.export) {
-						const exportData = data.export;
+					if (req_data.export) {
+						const exportData = req_data.export;
 						self.wsManager.emit('downloadData', socket, {...exportData, data: result})
 						return;
 					}
 					
-					if (data.created_ids && data.created_ids.length > 0) {
+					if (req_data.created_ids && req_data.created_ids.length > 0) {
 						let _nn = (count) ? startIndex : result.length;
 						
 						for (let ii = 0; ii < _nn; ii++) {
 							
 							const selected_item = result[ii];
-							data.created_ids.forEach((fetch_id, index) => {
+							req_data.created_ids.forEach((fetch_id, index) => {
 								if (fetch_id == selected_item['_id']) {
 									result_data.push({ item: selected_item, position: ii })
 								}
@@ -140,21 +140,8 @@ class CoCreateList extends CoCreateBase {
 						
 						result_data = result;
 					}
-					
-					console.log('sending--------')
-					
-					self.wsManager.send(socket, 'readDocumentList', {
-						'collection'	: data['collection'],
-						'element'		: data['element'],
-						'data'			: result_data,
-						'operator'		: {...operator, total: total},
-						'metadata'		: data['metadata'],
-						'created_ids'	: data['created_ids'],
-						'is_collection'	: data['is_collection'],
-						'async'			: data['async'],
-						'event'			: data['event'],
-						
-					}, data['organization_id'], roomInfo);
+
+					self.wsManager.send(socket, 'readDocumentList', { ...req_data, data: result_data, operator: {...operator, total: total}}, req_data['organization_id'], roomInfo);
 				} else {
 					console.log(error)
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
@@ -187,16 +174,7 @@ class CoCreateList extends CoCreateBase {
 				return result;
 			})
 			
-			this.wsManager.send(socket, 'readCollectionList', {
-				'collection'	: data['collection'],
-				'element'		: data['element'],
-				'data'			: result_collections,
-				'operator'		: data.opreator,
-				'is_collection'	: data.is_collection,
-				'metadata'		: data.metadata,
-				'async'			: data['async'],
-				'event'			: data['event'],
-			}, data['organization_id'], roomInfo);
+			this.wsManager.send(socket, 'readCollectionList', {...data, data: result_collections }, data['organization_id'], roomInfo);
 		} catch(error) {
 			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
 		}
