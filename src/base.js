@@ -21,10 +21,9 @@ class CoCreateBase {
 	async checkSecurity(data) {
 
 		var apiKey = data['apiKey'];
-		var securityKey = data['securityKey'];
 		var organization_id = data['organization_id'];
 		
-		if (!apiKey || !securityKey || !organization_id) return {result: false};
+		if (!apiKey || !organization_id) return {result: false};
 		
 		var collection = this.db.collection('organizations');
 		
@@ -32,7 +31,6 @@ class CoCreateBase {
 			var query = {
 				"_id": new ObjectID(organization_id),
 				"apiKey": data['apiKey'],
-				"securityKey": data['securityKey'],
 			}
 		
 			const result = await collection.find(query).toArray();

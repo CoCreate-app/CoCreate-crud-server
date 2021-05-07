@@ -69,9 +69,8 @@ class CoCreateIndustry extends CoCreateBase {
 	async createEmptyDocumentsFromIndustry(industryDocumentsCollection, industry_id, newOrg, orgData, new_subdomain) {
 		const newOrgId = newOrg._id.toString();
 		const newOrgApiKey = newOrg.apiKey;
-		const newOrgSecurityKey = newOrg.securityKey;
-		
-		const {subdomain, apiKey, securityKey, organization_id} = orgData;
+
+		const {subdomain, apiKey, organization_id} = orgData;
 
 		
 		const newDB = this.getDB(newOrgId);
@@ -108,10 +107,6 @@ class CoCreateIndustry extends CoCreateBase {
 					if (newOrgApiKey && apiKey) {
 						document[field] = self.replaceContent(document[field], apiKey, newOrgApiKey);
 					}
-					if (newOrgSecurityKey && securityKey) {
-						document[field] = self.replaceContent(document[field], securityKey, newOrgSecurityKey);
-					}
-					
 				}
 			}
 
@@ -200,7 +195,6 @@ class CoCreateIndustry extends CoCreateBase {
 			insertData.organization_data = {
 				subdomain: subdomain,
 				apiKey: orgDocument.apiKey,
-				securityKey: orgDocument.securityKey,
 				organization_id: organization_id
 			}
 			//. set masterDB			

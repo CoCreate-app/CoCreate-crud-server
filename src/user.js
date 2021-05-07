@@ -27,7 +27,6 @@ class CoCreateUser extends CoCreateBase {
 			value: any,
 			
 			apiKey: string,
-			securityKey: string,
 			organization_id: string
 		}
 	**/
@@ -77,7 +76,6 @@ class CoCreateUser extends CoCreateBase {
 			form_id:					string,
 
 			apiKey: string,
-			securityKey: string,
 			organization_id: string
 		}
 	**/	
@@ -100,7 +98,7 @@ class CoCreateUser extends CoCreateBase {
 				query[key] = req_data['loginData'][key];
 			}
 			
-			collection.find(query).toArray(function(error, result) {
+			collection.find(query).toArray(async function(error, result) {
 				let response = {
 					eId: req_data['eId'],
 					uid: req_data['uid'],
@@ -110,13 +108,18 @@ class CoCreateUser extends CoCreateBase {
 					status: "failure"
 				}
 				if (!error && result && result.length > 0) {
+					let token = null;
+					if (self.wsManager.authInstance) {
+						token = await self.wsManager.authInstance.generateToken({user_id: result[0]['_id']});
+					} 
 					response = { ...response,  
 						success: true,
 						id: result[0]['_id'],
 						document_id: result[0]['_id'],
 						current_org: result[0]['current_org'],
 						message: "Login successfuly",
-						status: "success"
+						status: "success",
+						token
 					};
 				} 
 				self.wsManager.send(socket, 'login', response, req_data['organization_id'])
@@ -162,7 +165,6 @@ class CoCreateUser extends CoCreateBase {
 									user_id:			result[0]['_id'],
 									current_org:		result[0]['current_org'],
 									apiKey: 			res[0]['apiKey'],
-									securityKey:		res[0]['securityKey'],
 									adminUI_id: 		res[0]['adminUI_id'],
 									builderUI_id:		res[0]['builderUI_id'],
 									href: req_data['href']
@@ -189,7 +191,6 @@ class CoCreateUser extends CoCreateBase {
 			user_id:					object,
 
 			apiKey: string,
-			securityKey: string,
 			organization_id: string
 		}
 	**/		

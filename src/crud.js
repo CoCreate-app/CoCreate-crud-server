@@ -51,14 +51,8 @@ class CoCreateCrud extends CoCreateBase {
 	/** Create Document **/
 	// data param needs organization_id field added to pass security check
 	async createDocument(socket, req_data, roomInfo){
-		const securityRes = await this.checkSecurity(req_data);
+		
 		const self = this;
-		
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', null, roomInfo);
-			return;
-		}
-		
 		if(!req_data.data) return;
 		
 		try{
@@ -71,6 +65,7 @@ class CoCreateCrud extends CoCreateBase {
 					if (req_data.broadcast_sender !== false) {
 						self.wsManager.send(socket, 'createDocument', response, req_data['organization_id'], roomInfo);
 					}
+
 					if (req_data.broadcast !== false) {
 						if (req_data.room) {
 							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, 'createDocument', response, true, roomInfo);
@@ -78,6 +73,9 @@ class CoCreateCrud extends CoCreateBase {
 							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'createDocument', response, false, roomInfo)	
 						}
 					}
+					
+					self.processCRUDEvent('createDocument', response);
+					
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
@@ -91,15 +89,11 @@ class CoCreateCrud extends CoCreateBase {
 	/** Read Document **/
 	async readDocument(socket, req_data, roomInfo) {
 		if (!req_data['collection'] || req_data['collection'] == 'null' || typeof req_data['collection'] !== 'string') {
+			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
 			return;
 		} 
 		const self = this;
-		const securityRes = await this.checkSecurity(req_data);
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', null, roomInfo);
-			return;   
-		}
-		
+
 		try {
 			
 			const collection = this.db.collection(req_data["collection"]);
@@ -107,8 +101,8 @@ class CoCreateCrud extends CoCreateBase {
 			const query = {
 				"_id": new ObjectID(req_data["document_id"])
 			};
-			if (securityRes['organization_id']) {
-				query['organization_id'] = securityRes['organization_id'];
+			if (req_data['organization_id']) {
+				query['organization_id'] = req_data['organization_id'];
 			}
 			
 			collection.find(query).toArray(function(error, result) {
@@ -119,6 +113,7 @@ class CoCreateCrud extends CoCreateBase {
 							delete tmp[field];
 						})
 					}
+					
 					self.wsManager.send(socket, 'readDocument', { ...req_data, data: encodeObject(tmp)}, req_data['organization_id'], roomInfo);
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
@@ -132,13 +127,8 @@ class CoCreateCrud extends CoCreateBase {
 
 	/** Update Document **/
 	async updateDocument(socket, req_data, roomInfo) {
-		const  securityRes = await this.checkSecurity(req_data);
 		const self = this;
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', req_data['organization_id'], roomInfo);
-			return;
-		}
-		
+
 		try {
 			
 			const collection = this.db.collection(req_data["collection"]);
@@ -172,6 +162,8 @@ class CoCreateCrud extends CoCreateBase {
 						self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'updateDocument', response, false, roomInfo)	
 					}
 				}
+				
+				self.processCRUDEvent('updateDocument', response);
 			}).catch((error) => {
 				self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 			});
@@ -185,21 +177,13 @@ class CoCreateCrud extends CoCreateBase {
 	/** Delete Document **/
 	async deleteDocument(socket, req_data, roomInfo) {
 		const self = this;
-		const securityRes = await this.checkSecurity(req_data);
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', null, roomInfo);
-			return;   
-		}
-	
+
 		try {
 			const collection = this.db.collection(req_data["collection"]);
 			const query = {
 				"_id": new ObjectID(req_data["document_id"])
 			};
-			// if (securityRes['organization_id']) {
-			// 	query['organization_id'] = securityRes['organization_id'];
-			// }
-			
+
 			collection.deleteOne(query, function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
@@ -213,6 +197,7 @@ class CoCreateCrud extends CoCreateBase {
 							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'deleteDocument', response, false, roomInfo)	
 						}
 					}
+					self.processCRUDEvent('deleteDocument', response);
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
@@ -221,6 +206,13 @@ class CoCreateCrud extends CoCreateBase {
 			console.log(error);
 			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
 		}
+	}
+	
+	processCRUDEvent(action, data) {
+		process.emit('changed-document', data)
+		// if (data.collection == 'permissions') {
+		// 	process.emit('refresh-permission', data)
+		// }
 	}
 }
 

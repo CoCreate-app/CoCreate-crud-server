@@ -55,7 +55,7 @@ class CoCreateList extends CoCreateBase {
 	 }
 	 **/
 	async readDocumentList(socket, req_data, roomInfo) {
-		const securityRes = await this.checkSecurity(req_data);
+		// const securityRes = await this.checkSecurity(req_data);
 		
 		function sleep(ms) {
 			return new Promise((resolve) => {
@@ -66,10 +66,10 @@ class CoCreateList extends CoCreateBase {
 		// await sleep(3000)
 
 		const self = this;
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', req_data['organization_id'], roomInfo);
-			return;   
-		}
+		// if (!securityRes.result) {
+		// 	this.wsManager.send(socket, 'securityError', 'error', req_data['organization_id'], roomInfo);
+		// 	return;   
+		// }
 		
 		if (req_data['is_collection']) {
 			var result = await this.readCollectionList(socket, req_data, roomInfo);
@@ -78,22 +78,23 @@ class CoCreateList extends CoCreateBase {
 		
 		try {
 			var collection = this.db.collection(req_data['collection']);
-			const operator = req_data.operator;
+			const operator = {
+				filters: [],
+				orders: [],
+				search: {
+					value: [],
+					type: "or"
+				},
+				startIndex: 0,
+				...req_data.operator
+			};
 			
 			var query = {};
 			query = this.readQuery(operator);
 
-			// if (operator['fetch'] && operator.fetch.name) {
-			// 	let fetch_value = operator.fetch.value;
-			// 	if (operator.fetch.name === "_id") {
-			// 		fetch_value = new ObjectID(fetch_value)
-			// 	}
-			// 	query[operator.fetch.name] = fetch_value;
+			// if (securityRes['organization_id']) {
+			// 	query['organization_id'] = securityRes['organization_id'];
 			// }
-
-			if (securityRes['organization_id']) {
-				query['organization_id'] = securityRes['organization_id'];
-			}
 			
 			var sort = {};
 			operator.orders.forEach((order) => {

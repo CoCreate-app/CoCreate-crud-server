@@ -13,9 +13,6 @@ class CoCreateOrganization extends CoCreateBase {
 			this.wsManager.on('createOrg',		(socket, data, roomInfo) => this.createOrg(socket, data));
 			this.wsManager.on('createUser',		(socket, data, roomInfo) => this.createUser(socket, data));
 			this.wsManager.on('deleteOrg',		(socket, data, roomInfo) => this.deleteOrg(socket, data));
-			
-			this.wsManager.on('runIndustry',	(socket, data, roomInfo) => this.runIndustry(socket, data));
-			this.wsManager.on('createIndustryNew',	(socket, data, roomInfo) => this.createIndustry(socket, data));
 		}
 	}
 
@@ -25,15 +22,15 @@ class CoCreateOrganization extends CoCreateBase {
 		
 		try{
 			const collection = this.getCollection(data);
-			collection.insertOne(data.data, function(error, result) {
+			collection.insertOne({ ...data.data, organization_id: data.organization_id }, function(error, result) {
 				if(!error && result){
 					const orgId = result.ops[0]._id + "";
 					const anotherCollection = self.getDB(orgId).collection(data['collection']);
-					anotherCollection.insertOne(result.ops[0]);
+					anotherCollection.insertOne({...result.ops[0], organization_id : orgId});
 					
 					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0] }
 
-					self.wsManager.send(socket, 'createOrg', response, );
+					self.wsManager.send(socket, 'createOrg', response );
 					if (data.room) {
 						self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'createDocument', response, true);
 					} else {
