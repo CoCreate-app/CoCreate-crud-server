@@ -22,10 +22,6 @@ class CoCreateList extends CoCreateBase {
 			element: "xxxx",
 			metadata: "",
 			operator: {
-				fetch: {
-					name: 'xxxx',
-					value: 'xxxxx'
-				},
 				filters: [{
 					name: 'field1',
 					operator: "$contain | $range | $eq | $ne | $lt | $lte | $gt | $gte | $in | $nin | $geoWithin",
@@ -48,7 +44,6 @@ class CoCreateList extends CoCreateBase {
 			
 			is_collection: true | false,
 			//. case fetch document case
-			created_ids : [id1, id2, ...],
 			export: true | false
 			-------- additional response data -----------
 			data: [] // array
