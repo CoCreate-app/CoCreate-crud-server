@@ -146,7 +146,7 @@ class CoCreateCrud extends CoCreateBase {
 		const self = this;
 
 		try {
-			
+	
 			const collection = this.db.collection(req_data["collection"]);
 			let objId = new ObjectID();
 			try {
@@ -159,15 +159,24 @@ class CoCreateCrud extends CoCreateBase {
 			const query = {"_id": objId };
 			
 			const update = {};
+			
+			
 			if( req_data['set'] )   update['$set'] = replaceArray(req_data['set']);
 			if( req_data['unset'] ) update['$unset'] = req_data['unset'].reduce((r, d) => {r[d] = ""; return r}, {});
+			update['$set']['organization_id'] = req_data['organization_id'];
+
+			let projection = {}
+			Object.keys(update['$set']).forEach(x => {
+				projection[x] = 1
+			})
 
 			collection.findOneAndUpdate(
 				query,
 				update,
 				{
 					returnOriginal : false,
-					upsert: req_data.upsert || false
+					upsert: req_data.upsert || false,
+					projection: projection,
 				}
 			).then((result) => {
 	
