@@ -65,11 +65,14 @@ class CoCreateCrud extends CoCreateBase {
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
 					const response  = {...req_data, document_id: result.ops[0]._id, data:result.ops[0] } 
-					let is_flat = req_data.is_flat == false ? false : true;
-					const response_data = is_flat ? encodeObject(response) : response;
+					// let is_flat = req_data.is_flat == false ? false : true;
+					// const response_data = is_flat ? encodeObject(response) : response;
+					const response_data = response;
+					console.log('zxcasdaaaaa',response)
+	
 					
 					if (req_data.broadcast_sender != false) {
-						self.wsManager.send(socket, 'createDocument', response_data, req_data['organization_id'], roomInfo);
+						self.wsManager.send(socket, 'createDocument', response, req_data['organization_id'], roomInfo);
 					}
 
 					if (req_data.broadcast != false) {
