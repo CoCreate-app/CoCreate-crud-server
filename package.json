@@ -21,7 +21,7 @@
     "javascript-framework"
   ],
     "publishConfig": {
-    "access": "public"
+    "access": "restricted"
   },
   "scripts": {
     "demo": "PORT=5000 node demo/server.js",
