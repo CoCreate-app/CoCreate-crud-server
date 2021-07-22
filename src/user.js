@@ -104,8 +104,8 @@ class CoCreateUser extends CoCreateBase {
 					uid: req_data['uid'],
 					form_id: req_data['form_id'],
 					success: false,
-					message: "We can't login",
-					status: "failure"
+					message: "Login failed",
+					status: "failed"
 				}
 				if (!error && result && result.length > 0) {
 					let token = null;
@@ -115,9 +115,10 @@ class CoCreateUser extends CoCreateBase {
 					response = { ...response,  
 						success: true,
 						id: result[0]['_id'],
+						collection: collection,
 						document_id: result[0]['_id'],
 						current_org: result[0]['current_org'],
-						message: "Login successfuly",
+						message: "Login successful",
 						status: "success",
 						token
 					};
