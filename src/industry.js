@@ -11,7 +11,7 @@ class CoCreateIndustry extends CoCreateBase {
 	init() {
 		if (this.wsManager) {
 			this.wsManager.on('runIndustry',	(socket, data, roomInfo) => this.runIndustry(socket, data));
-			this.wsManager.on('createIndustryNew',	(socket, data, roomInfo) => this.createIndustry(socket, data));
+			this.wsManager.on('createIndustry',	(socket, data, roomInfo) => this.createIndustry(socket, data));
 			this.wsManager.on('fetchInfoForBuilder', (socket, data) => this.fetchInfoForBuilder(socket, data))
 		}
 	}
@@ -232,7 +232,7 @@ class CoCreateIndustry extends CoCreateBase {
 			}
 			
 			console.log(response)
-			self.wsManager.send(socket, 'createIndustryNew', response, data['organization_id']);
+			self.wsManager.send(socket, 'createIndustry', response, data['organization_id']);
 
 			
 		} catch (error) {
