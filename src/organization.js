@@ -11,7 +11,6 @@ class CoCreateOrganization extends CoCreateBase {
 	init() {
 		if (this.wsManager) {
 			this.wsManager.on('createOrg',		(socket, data, roomInfo) => this.createOrg(socket, data));
-			this.wsManager.on('createUser',		(socket, data, roomInfo) => this.createUser(socket, data));
 			this.wsManager.on('deleteOrg',		(socket, data, roomInfo) => this.deleteOrg(socket, data));
 		}
 	}
@@ -43,34 +42,6 @@ class CoCreateOrganization extends CoCreateBase {
 		}
 	}
 	
-	async createUser(socket, data) {
-		const self = this;
-		if(!data.data) return;
-		
-		try{
-			const collection = this.getCollection(data);
-			collection.insertOne(data.data, function(error, result) {
-				if(!error && result){
-					const copyDB = data.copyDB;
-					if (copyDB) {
-						const anotherCollection = self.getDB(copyDB).collection(data['collection']);
-						anotherCollection.insertOne(result.ops[0]);
-					}
-
-					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
-
-					self.wsManager.send(socket, 'createUser', response, data['organization_id']);
-					// if (data.room) {
-					// 	self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'createDocument', response, true);
-					// } else {
-					// 	self.wsManager.broadcast(socket, data.namespace || data['organization_id'], null, 'createDocument', response)	
-					// }
-				}
-			});
-		}catch(error){
-			console.log('createDocument error', error);
-		}
-	}
 	
 	async deleteOrg(socket, data) {
 		const self = this;

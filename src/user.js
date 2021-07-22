@@ -10,11 +10,42 @@ class CoCreateUser extends CoCreateBase {
 	
 	init() {
 		if (this.wsManager) {
+			this.wsManager.on('createUser',				(socket, data, roomInfo) => this.createUser(socket, data));
 			this.wsManager.on('checkUnique',			(socket, data, roomInfo) => this.checkUnique(socket, data, roomInfo));
 			this.wsManager.on('login',					(socket, data, roomInfo) => this.login(socket, data, roomInfo))
 			this.wsManager.on('usersCurrentOrg',		(socket, data, roomInfo) => this.usersCurrentOrg(socket, data, roomInfo))
 			this.wsManager.on('fetchUser',				(socket, data, roomInfo) => this.fetchUser(socket, data, roomInfo))
 			this.wsManager.on('userStatus',				(socket, data, roomInfo) => this.setUserStatus(socket, data, roomInfo))
+		}
+	}
+
+	
+	async createUser(socket, data) {
+		const self = this;
+		if(!data.data) return;
+		
+		try{
+			const collection = this.getCollection(data);
+			collection.insertOne(data.data, function(error, result) {
+				if(!error && result){
+					const copyDB = data.copyDB;
+					if (copyDB) {
+						const anotherCollection = self.getDB(copyDB).collection(data['collection']);
+						anotherCollection.insertOne(result.ops[0]);
+					}
+
+					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
+
+					self.wsManager.send(socket, 'createUser', response, data['organization_id']);
+					// if (data.room) {
+					// 	self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'createDocument', response, true);
+					// } else {
+					// 	self.wsManager.broadcast(socket, data.namespace || data['organization_id'], null, 'createDocument', response)	
+					// }
+				}
+			});
+		}catch(error){
+			console.log('createDocument error', error);
 		}
 	}
 
