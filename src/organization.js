@@ -1,6 +1,6 @@
 
 const CoCreateBase = require("./base");
-const {ObjectID, Binary} = require("mongodb");
+// const {ObjectID, Binary} = require("mongodb");
 
 class CoCreateOrganization extends CoCreateBase {
 	constructor(wsManager, db) {
@@ -38,6 +38,10 @@ class CoCreateOrganization extends CoCreateBase {
 						self.wsManager.broadcast(socket, data.namespace || data['organization_id'], null, 'createDocument', response)	
 					}
 				}
+					// add new org to masterDb
+					const masterOrgDb = self.getDB(data.mdb).collection(data['collection']);
+					masterOrgDb.insertOne({...result.ops[0], organization_id : data['mdb']});
+
 			});
 		}catch(error){
 			console.log('createDocument error', error);
