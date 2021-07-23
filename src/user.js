@@ -26,12 +26,15 @@ class CoCreateUser extends CoCreateBase {
 		
 		try{
 			const collection = this.getCollection(data);
+			// Create new user in config db users collection
 			collection.insertOne(data.data, function(error, result) {
 				if(!error && result){
-					const copyDB = data.copyDB;
-					if (copyDB) {
-						const anotherCollection = self.getDB(copyDB).collection(data['collection']);
-						anotherCollection.insertOne(result.ops[0]);
+					const orgDB = data.orgDB;
+					// if new orgDb Create new user in new org db users collection
+					// if (orgDB == data.organization_id) {
+					if (orgDB) {
+						const anotherCollection = self.getDB(orgDB).collection(data['collection']);
+						anotherCollection.insertOne({...result.ops[0], organization_id : orgDB});
 					}
 
 					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
@@ -118,8 +121,8 @@ class CoCreateUser extends CoCreateBase {
 			return;   
 		}
 		try {
-			const {organization_id, db} = req_data
-			const selectedDB = db || organization_id;
+			const {organization_id} = req_data
+			const selectedDB = organization_id;
 			const collection = self.getDB(selectedDB).collection(req_data["data-collection"]);
 			const query = new Object();
 			
@@ -142,11 +145,12 @@ class CoCreateUser extends CoCreateBase {
 					let token = null;
 					if (self.wsManager.authInstance) {
 						token = await self.wsManager.authInstance.generateToken({user_id: result[0]['_id']});
-					} 
+					}
+
 					response = { ...response,  
 						success: true,
 						id: result[0]['_id'],
-						collection: collection,
+						// collection: collection,
 						document_id: result[0]['_id'],
 						current_org: result[0]['current_org'],
 						message: "Login successful",
@@ -154,10 +158,12 @@ class CoCreateUser extends CoCreateBase {
 						token
 					};
 				} 
+				console.log('before socket', response);
 				self.wsManager.send(socket, 'login', response, req_data['organization_id'])
+				console.log('success socket', req_data['organization_id']);
 			});
 		} catch (error) {
-			console.log(error);
+			console.log('login failed', error);
 		}
 	}
 	

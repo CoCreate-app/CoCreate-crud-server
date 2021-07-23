@@ -21,10 +21,12 @@ class CoCreateOrganization extends CoCreateBase {
 		
 		try{
 			const collection = this.getCollection(data);
+			// create new org in config db organization collection
 			collection.insertOne({ ...data.data, organization_id: data.organization_id }, function(error, result) {
 				if(!error && result){
 					const orgId = result.ops[0]._id + "";
 					const anotherCollection = self.getDB(orgId).collection(data['collection']);
+					// Create new org db and insert organization
 					anotherCollection.insertOne({...result.ops[0], organization_id : orgId});
 					
 					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0] }
