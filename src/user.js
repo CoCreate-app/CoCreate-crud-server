@@ -10,6 +10,7 @@ class CoCreateUser extends CoCreateBase {
 	
 	init() {
 		if (this.wsManager) {
+			this.wsManager.on('createUserNew',			(socket, data, roomInfo) => this.createUserNew(socket, data));
 			this.wsManager.on('createUser',				(socket, data, roomInfo) => this.createUser(socket, data));
 			this.wsManager.on('checkUnique',			(socket, data, roomInfo) => this.checkUnique(socket, data, roomInfo));
 			this.wsManager.on('login',					(socket, data, roomInfo) => this.login(socket, data, roomInfo))
@@ -20,6 +21,35 @@ class CoCreateUser extends CoCreateBase {
 	}
 
 	
+	async createOrgNew(socket, data) {
+		const self = this;
+		if(!data) return;
+		const newOrg_id = data.newOrg_id;
+		if (newOrg_id != data.organization_id) {
+			try{
+				const collection = this.db.collection(data);
+				const query = {
+					"_id": new ObjectID(data["organization_id"])
+				};
+			
+				collection.find(query).toArray(function(error, result) {
+					if(!error && result){
+						const newOrgDb = self.getDB(newOrg_id).collection(data['collection']);
+						// Create new user in config db users collection
+						newOrgDb.insertOne({...result.ops[0], organization_id : newOrg_id}, function(error, result) {
+							if(!error && result){
+								const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
+								self.wsManager.send(socket, 'createOrgNew', response, data['organization_id']);
+							}
+						});
+					}
+				});
+			}catch(error){
+				console.log('createDocument error', error);
+			}
+		}
+	}
+
 	async createUser(socket, data) {
 		const self = this;
 		if(!data.data) return;
@@ -31,20 +61,14 @@ class CoCreateUser extends CoCreateBase {
 				if(!error && result){
 					const orgDB = data.orgDB;
 					// if new orgDb Create new user in new org db users collection
-					// if (orgDB == data.organization_id) {
-					if (orgDB) {
-						const anotherCollection = self.getDB(orgDB).collection(data['collection']);
-						anotherCollection.insertOne({...result.ops[0], organization_id : orgDB});
+					if (orgDB != data.organization_id) {
+						if (orgDB) {
+							const anotherCollection = self.getDB(orgDB).collection(data['collection']);
+							anotherCollection.insertOne({...result.ops[0], organization_id : orgDB});
+						}
 					}
-
 					const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
-
 					self.wsManager.send(socket, 'createUser', response, data['organization_id']);
-					// if (data.room) {
-					// 	self.wsManager.broadcast(socket, data.namespace || data['organization_id'] , data.room, 'createDocument', response, true);
-					// } else {
-					// 	self.wsManager.broadcast(socket, data.namespace || data['organization_id'], null, 'createDocument', response)	
-					// }
 				}
 			});
 		}catch(error){

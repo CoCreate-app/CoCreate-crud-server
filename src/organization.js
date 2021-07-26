@@ -10,8 +10,38 @@ class CoCreateOrganization extends CoCreateBase {
 	
 	init() {
 		if (this.wsManager) {
+			this.wsManager.on('createOrgNew',	(socket, data, roomInfo) => this.createOrgNew(socket, data));
 			this.wsManager.on('createOrg',		(socket, data, roomInfo) => this.createOrg(socket, data));
 			this.wsManager.on('deleteOrg',		(socket, data, roomInfo) => this.deleteOrg(socket, data));
+		}
+	}
+
+	async createUserNew(socket, data) {
+		const self = this;
+		if(!data) return;
+		const newOrg_id = data.newOrg_id;
+		if (newOrg_id != data.organization_id) {
+			try{
+				const collection = this.db.collection(data);
+				const query = {
+					"_id": new ObjectID(data["user_id"])
+				};
+			
+				collection.find(query).toArray(function(error, result) {
+					if(!error && result){
+						const newOrgDb = self.getDB(newOrg_id).collection(data['collection']);
+						// Create new user in config db users collection
+						newOrgDb.insertOne({...result.ops[0], organization_id : newOrg_id}, function(error, result) {
+							if(!error && result){
+								const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
+								self.wsManager.send(socket, 'createUserNew', response, data['organization_id']);
+							}
+						});
+					}
+				});
+			}catch(error){
+				console.log('createDocument error', error);
+			}
 		}
 	}
 

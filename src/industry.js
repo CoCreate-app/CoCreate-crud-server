@@ -20,7 +20,8 @@ class CoCreateIndustry extends CoCreateBase {
 	 * Run Industry logic
 	 **/
 	async runIndustry(socket, data) {
-		const {industry_id, new_organization_id, db} = data
+		const {industry_id, newOrg_id} = data
+		const db = data.organization_id;
 		let industryDocumentsCollection = this.getDB(db).collection('industry_documents');
 
 
@@ -30,7 +31,7 @@ class CoCreateIndustry extends CoCreateBase {
 		if (!industry._id) {
 			error = "Can't get industry"
 		} else {
-			let newOrgDocument = await this.getDB(db).collection('organizations').findOne({_id: ObjectID(new_organization_id)});
+			let newOrgDocument = await this.getDB(db).collection('organizations').findOne({_id: ObjectID(newOrg_id)});
 			
 			if (!newOrgDocument) {
 				error = "Can't get organization";
@@ -45,7 +46,7 @@ class CoCreateIndustry extends CoCreateBase {
 					industry.organization_data || {}, 
 					new_subdomain
 				);
-				await this.updateDocumentsByIndustry(idPairs, new_organization_id)	
+				await this.updateDocumentsByIndustry(idPairs, newOrg_id)	
 				this.wsManager.send(socket, 'runIndustry', {
 					error: false,
 					message: "successfuly",
@@ -202,10 +203,10 @@ class CoCreateIndustry extends CoCreateBase {
 			let insertResult = await collection.insertOne(insertData);
 
 			const industry_id = insertResult.ops[0]._id + "";
-			const anotherCollection = self.getDB(organization_id).collection(data['collection']);
-			//. update organization
-			insertResult.ops[0].organization_id = organization_id;
-			anotherCollection.insertOne(insertResult.ops[0]);
+			// const anotherCollection = self.getDB(organization_id).collection(data['collection']);
+			// //. update organization
+			// insertResult.ops[0].organization_id = organization_id;
+			// anotherCollection.insertOne(insertResult.ops[0]);
 			
 			//. create inustryDocuments
 			const srcDB = this.getDB(organization_id);
