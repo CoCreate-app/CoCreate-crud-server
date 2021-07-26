@@ -1,3 +1,10 @@
+## [1.1.9](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.8...v1.1.9) (2021-07-26)
+
+
+### Bug Fixes
+
+* refactored to newOrg_id convention ([78ba5b8](https://github.com/CoCreate-app/CoCreate-crud-server/commit/78ba5b8f27438cd8d898ff8a5c7955f321d557c9))
+
 ## [1.1.8](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.7...v1.1.8) (2021-07-26)
 
 
