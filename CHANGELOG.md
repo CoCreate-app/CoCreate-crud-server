@@ -1,3 +1,10 @@
+## [1.1.8](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.7...v1.1.8) (2021-07-26)
+
+
+### Bug Fixes
+
+* create org in masterDb ([c15e92e](https://github.com/CoCreate-app/CoCreate-crud-server/commit/c15e92eb29bdf519a19d0ab3db7a0e8379568430))
+
 ## [1.1.7](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.6...v1.1.7) (2021-07-23)
 
 
