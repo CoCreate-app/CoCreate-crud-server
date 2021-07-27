@@ -21,7 +21,7 @@ class CoCreateUser extends CoCreateBase {
 	}
 
 	
-	async createOrgNew(socket, data) {
+	async createUserNew(socket, data) {
 		const self = this;
 		if(!data) return;
 		const newOrg_id = data.newOrg_id;
@@ -29,7 +29,7 @@ class CoCreateUser extends CoCreateBase {
 			try{
 				const collection = this.db.collection(data);
 				const query = {
-					"_id": new ObjectID(data["organization_id"])
+					"_id": new ObjectID(data["user_id"])
 				};
 			
 				collection.find(query).toArray(function(error, result) {
@@ -39,7 +39,7 @@ class CoCreateUser extends CoCreateBase {
 						newOrgDb.insertOne({...result.ops[0], organization_id : newOrg_id}, function(error, result) {
 							if(!error && result){
 								const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
-								self.wsManager.send(socket, 'createOrgNew', response, data['organization_id']);
+								self.wsManager.send(socket, 'createUserNew', response, data['organization_id']);
 							}
 						});
 					}

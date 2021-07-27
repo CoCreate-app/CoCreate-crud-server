@@ -1,6 +1,6 @@
 
 const CoCreateBase = require("./base");
-// const {ObjectID, Binary} = require("mongodb");
+const {ObjectID, Binary} = require("mongodb");
 
 class CoCreateOrganization extends CoCreateBase {
 	constructor(wsManager, db) {
@@ -16,15 +16,15 @@ class CoCreateOrganization extends CoCreateBase {
 		}
 	}
 
-	async createUserNew(socket, data) {
+	async createOrgNew(socket, data) {
 		const self = this;
 		if(!data) return;
 		const newOrg_id = data.newOrg_id;
 		if (newOrg_id != data.organization_id) {
 			try{
-				const collection = this.db.collection(data);
+				const collection = this.db.collection(data['collection']);
 				const query = {
-					"_id": new ObjectID(data["user_id"])
+					"_id": new ObjectID(newOrg_id)
 				};
 			
 				collection.find(query).toArray(function(error, result) {
@@ -34,7 +34,7 @@ class CoCreateOrganization extends CoCreateBase {
 						newOrgDb.insertOne({...result.ops[0], organization_id : newOrg_id}, function(error, result) {
 							if(!error && result){
 								const response  = { ...data, document_id: result.ops[0]._id, data: result.ops[0]}
-								self.wsManager.send(socket, 'createUserNew', response, data['organization_id']);
+								self.wsManager.send(socket, 'createOrgNew', response, data['organization_id']);
 							}
 						});
 					}
