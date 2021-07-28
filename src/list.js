@@ -189,7 +189,7 @@ class CoCreateList extends CoCreateBase {
 		
 	//   try {
 			
-	//     var collection = db.collection(data['data-collection']);
+	//     var collection = db.collection(data['collection']);
 	//     var query = {};
 	//     query = readQuery(data);
 			
@@ -239,7 +239,7 @@ class CoCreateList extends CoCreateBase {
 	//         console.log(ret_data);
 				
 	//         socket.emit('fetchDocumentList', {
-	//           'data-collection': data['data-collection'],
+	//           'collection': data['collection'],
 	//           'eId': data['eId'],
 	//           'result': ret_data,
 	//           'startIndex': data['startIndex'],

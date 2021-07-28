@@ -128,7 +128,7 @@ class CoCreateUser extends CoCreateBase {
 	/**
 		data = {
 			namespace:				string,	
-			data-collection:	string,
+			collection:	string,
 			loginData:				object,
 			eId:							string,
 			form_id:					string,
@@ -147,7 +147,7 @@ class CoCreateUser extends CoCreateBase {
 		try {
 			const {organization_id} = req_data
 			const selectedDB = organization_id;
-			const collection = self.getDB(selectedDB).collection(req_data["data-collection"]);
+			const collection = self.getDB(selectedDB).collection(req_data["collection"]);
 			const query = new Object();
 			
 			// query['connected_orgs'] = data['organization_id'];
@@ -194,7 +194,7 @@ class CoCreateUser extends CoCreateBase {
 	/**
 		data = {
 			namespace:				string,	
-			data-collection:	string,
+			collection:	string,
 			user_id:					string,
 			href: string
 		}
@@ -204,7 +204,7 @@ class CoCreateUser extends CoCreateBase {
 			const self = this;
 			const {organization_id, db} = req_data
 			const selectedDB = db || organization_id;
-			const collection = this.getDB(selectedDB).collection(req_data["data-collection"]);
+			const collection = this.getDB(selectedDB).collection(req_data["collection"]);
 			
 			let query = new Object();
 			
@@ -249,7 +249,7 @@ class CoCreateUser extends CoCreateBase {
 	/**
 		data = {
 			namespace:				string,	
-			data-collection:	string,
+			collection:	string,
 			user_id:					object,
 
 			apiKey: string,
@@ -267,7 +267,7 @@ class CoCreateUser extends CoCreateBase {
 		try {
 			const {organization_id, db} = req_data
 			const selectedDB = db || organization_id;
-			const collection = self.getDB(selectedDB).collection(req_data['data-collection']);
+			const collection = self.getDB(selectedDB).collection(req_data['collection']);
 			const user_id = req_data['user_id'];
 			const query = {
 				"_id": new ObjectID(user_id),
