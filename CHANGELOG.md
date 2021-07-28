@@ -1,3 +1,10 @@
+## [1.1.10](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.9...v1.1.10) (2021-07-28)
+
+
+### Bug Fixes
+
+* removed data- from crud, fetch, filter and pass attributes ([f42cb1a](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f42cb1aec8e8e47f611b2208c3d9c3f981246037))
+
 ## [1.1.9](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.8...v1.1.9) (2021-07-26)
 
 
