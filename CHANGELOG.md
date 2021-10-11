@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.10...v1.2.0) (2021-10-11)
+
+
+### Features
+
+* unique.js returns true or false for a name:value in a collection ([9451315](https://github.com/CoCreate-app/CoCreate-crud-server/commit/94513152cdbefef214f2863ec451b4dab67ab391))
+
 ## [1.1.10](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.9...v1.1.10) (2021-07-28)
 
 
