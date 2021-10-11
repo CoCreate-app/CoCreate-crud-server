@@ -12,7 +12,6 @@ class CoCreateUser extends CoCreateBase {
 		if (this.wsManager) {
 			this.wsManager.on('createUserNew',			(socket, data, roomInfo) => this.createUserNew(socket, data));
 			this.wsManager.on('createUser',				(socket, data, roomInfo) => this.createUser(socket, data));
-			this.wsManager.on('checkUnique',			(socket, data, roomInfo) => this.checkUnique(socket, data, roomInfo));
 			this.wsManager.on('login',					(socket, data, roomInfo) => this.login(socket, data, roomInfo))
 			this.wsManager.on('usersCurrentOrg',		(socket, data, roomInfo) => this.usersCurrentOrg(socket, data, roomInfo))
 			this.wsManager.on('fetchUser',				(socket, data, roomInfo) => this.fetchUser(socket, data, roomInfo))
@@ -76,55 +75,7 @@ class CoCreateUser extends CoCreateBase {
 		}
 	}
 
-	/**
-		data = {
-			namespace: string,	
-			collection: string,
-			request_id: string,
-			name: string,
-			value: any,
-			
-			apiKey: string,
-			organization_id: string
-		}
-	**/
-	async checkUnique(socket, req_data) {
-		const securityRes = await this.checkSecurity(req_data)
-		const self = this;
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error');
-			return;   
-		}
 
-		const collection = this.getDB(req_data['namespace']).collection(req_data["collection"]);
-			
-		const query = {
-			[req_data['name']]: req_data['value']
-		};
-		
-		if (securityRes['organization_id']) {
-			query['organization_id'] = securityRes['organization_id'];
-		}
-		
-		try {
-			collection.find(query).toArray(function(error, result) {
-				if (!error && result) {
-					let response = {
-						request_id: req_data['request_id'],
-						name: req_data['name'],
-						unique: false
-					}
-					if (result.length == 0) {
-						response.unique = true;
-					}
-					self.wsManager.send(socket, 'checkedUnique', response, req_data['organization_id'])
-				}
-			})
-		} catch (error) {
-			console.log(error);
-		}
-	}
-	
 	/**
 		data = {
 			namespace:				string,	

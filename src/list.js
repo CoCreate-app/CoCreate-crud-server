@@ -15,7 +15,7 @@ class CoCreateList extends CoCreateBase {
 	}
 	
 	/**
-	 * By jin
+	 * 
 	 * 
 		data: {
 			collection: "modules",
@@ -97,8 +97,8 @@ class CoCreateList extends CoCreateBase {
 			});
 			collection.find(query).sort(sort).toArray(function(error, result) {
 				if (result) {
-
-					if (operator['search']['type'] == 'and') {
+				
+				if (operator['search']['type'] == 'and') {
 						result = self.readAndSearch(result, operator['search']['value']);
 					} else {
 						result = self.readOrSearch(result, operator['search']['value']);
@@ -108,13 +108,6 @@ class CoCreateList extends CoCreateBase {
 					const startIndex = operator.startIndex;
 					const count = operator.count;
 					let result_data = [];
-					
-					//. export process
-					if (req_data.export) {
-						const exportData = req_data.export;
-						self.wsManager.emit('downloadData', socket, {...exportData, data: result})
-						return;
-					}
 					
 					if (req_data.created_ids && req_data.created_ids.length > 0) {
 						let _nn = (count) ? startIndex : result.length;
@@ -129,14 +122,11 @@ class CoCreateList extends CoCreateBase {
 							})
 						}
 					} else {
-						
 						if (startIndex) result = result.slice(startIndex, total);
-						
 						if (count) result = result.slice(0, count)
 						
 						result_data = result;
 					}
-
 					self.wsManager.send(socket, 'readDocumentList', { ...req_data, data: result_data, operator: {...operator, total: total}}, req_data['organization_id'], roomInfo);
 				} else {
 					console.log(error)
