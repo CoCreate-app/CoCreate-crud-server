@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.0...v1.2.1) (2021-11-07)
+
+
+### Bug Fixes
+
+* package made public ([19e40a1](https://github.com/CoCreate-app/CoCreate-crud-server/commit/19e40a1c2cc2e1fda3ffa21d484e8b49c0338a40))
+
 # [1.2.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.1.10...v1.2.0) (2021-10-11)
 
 
