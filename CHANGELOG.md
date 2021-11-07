@@ -1,3 +1,10 @@
+## [1.2.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.1...v1.2.2) (2021-11-07)
+
+
+### Bug Fixes
+
+* typo in readme ([cddd7a7](https://github.com/CoCreate-app/CoCreate-crud-server/commit/cddd7a73fd0e5d4b559dd5129ea24bbb20614d36))
+
 ## [1.2.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.0...v1.2.1) (2021-11-07)
 
 
