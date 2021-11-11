@@ -1,3 +1,10 @@
+## [1.2.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.2...v1.2.3) (2021-11-11)
+
+
+### Bug Fixes
+
+* missing mongodb ([2938d8c](https://github.com/CoCreate-app/CoCreate-crud-server/commit/2938d8c4f28690d6a3e83867015327d4fa9f009a))
+
 ## [1.2.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.1...v1.2.2) (2021-11-07)
 
 
