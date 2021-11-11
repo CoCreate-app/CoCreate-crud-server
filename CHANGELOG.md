@@ -1,3 +1,11 @@
+## [1.2.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.4...v1.2.5) (2021-11-11)
+
+
+### Bug Fixes
+
+* licensing information ([63a3e14](https://github.com/CoCreate-app/CoCreate-crud-server/commit/63a3e142777a6e2ef97cb9b304d7ec17877304d8))
+* update readme ([f1ab97b](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f1ab97bbef8e09ecbcf760439ab0b8973029c282))
+
 ## [1.2.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.3...v1.2.4) (2021-11-11)
 
 
