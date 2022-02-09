@@ -25,7 +25,8 @@
   },
   "scripts": {
     "demo": "PORT=5000 node demo/server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "docs": "node ./node_modules/@cocreate/docs/src/index.js"
   },
   "main": "index.js",
   "repository": {
@@ -39,7 +40,7 @@
   },
   "homepage": "https://cocreate.app/docs/CoCreate-crud-server",
   "dependencies": {
-    "@cocreate/docs": "^1.0.3",
+    "@cocreate/docs": "^1.2.68",
     "csvtojson": "^2.0.10",
     "json-2-csv": "^3.10.3",
     "mongodb": "^4.1.4"
