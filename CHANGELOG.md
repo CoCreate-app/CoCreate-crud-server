@@ -1,3 +1,10 @@
+## [1.2.6](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.5...v1.2.6) (2022-02-09)
+
+
+### Bug Fixes
+
+* update CoCreate.config.js, bump @cocreate/docs version ([0685184](https://github.com/CoCreate-app/CoCreate-crud-server/commit/06851842ca7b786d3f3b939d1942918493f092e2))
+
 ## [1.2.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.4...v1.2.5) (2021-11-11)
 
 
