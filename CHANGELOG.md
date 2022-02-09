@@ -1,3 +1,10 @@
+## [1.2.7](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.6...v1.2.7) (2022-02-09)
+
+
+### Bug Fixes
+
+* add document_id to CoCreate.config ([f649cb4](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f649cb45ff2ee1937d3e0ff28db981f9a26ca80e))
+
 ## [1.2.6](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.5...v1.2.6) (2022-02-09)
 
 
