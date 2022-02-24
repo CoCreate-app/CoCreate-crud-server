@@ -65,25 +65,25 @@ class CoCreateCrud extends CoCreateBase {
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
 					const response  = {...req_data, document_id: result.ops[0]._id, data:result.ops[0] } 
-					// let is_flat = req_data.is_flat == false ? false : true;
-					// const response_data = is_flat ? encodeObject(response) : response;
+					// let isFlat = req_data.isFlat == false ? false : true;
+					// const response_data = isFlat ? encodeObject(response) : response;
 					const response_data = response;
-					console.log('createDocument response:', response)
+					// console.log('createDocument response:', response)
 	
 					
 					if (req_data.broadcast_sender != false) {
 						self.wsManager.send(socket, 'createDocument', response, req_data['organization_id'], roomInfo);
-						console.log('broadcast1' , response)
+						// console.log('broadcast1' , response)
 					}
 
 					if (req_data.broadcast != false) {
 						if (req_data.room) {
 							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, 'createDocument', response_data, true, roomInfo);
-						console.log('broadcast2' ,response)
+						// console.log('broadcast2' ,response)
 							
 						} else {
 							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'createDocument', response_data, true, roomInfo)	
-						console.log('broadcast3' ,response)
+							// console.log('broadcast3' ,response)
 						}
 					}
 					
@@ -135,9 +135,8 @@ class CoCreateCrud extends CoCreateBase {
 						tmp = resp;
 					}
 					
-					let is_flat = req_data.is_flat == true ? true : false;
-					console.log('readDocument', is_flat)
-					self.wsManager.send(socket, 'readDocument', { ...req_data, data: is_flat ? encodeObject(tmp) : tmp }, req_data['organization_id'], roomInfo);
+					let isFlat = req_data.isFlat == true ? true : false;
+					self.wsManager.send(socket, 'readDocument', { ...req_data, data: isFlat ? encodeObject(tmp) : tmp }, req_data['organization_id'], roomInfo);
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
@@ -187,10 +186,10 @@ class CoCreateCrud extends CoCreateBase {
 				}
 			).then((result) => {
 	
-				let is_flat = req_data.is_flat == true ? true : false;
+				let isFlat = req_data.isFlat == true ? true : false;
 				let response_data = result.value || {};
 				
-				let response = { ...req_data, document_id: response_data._id, data: is_flat ? encodeObject(response_data) : response_data };
+				let response = { ...req_data, document_id: response_data._id, data: isFlat ? encodeObject(response_data) : response_data };
 
 				if(req_data['unset']) response['delete_fields'] = req_data['unset'];
 				
