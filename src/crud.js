@@ -135,8 +135,8 @@ class CoCreateCrud extends CoCreateBase {
 						tmp = resp;
 					}
 					
-					let is_flat = req_data.is_flat == false ? false : true;
-					
+					let is_flat = req_data.is_flat == true ? true : false;
+					console.log('readDocument', is_flat)
 					self.wsManager.send(socket, 'readDocument', { ...req_data, data: is_flat ? encodeObject(tmp) : tmp }, req_data['organization_id'], roomInfo);
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
@@ -153,7 +153,7 @@ class CoCreateCrud extends CoCreateBase {
 		const self = this;
 
 		try {
-	
+
 			const collection = this.db.collection(req_data["collection"]);
 			let objId = new ObjectID();
 			try {
@@ -187,7 +187,7 @@ class CoCreateCrud extends CoCreateBase {
 				}
 			).then((result) => {
 	
-				let is_flat = req_data.is_flat == false ? false : true;
+				let is_flat = req_data.is_flat == true ? true : false;
 				let response_data = result.value || {};
 				
 				let response = { ...req_data, document_id: response_data._id, data: is_flat ? encodeObject(response_data) : response_data };
