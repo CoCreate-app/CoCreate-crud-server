@@ -1,3 +1,12 @@
+## [1.2.9](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.8...v1.2.9) (2022-02-28)
+
+
+### Bug Fixes
+
+* config docs wildcard * domain ([c2a5856](https://github.com/CoCreate-app/CoCreate-crud-server/commit/c2a58569460e0fa45c594f6b70d7ade32e703ebb))
+* update param is_flat to isFlat ([40a9b61](https://github.com/CoCreate-app/CoCreate-crud-server/commit/40a9b61408b5379aef3a798e1fdbc64016c3e980))
+* updated is_flat to default false ([f0c2f00](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f0c2f002c33ff8d0e1f3b306a2999cced5535936))
+
 ## [1.2.8](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.7...v1.2.8) (2022-02-16)
 
 
