@@ -1,12 +1,12 @@
 'use strict';
 
-const crud = require('./src/crud');
-const list = require('./src/list');
-const user = require('./src/user');
-const unique = require('./src/unique');
-const organization = require('./src/organization.js');
-const industry = require('./src/industry.js');
-const backup = require('./src/backup');
+const crud = require('./crud');
+const list = require('./list');
+const user = require('./user');
+const unique = require('./unique');
+const organization = require('./organization');
+const industry = require('./industry');
+const backup = require('./backup');
 
 module.exports.init = function(socket_server, db_client) {
     new crud(socket_server, db_client);

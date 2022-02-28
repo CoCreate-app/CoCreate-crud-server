@@ -28,7 +28,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "node ./node_modules/@cocreate/docs/src/index.js"
   },
-  "main": "index.js",
+  "main": "./src/index",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CoCreate-app/CoCreate-crud-server.git"
