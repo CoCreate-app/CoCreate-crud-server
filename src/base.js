@@ -1,4 +1,3 @@
-
 const {ObjectID} = require("mongodb");
 
 class CoCreateBase {
@@ -8,7 +7,6 @@ class CoCreateBase {
 		this.dbClient = client;
 		
 		this.initBase()
-
 	}
 	
 	initBase() {
@@ -16,40 +14,7 @@ class CoCreateBase {
 			this.wsManager.on('changeDB', 	(socket, data, roomInfo) => this.changeDB(socket, data, roomInfo));
 		}	
 	}
-	
-	/** Request available check **/
-	async checkSecurity(data) {
-
-		var apiKey = data['apiKey'];
-		var organization_id = data['organization_id'];
 		
-		if (!apiKey || !organization_id) return {result: false};
-		
-		var collection = this.db.collection('organizations');
-		
-		try {
-			var query = {
-				"_id": new ObjectID(organization_id),
-				"apiKey": data['apiKey'],
-			}
-		
-			const result = await collection.find(query).toArray();
-
-			if (result && result.length > 0) {
-				
-				if (data['collection'] == 'users' || data['collection'] == 'organizations') {
-					return { result: true	}  
-				} else {
-					return { result: true, organization_id: data['organization_id']	}  
-				}
-			}
-			return {result: false};
-		} catch (error) {
-			console.log(error)
-		}
-		return {result: false};
-	}
-	
 	changeDB(socket, data) {
 		const dbName = data.db;
 		if (!dbName) return;

@@ -283,13 +283,7 @@ class CoCreateIndustry extends CoCreateBase {
 	}
 	
 	//. builder
-	async fetchInfoForBuilder(socket, data) {
-		const self = this;
-		if (!await this.checkSecurity(data)) {
-			this.wsManager.send(socket, 'securityError', 'error', data['organization_id']);
-			return;   
-		}
-		
+	async fetchInfoForBuilder(socket, data) {		
 		try {
 				
 			var collectionList = [];

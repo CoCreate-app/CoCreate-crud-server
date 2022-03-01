@@ -14,21 +14,10 @@ class CoCreateUnique extends CoCreateBase {
 
 
 	async checkUnique(socket, req_data) {
-		const securityRes = await this.checkSecurity(req_data);
-		const self = this;
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error');
-			return;   
-		}
-
 		const collection = this.db.collection(req_data["collection"]);
 		const query = {
 			[req_data['name']]: req_data['value']
 		};
-		
-		if (securityRes['organization_id']) {
-			query['organization_id'] = securityRes['organization_id'];
-		}
 		
 		try {
 			collection.find(query).toArray(function(error, result) {

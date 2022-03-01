@@ -49,9 +49,7 @@ class CoCreateList extends CoCreateBase {
 			data: [] // array
 	 }
 	 **/
-	async readDocumentList(socket, req_data, roomInfo) {
-		// const securityRes = await this.checkSecurity(req_data);
-		
+	async readDocumentList(socket, req_data, roomInfo) {		
 		function sleep(ms) {
 			return new Promise((resolve) => {
 				setTimeout(resolve, ms);
@@ -61,10 +59,6 @@ class CoCreateList extends CoCreateBase {
 		// await sleep(3000)
 
 		const self = this;
-		// if (!securityRes.result) {
-		// 	this.wsManager.send(socket, 'securityError', 'error', req_data['organization_id'], roomInfo);
-		// 	return;   
-		// }
 		
 		if (req_data['is_collection']) {
 			var result = await this.readCollectionList(socket, req_data, roomInfo);
@@ -87,10 +81,6 @@ class CoCreateList extends CoCreateBase {
 			var query = {};
 			query = this.readQuery(operator);
 
-			// if (securityRes['organization_id']) {
-			// 	query['organization_id'] = securityRes['organization_id'];
-			// }
-			
 			var sort = {};
 			operator.orders.forEach((order) => {
 				sort[order.name] = order.type
@@ -140,11 +130,6 @@ class CoCreateList extends CoCreateBase {
 	}
 	
 	async readCollectionList(socket, data, roomInfo) {
-		const securityRes = await this.checkSecurity(data);
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', data['organization_id'], roomInfo);
-			return;   
-		}
 		try {
 			var result_collections = [];
 			result_collections = await this.db.listCollections().toArray().then(infos => {
@@ -166,86 +151,6 @@ class CoCreateList extends CoCreateBase {
 		}
 	}
 	
-	/**
-	 * fetch document by ids
-	 */
-	
-	// async function fetchDocumentList(socket, data) {
-	//   var securityRes = await checkSecurity(data);
-	//   if (!securityRes.result) {
-	//     socket.emit('securityError', 'error');
-	//     return;   
-	//   }
-		
-	//   try {
-			
-	//     var collection = db.collection(data['collection']);
-	//     var query = {};
-	//     query = readQuery(data);
-			
-	//     if (data['fetch'] && data.fetch.name) {
-	//       query[data.fetch.name] = data.fetch.value;
-	//     }
-			
-	//     if (securityRes['organization_id']) {
-	//       query['organization_id'] = securityRes['organization_id'];
-	//     }
-			
-	//     var sort = {};
-	//     data.orders.forEach((order) => {
-	//       sort[order.name] = order.type
-	//     });
-	
-	//     collection.find(query).sort(sort).toArray(function(error, result) {
-	//       if (result) {
-	//         if (data['search']['type'] == 'and') {
-	//           result = readAndSearch(result, data['search']['value']);
-	//         } else {
-	//           result = readOrSearch(result, data['search']['value']);
-	//         }
-	
-	//         var total = result.length;
-	//         var f_ids = data['fetch_ids'];
-					
-	//         var _nn = result.length;
-	//         if (data['count']) {
-	//           _nn = data['startIndex'];
-	//         }
-	//         console.log(f_ids);
-	//         var ret_data = [];
-	//         for (let ii = 0; ii < _nn; ii++) {
-						
-	//           for (let j = 0; j < f_ids.length; j++) {
-							
-	//             console.log(f_ids[j], result[ii]['_id']);
-	//             if (f_ids[j] == result[ii]['_id']) {
-								
-	//               ret_data.push({item: result[ii], position: ii});
-								
-	//             }
-	//           }
-	//         }
-					
-	//         console.log(ret_data);
-				
-	//         socket.emit('fetchDocumentList', {
-	//           'collection': data['collection'],
-	//           'eId': data['eId'],
-	//           'result': ret_data,
-	//           'startIndex': data['startIndex'],
-	//           'per_count': data['count'],
-	//           'total': total,
-	//           'options': data['options']
-	//         })
-	//       }
-				
-	//       //console.log(error);
-	//     })
-	//   } catch (error) {
-			
-	//   }
-		
-	// }
 	
 	/**
 	 * function that make query from data

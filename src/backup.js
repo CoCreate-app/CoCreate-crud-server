@@ -64,11 +64,6 @@ class CoCreateBackup extends CoCreateBase {
 	})
 	**/
 	// async exportData(socket, data, roomInfo) {
-	// 	const securityRes = await this.checkSecurity(data);
-	// 	if (!securityRes.result) {
-	// 		this.wsManager.send(socket, 'securityError', 'error');
-	// 		return;   
-	// 	}
 	// 	const self = this;
 		
 	// 	const export_type = data.export_type || "json";
@@ -79,9 +74,6 @@ class CoCreateBackup extends CoCreateBase {
 	// 		const orgId = roomInfo ? roomInfo.orgId : "";
 			
 	// 		var query = {};
-	// 		if (securityRes['organization_id']) {
-	// 			query['organization_id'] = securityRes['organization_id'];
-	// 		}
 			
 	// 		collection.find(query).toArray(async function(error, result) {
 	// 			if (!error) {
@@ -104,24 +96,12 @@ class CoCreateBackup extends CoCreateBase {
 	// }
 	
 	// async setImportData(socket, data, roomInfo) {
-	// 	const securityRes = await this.checkSecurity(data);
-	// 	const orgId = roomInfo ? roomInfo.orgId : "";
-	// 	if (!securityRes.result) {
-	// 		this.wsManager.send(socket, 'securityError', 'error', orgId);
-	// 		return;   
-	// 	}
 	// 	this.importCollection = data['collection']
 	// 	this.importType = data['import_type'];
 	// 	this.importDB = data['namespace'];
 	// }
 
 	// async importData(socket, data, roomInfo) {
-	// 	const securityRes = await this.checkSecurity(data);
-	// 	const orgId = roomInfo ? roomInfo.orgId : "";
-	// 	if (!securityRes.result) {
-	// 		this.wsManager.send(socket, 'securityError', 'error', orgId);
-	// 		return;   
-	// 	}
 	// 	const importCollection = data['collection']
 	// 	const importType = data['import_type'];
 	// 	const importFile = data['file'];

@@ -89,12 +89,7 @@ class CoCreateUser extends CoCreateBase {
 		}
 	**/	
 	async login(socket, req_data) {
-		const securityRes = await this.checkSecurity(req_data);
 		const self = this;
-		if (!securityRes.result) {
-			self.wsManager.send(socket, 'securityError', 'error', req_data['organization_id']);
-			return;   
-		}
 		try {
 			const {organization_id} = req_data
 			const selectedDB = organization_id;
@@ -209,11 +204,6 @@ class CoCreateUser extends CoCreateBase {
 	**/		
 	async fetchUser(socket, req_data) {
 		const self = this;
-		const securityRes = await this.checkSecurity(req_data);
-		if (!securityRes.result) {
-			this.wsManager.send(socket, 'securityError', 'error', req_data['organization_id']);
-			return;   
-		}
 		
 		try {
 			const {organization_id, db} = req_data
@@ -222,10 +212,6 @@ class CoCreateUser extends CoCreateBase {
 			const user_id = req_data['user_id'];
 			const query = {
 				"_id": new ObjectID(user_id),
-			}
-			
-			if (securityRes['organization_id']) {
-				query['organization_id'] = securityRes['organization_id'];
 			}
 			
 			collection.findOne(query, function(error, result) {
@@ -243,11 +229,6 @@ class CoCreateUser extends CoCreateBase {
 	 */
 	async setUserStatus(socket, req_data, roomInfo) {
 		const self = this;
-		// const securityRes = await this.checkSecurity(data);
-		// if (!securityRes.result) {
-		// 	this.wsManager.send(socket, 'securityError', 'error');
-		// 	return;   
-		// }
 		const {info, status} = req_data;
 
 		const items = info.split('/');
