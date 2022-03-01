@@ -1,6 +1,6 @@
 
 const CoCreateBase = require("./base");
-const {ObjectID, Binary} = require("mongodb");
+const { ObjectID } = require("mongodb");
 
 class CoCreateIndustry extends CoCreateBase {
 	constructor(wsManager, db) {
@@ -12,6 +12,7 @@ class CoCreateIndustry extends CoCreateBase {
 		if (this.wsManager) {
 			this.wsManager.on('runIndustry',	(socket, data, roomInfo) => this.runIndustry(socket, data));
 			this.wsManager.on('createIndustry',	(socket, data, roomInfo) => this.createIndustry(socket, data));
+			this.wsManager.on('deleteIndustry',	(socket, data, roomInfo) => this.deleteIndustry(socket, data));
 			this.wsManager.on('fetchInfoForBuilder', (socket, data) => this.fetchInfoForBuilder(socket, data))
 		}
 	}
@@ -311,6 +312,39 @@ class CoCreateIndustry extends CoCreateBase {
 			});
 		} catch (error) {
 			console.log('fetchInfoBuilder error');
+		}
+	}
+
+	async deleteIndustry(socket, data) {
+		try {
+			const self = this;
+
+			const collection = this.db.collection(data["collection"]);
+			const query = {
+				"industry_data": {industry_id: data.industry_id}
+			};
+			console.log('deleteIndustry', query)
+			// collection.deleteMany(query, function(error, result) {
+			// 	if (!error) {
+			// 		let response = { ...data }
+			// 		if (data.broadcast_sender != false) {
+			// 			self.wsManager.send(socket, 'deleteIndustry', { ...response}, data['organization_id'], roomInfo);
+			// 		}
+			// 		if (data.broadcast !== false) {
+			// 			if (data.room) {
+			// 				self.wsManager.broadcast(socket, data.namespace || data['organization_id'], data.room, 'deleteIndustry', response, true, roomInfo);
+			// 			} else {
+			// 				self.wsManager.broadcast(socket, data.namespace || data['organization_id'], null, 'deleteIndustry', response, true, roomInfo)	
+			// 			}
+			// 		}
+			// 		self.processCRUDEvent('deleteIndustry', response);
+			// 	} else {
+			// 		self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
+			// 	}
+			// })
+			// self.wsManager.send(socket, 'deleteIndustry', response, data['organization_id']);
+		} catch (error) {
+			console.log(error)
 		}
 	}
 }
