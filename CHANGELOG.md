@@ -1,3 +1,16 @@
+# [1.3.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.10...v1.3.0) (2022-03-03)
+
+
+### Bug Fixes
+
+* moved files to there relative components ([a2b2f8c](https://github.com/CoCreate-app/CoCreate-crud-server/commit/a2b2f8c52a923cb4fad86331ff7121b19db3d527))
+* remove securityCheck function, it has be replaced by permissions ([818b8d2](https://github.com/CoCreate-app/CoCreate-crud-server/commit/818b8d2e8631027242930633090510b579ecc914))
+
+
+### Features
+
+* deleteIndustry function ([ee85ff2](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ee85ff2c09781159c4aa4950f209d785c32fcbab))
+
 ## [1.2.10](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.9...v1.2.10) (2022-02-28)
 
 
