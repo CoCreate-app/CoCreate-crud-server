@@ -1,17 +1,14 @@
-
-const CoCreateBase = require("./base");
-
 const json2csv = require("json-2-csv")
 const csvtojson = require("csvtojson");
 
-class CoCreateBackup extends CoCreateBase {
-	constructor(wsManager, db) {
-		super(wsManager, db);
-		this.init();
-		
+class CoCreateBackup {
+	constructor(wsManager, dbClient) {
+		this.wsManager = wsManager
+		this.dbClient = dbClient
 		this.importCollection = '';
 		this.importType = '';
 		this.importDB = '';
+		this.init();
 	}
 	
 	init() {
@@ -70,7 +67,7 @@ class CoCreateBackup extends CoCreateBase {
 
 	// 	try {
 			
-	// 		var collection = this.getDb(data['namespace']).collection(data["collection"]);
+	// 		var collection = this.dbClient.db(data['namespace']).collection(data["collection"]);
 	// 		const orgId = roomInfo ? roomInfo.orgId : "";
 			
 	// 		var query = {};
@@ -126,7 +123,7 @@ class CoCreateBackup extends CoCreateBase {
 	// 		// todo: validate json / if json is object error happens
 	// 		jsonData.map((item) => delete item._id);
 	// 		console.log('json: ', jsonData)
-	// 		var collection = this.getDb(orgId).collection(importCollection);
+	// 		var collection = this.dbClient.db(orgId).collection(importCollection);
 	// 		// console.log(this.importCollection)
 	// 		collection.insertMany(jsonData, function(err, result) {
 	// 			if (!err) {

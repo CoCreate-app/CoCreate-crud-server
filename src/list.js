@@ -1,17 +1,15 @@
+const {ObjectID} = require("mongodb");
 
-const CoCreateBase = require("./base");
-const {ObjectID, Binary} = require("mongodb");
-
-class CoCreateList extends CoCreateBase {
-	constructor(wsManager, db) {
-		super(wsManager, db);
+class CoCreateList {
+	constructor(wsManager, dbClient) {
+		this.wsManager = wsManager
+		this.dbClient = dbClient
 		this.init()
 	}
 	
 	init() {
 		this.wsManager.on('readDocumentList', (socket, data, roomInfo) => this.readDocumentList(socket, data, roomInfo));
 		this.wsManager.on('readCollectionList', (socket, data, roomInfo) => this.readCollectionList(socket, data, roomInfo));
-	
 	}
 	
 	/**
@@ -66,7 +64,8 @@ class CoCreateList extends CoCreateBase {
 		}
 		
 		try {
-			var collection = this.db.collection(req_data['collection']);
+			const db = this.dbClient.db(req_data['organization_id']);
+			const collection = db.collection(req_data["collection"]);
 			const operator = {
 				filters: [],
 				orders: [],
@@ -131,8 +130,9 @@ class CoCreateList extends CoCreateBase {
 	
 	async readCollectionList(socket, data, roomInfo) {
 		try {
-			var result_collections = [];
-			result_collections = await this.db.listCollections().toArray().then(infos => {
+			var collections = [];
+			const db = this.dbClient.db(req_data['organization_id']);
+			collections = await db.listCollections().toArray().then(infos => {
 				var result = [];
 				infos.forEach(function(item) {
 					let __uuid = item.info.uuid.toString('hex')
@@ -145,7 +145,7 @@ class CoCreateList extends CoCreateBase {
 				return result;
 			})
 			
-			this.wsManager.send(socket, 'readCollectionList', {...data, data: result_collections }, data['organization_id'], roomInfo);
+			this.wsManager.send(socket, 'readCollectionList', {...data, data: collections }, data['organization_id'], roomInfo);
 		} catch(error) {
 			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
 		}

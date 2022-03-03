@@ -1,66 +1,32 @@
-
-const {ObjectID, Binary} = require("mongodb");
-const CoCreateBase = require("./base");
-const {encodeObject, decodeObject, replaceArray} = require("./utils.crud.js")
+const {ObjectID} = require("mongodb");
+const {encodeObject, replaceArray} = require("./utils.crud.js")
 
 
-class CoCreateCrud extends CoCreateBase {
-	constructor(wsManager, db) {
-		super(wsManager, db);
+class CoCreateCrud {
+	constructor(wsManager, dbClient) {
+		this.wsManager = wsManager
+		this.dbClient = dbClient
 		this.init();
 	}
 	
 	init() {
 		if (this.wsManager) {
-			this.wsManager.on('createDocument', 	(socket, data, roomInfo) => this.createDocument(socket, data, roomInfo));
-			this.wsManager.on('readDocument',		(socket, data, roomInfo) => this.readDocument(socket, data, roomInfo))
-			this.wsManager.on('updateDocument', 	(socket, data, roomInfo) => this.updateDocument(socket, data, roomInfo))
-			this.wsManager.on('deleteDocument', 	(socket, data, roomInfo) => this.deleteDocument(socket, data, roomInfo))
+			this.wsManager.on('createDocument', (socket, data, roomInfo) => this.createDocument(socket, data, roomInfo));
+			this.wsManager.on('readDocument',	(socket, data, roomInfo) => this.readDocument(socket, data, roomInfo))
+			this.wsManager.on('updateDocument', (socket, data, roomInfo) => this.updateDocument(socket, data, roomInfo))
+			this.wsManager.on('deleteDocument', (socket, data, roomInfo) => this.deleteDocument(socket, data, roomInfo))
 		}
 	}
 
-/** Create Document **/ 
-	/*
-	that.wsManager.onMessage(socket, "createDocument", data, roomInfo)
-	
-	that.wsManager.onMessage(socket, "readDocument", data, roomInfo)
-	
-	that.wsManager.onMessage(socket, "updateDocument", data, roomInfo)
-		Example:
-		that.wsManager.onMessage(socket, "updateDocument", {
-			namespace: '',
-			room: '',
-			broadcast: true/false,
-			broadcast_sender: true/false,
-			
-			collection: "test123",
-			document_id: "document_id",
-			data:{
-			
-				name1:“hello”,
-				name2: “hello1”
-			},
-			delete_fields:["name3", "name4"],
-			element: “xxxx”,
-			metaData: "xxxx"
-			}, roomInfo)
-			
-	that.wsManager.onMessage(socket, "deleteDocument", data, roomInfo)
-	*/
-
 	/** Create Document **/
-	// data param needs organization_id field added to pass security check
 	async createDocument(socket, req_data, roomInfo){
-		
 		const self = this;
 		if(!req_data.data) return;
 		
 		try{
-			const collection = this.db.collection(req_data['collection']);
+			const db = this.dbClient.db(req_data['organization_id']);
+			const collection = db.collection(req_data["collection"]);
 			let insertData = replaceArray(req_data.data);
-			// if (!insertData.organization_id) {
-			// 	insertData.organization_id = req_data.organization_id;
-			// }
 
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
@@ -68,27 +34,7 @@ class CoCreateCrud extends CoCreateBase {
 					// let isFlat = req_data.isFlat == false ? false : true;
 					// const response_data = isFlat ? encodeObject(response) : response;
 					const response_data = response;
-					// console.log('createDocument response:', response)
-	
-					
-					if (req_data.broadcast_sender != false) {
-						self.wsManager.send(socket, 'createDocument', response, req_data['organization_id'], roomInfo);
-						// console.log('broadcast1' , response)
-					}
-
-					if (req_data.broadcast != false) {
-						if (req_data.room) {
-							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, 'createDocument', response_data, true, roomInfo);
-						// console.log('broadcast2' ,response)
-							
-						} else {
-							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'createDocument', response_data, true, roomInfo)	
-							// console.log('broadcast3' ,response)
-						}
-					}
-					
-					self.processCRUDEvent('createDocument', response);
-					
+					self.broadcast('createDocument', socket, req_data, roomInfo)	
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
@@ -108,8 +54,8 @@ class CoCreateCrud extends CoCreateBase {
 		const self = this;
 
 		try {
-			
-			const collection = this.db.collection(req_data["collection"]);
+			const db = this.dbClient.db(req_data['organization_id']);
+			const collection = db.collection(req_data["collection"]);
 			
 			const query = {
 				"_id": new ObjectID(req_data["document_id"])
@@ -126,7 +72,6 @@ class CoCreateCrud extends CoCreateBase {
 							delete tmp[field];
 						})
 					}
-					
 					
 					if (req_data.data) {
 						let resp = {};
@@ -152,8 +97,8 @@ class CoCreateCrud extends CoCreateBase {
 		const self = this;
 
 		try {
-
-			const collection = this.db.collection(req_data["collection"]);
+			const db = this.dbClient.db(req_data['organization_id']);
+			const collection = db.collection(req_data["collection"]);
 			let objId = new ObjectID();
 			try {
 				if (req_data["document_id"]) {
@@ -176,10 +121,7 @@ class CoCreateCrud extends CoCreateBase {
 				projection[x] = 1
 			})
 
-			collection.findOneAndUpdate(
-				query,
-				update,
-				{
+			collection.findOneAndUpdate( query, update, {
 					returnOriginal : false,
 					upsert: req_data.upsert || false,
 					projection: projection,
@@ -193,19 +135,7 @@ class CoCreateCrud extends CoCreateBase {
 
 				if(req_data['unset']) response['delete_fields'] = req_data['unset'];
 				
-				if (req_data.broadcast_sender != false) {
-					self.wsManager.send(socket, 'updateDocument', { ...response, element: req_data['element']}, req_data['organization_id'], roomInfo);
-				}
-					
-				if (req_data.broadcast !== false) {
-					if (req_data.room) {
-						self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, 'updateDocument', response, true, roomInfo);
-					} else {
-						self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'updateDocument', response, true, roomInfo)	
-					}
-				}
-				
-				self.processCRUDEvent('updateDocument', response);
+				self.broadcast('updateDocument', socket, req_data, roomInfo)
 			}).catch((error) => {
 				self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 			});
@@ -221,7 +151,8 @@ class CoCreateCrud extends CoCreateBase {
 		const self = this;
 
 		try {
-			const collection = this.db.collection(req_data["collection"]);
+			const db = this.dbClient.db(req_data['organization_id']);
+			const collection = db.collection(req_data["collection"]);
 			const query = {
 				"_id": new ObjectID(req_data["document_id"])
 			};
@@ -229,17 +160,7 @@ class CoCreateCrud extends CoCreateBase {
 			collection.deleteOne(query, function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
-					if (req_data.broadcast_sender != false) {
-						self.wsManager.send(socket, 'deleteDocument', { ...response, element: req_data['element']}, req_data['organization_id'], roomInfo);
-					}
-					if (req_data.broadcast !== false) {
-						if (req_data.room) {
-							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, 'deleteDocument', response, true, roomInfo);
-						} else {
-							self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, 'deleteDocument', response, true, roomInfo)	
-						}
-					}
-					self.processCRUDEvent('deleteDocument', response);
+					self.broadcast('deleteDocument', socket, req_data, roomInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
@@ -250,15 +171,20 @@ class CoCreateCrud extends CoCreateBase {
 		}
 	}
 	
-	processCRUDEvent(action, data) {
-		process.emit('changed-document', data)
-		// if (data.collection == 'permissions') {
-		// 	process.emit('refresh-permission', data)
-		// }
+	broadcast(component, socket, req_data, response, roomInfo) {
+		if (req_data.broadcast_sender != false) {
+			self.wsManager.send(socket, component, { ...response, element: req_data['element']}, req_data['organization_id'], roomInfo);
+		}
+			
+		if (req_data.broadcast !== false) {
+			if (req_data.room) {
+				self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, component, response, true, roomInfo);
+			} else {
+				self.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, component, response, true, roomInfo)	
+			}
+		}
+		process.emit('changed-document', response)
 	}
 }
 
 module.exports = CoCreateCrud;
-
-
-
