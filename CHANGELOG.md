@@ -1,3 +1,10 @@
+## [1.2.10](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.9...v1.2.10) (2022-02-28)
+
+
+### Bug Fixes
+
+* moved index.js to src/ ([fdeb6c4](https://github.com/CoCreate-app/CoCreate-crud-server/commit/fdeb6c4a4ba4cc201e935268ad9d1feccdd4fbac))
+
 ## [1.2.9](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.2.8...v1.2.9) (2022-02-28)
 
 
