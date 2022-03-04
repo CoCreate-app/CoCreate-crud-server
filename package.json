@@ -1,6 +1,6 @@
 {
   "name": "@cocreate/crud-server",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "CoCreate-crud-server",
   "keywords": [
     "cocreate-crud",
@@ -49,4 +49,3 @@
     "express": "^4.17.1"
   }
 }
-
