@@ -20,6 +20,7 @@ class CoCreateCrud {
 
 	/** Create Document **/
 	async createDocument(socket, req_data, roomInfo){
+		const self = this;
 		if(!req_data.data) return;
 		
 		try{
@@ -33,14 +34,14 @@ class CoCreateCrud {
 					// let isFlat = req_data.isFlat == false ? false : true;
 					// const response_data = isFlat ? encodeObject(response) : response;
 					const response_data = response;
-					this.broadcast('createDocument', socket, req_data, reponse, roomInfo)	
+					self.broadcast('createDocument', socket, req_data, reponse, roomInfo)	
 				} else {
-					this.wsManager.send(socket, 'ServerError', error, null, roomInfo);
+					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
 			});
 		}catch(error){
 			console.log('createDocument error', error);
-			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
+			self.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
 		}
 	}
 	
@@ -50,6 +51,7 @@ class CoCreateCrud {
 			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
 			return;
 		} 
+		const self = this;
 
 		try {
 			const db = this.dbClient.db(req_data['organization_id']);
@@ -79,19 +81,20 @@ class CoCreateCrud {
 					}
 					
 					let isFlat = req_data.isFlat == true ? true : false;
-					this.wsManager.send(socket, 'readDocument', { ...req_data, data: isFlat ? encodeObject(tmp) : tmp }, req_data['organization_id'], roomInfo);
+					self.wsManager.send(socket, 'readDocument', { ...req_data, data: isFlat ? encodeObject(tmp) : tmp }, req_data['organization_id'], roomInfo);
 				} else {
-					this.wsManager.send(socket, 'ServerError', error, null, roomInfo);
+					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
 			});
 		} catch (error) {
 			console.log('readDocument error', error); 
-			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
+			self.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
 		}
 	}
 
 	/** Update Document **/
 	async updateDocument(socket, req_data, roomInfo) {
+		const self = this;
 		try {
 			const db = this.dbClient.db(req_data['organization_id']);
 			const collection = db.collection(req_data["collection"]);
@@ -129,20 +132,22 @@ class CoCreateCrud {
 
 				if(req_data['unset']) response['delete_fields'] = req_data['unset'];
 				
-				this.broadcast('updateDocument', socket, req_data, response, roomInfo)
+				self.broadcast('updateDocument', socket, req_data, response, roomInfo)
 			}).catch((error) => {
 				console.log('error', error)
-				this.wsManager.send(socket, 'ServerError', error, null, roomInfo);
+				self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 			});
 			
 		} catch (error) {
 			console.log(error)
-			this.wsManager.send(socket, 'updateDocumentError', error, req_data['organization_id']);
+			self.wsManager.send(socket, 'updateDocumentError', error, req_data['organization_id']);
 		}
 	}
 	
 	/** Delete Document **/
 	async deleteDocument(socket, req_data, roomInfo) {
+		const self = this;
+
 		try {
 			const db = this.dbClient.db(req_data['organization_id']);
 			const collection = db.collection(req_data["collection"]);
@@ -153,14 +158,14 @@ class CoCreateCrud {
 			collection.deleteOne(query, function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
-					this.broadcast('deleteDocument', socket, req_data, response, roomInfo)
+					self.broadcast('deleteDocument', socket, req_data, response, roomInfo)
 				} else {
-					this.wsManager.send(socket, 'ServerError', error, null, roomInfo);
+					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
 			})
 		} catch (error) {
 			console.log(error);
-			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
+			self.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
 		}
 	}
 	
