@@ -1,3 +1,10 @@
+## [1.3.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.1...v1.3.2) (2022-03-04)
+
+
+### Bug Fixes
+
+* add self.wsManager ([537375e](https://github.com/CoCreate-app/CoCreate-crud-server/commit/537375ec182242ff012f0ed11a6d3fe5f905ff26))
+
 ## [1.3.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.0...v1.3.1) (2022-03-04)
 
 
