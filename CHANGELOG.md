@@ -1,3 +1,10 @@
+## [1.3.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.2...v1.3.3) (2022-03-05)
+
+
+### Bug Fixes
+
+* typo reponse to response ([bbc67bf](https://github.com/CoCreate-app/CoCreate-crud-server/commit/bbc67bf99652175a3a9f6ccbdd7cd08cf5a536ba))
+
 ## [1.3.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.1...v1.3.2) (2022-03-04)
 
 
