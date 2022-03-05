@@ -33,8 +33,8 @@ class CoCreateCrud {
 					const response  = {...req_data, document_id: result.ops[0]._id, data:result.ops[0] } 
 					// let isFlat = req_data.isFlat == false ? false : true;
 					// const response_data = isFlat ? encodeObject(response) : response;
-					const response_data = response;
-					self.broadcast('createDocument', socket, req_data, reponse, roomInfo)	
+					// const response_data = response;
+					self.broadcast('createDocument', socket, req_data, response, roomInfo)	
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
