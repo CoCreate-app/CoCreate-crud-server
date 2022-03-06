@@ -1,3 +1,12 @@
+## [1.3.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.3...v1.3.4) (2022-03-06)
+
+
+### Bug Fixes
+
+* broadcast_sender if condition removed and handeled by socket ([c2a0a6d](https://github.com/CoCreate-app/CoCreate-crud-server/commit/c2a0a6d79d331e56160cd9ddaf8a7e521e2270e8))
+* removed param isExact from broadcast as it can be handled by param room ([e709e36](https://github.com/CoCreate-app/CoCreate-crud-server/commit/e709e366493759399f371f2ffc3c630e415f8daa))
+* update param roomInfo to socketInfo ([f50edc9](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f50edc91ee4695f6a652fd8a8c943feac24ba80a))
+
 ## [1.3.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.2...v1.3.3) (2022-03-05)
 
 
