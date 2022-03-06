@@ -34,7 +34,7 @@ class CoCreateCrud {
 					// let isFlat = req_data.isFlat == false ? false : true;
 					// const response_data = isFlat ? encodeObject(response) : response;
 					// const response_data = response;
-					self.broadcast('createDocument', socket, req_data, response, roomInfo)	
+					self.broadcast('createDocument', socket, response, roomInfo)	
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
@@ -132,7 +132,7 @@ class CoCreateCrud {
 
 				if(req_data['unset']) response['delete_fields'] = req_data['unset'];
 				
-				self.broadcast('updateDocument', socket, req_data, response, roomInfo)
+				self.broadcast('updateDocument', socket, response, roomInfo)
 			}).catch((error) => {
 				console.log('error', error)
 				self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
@@ -158,7 +158,7 @@ class CoCreateCrud {
 			collection.deleteOne(query, function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
-					self.broadcast('deleteDocument', socket, req_data, response, roomInfo)
+					self.broadcast('deleteDocument', socket, response, roomInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
 				}
@@ -169,14 +169,8 @@ class CoCreateCrud {
 		}
 	}
 	
-	broadcast(component, socket, req_data, response, roomInfo) {
-		if (req_data.broadcast_sender != false) {
-			this.wsManager.send(socket, component, response, req_data['organization_id'], roomInfo);
-		}
-			
-		if (req_data.broadcast !== false) {
-			this.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], req_data.room, component, response, roomInfo);
-		}
+	broadcast(component, socket, response, roomInfo) {
+		this.wsManager.broadcast(socket, response.namespace || response['organization_id'], response.room, component, response, roomInfo);
 		process.emit('changed-document', response)
 	}
 }
