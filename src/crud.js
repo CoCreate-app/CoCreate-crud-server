@@ -171,15 +171,11 @@ class CoCreateCrud {
 	
 	broadcast(component, socket, req_data, response, roomInfo) {
 		if (req_data.broadcast_sender != false) {
-			this.wsManager.send(socket, component, { ...response, element: req_data['element']}, req_data['organization_id'], roomInfo);
+			this.wsManager.send(socket, component, response, req_data['organization_id'], roomInfo);
 		}
 			
 		if (req_data.broadcast !== false) {
-			if (req_data.room) {
-				this.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'] , req_data.room, component, response, true, roomInfo);
-			} else {
-				this.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], null, component, response, true, roomInfo)	
-			}
+			this.wsManager.broadcast(socket, req_data.namespace || req_data['organization_id'], req_data.room, component, response, roomInfo);
 		}
 		process.emit('changed-document', response)
 	}
