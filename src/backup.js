@@ -13,11 +13,11 @@ class CoCreateBackup {
 	
 	init() {
 		if (this.wsManager) {
-			// this.wsManager.on('exportDB',		(socket, data, roomInfo) => this.exportData(socket, data, roomInfo));
-			// this.wsManager.on('importDB',		(socket, data, roomInfo) => this.importData(socket, data, roomInfo));
-			// this.wsManager.on('importFile2DB',	(socket, data, roomInfo) => this.importData(socket, data, roomInfo));
+			// this.wsManager.on('exportDB',		(socket, data, socketInfo) => this.exportData(socket, data, socketInfo));
+			// this.wsManager.on('importDB',		(socket, data, socketInfo) => this.importData(socket, data, socketInfo));
+			// this.wsManager.on('importFile2DB',	(socket, data, socketInfo) => this.importData(socket, data, socketInfo));
 			
-			// this.wsManager.on('downloadData',	(socket, data, roomInfo) => this.downloadData(socket, data, roomInfo))
+			// this.wsManager.on('downloadData',	(socket, data, socketInfo) => this.downloadData(socket, data, socketInfo))
 		}
 	}
 	
@@ -28,13 +28,13 @@ class CoCreateBackup {
 	 	data: JSON data
 	 }
 	**/
-	// async downloadData(socket, data, roomInfo) {
+	// async downloadData(socket, data, socketInfo) {
 	// 	const export_type = data.type || "json";
 		
 	// 	try {
 	// 		let binaryData = null;
 	// 		const result = data.data;
-	// 		const orgId = roomInfo ? roomInfo.orgId : "";
+	// 		const orgId = socketInfo ? socketInfo.orgId : "";
 	// 		if (export_type === 'csv') {
 	// 			binaryData = await json2csv.json2csvAsync(JSON.parse(JSON.stringify(result)), {
 	// 				emptyFieldValue: ''
@@ -60,7 +60,7 @@ class CoCreateBackup {
 		
 	})
 	**/
-	// async exportData(socket, data, roomInfo) {
+	// async exportData(socket, data, socketInfo) {
 	// 	const self = this;
 		
 	// 	const export_type = data.export_type || "json";
@@ -68,7 +68,7 @@ class CoCreateBackup {
 	// 	try {
 			
 	// 		var collection = this.dbClient.db(data['namespace']).collection(data["collection"]);
-	// 		const orgId = roomInfo ? roomInfo.orgId : "";
+	// 		const orgId = socketInfo ? socketInfo.orgId : "";
 			
 	// 		var query = {};
 			
@@ -92,13 +92,13 @@ class CoCreateBackup {
 	// 	}
 	// }
 	
-	// async setImportData(socket, data, roomInfo) {
+	// async setImportData(socket, data, socketInfo) {
 	// 	this.importCollection = data['collection']
 	// 	this.importType = data['import_type'];
 	// 	this.importDB = data['namespace'];
 	// }
 
-	// async importData(socket, data, roomInfo) {
+	// async importData(socket, data, socketInfo) {
 	// 	const importCollection = data['collection']
 	// 	const importType = data['import_type'];
 	// 	const importFile = data['file'];
@@ -106,7 +106,7 @@ class CoCreateBackup {
 		
 	// 	console.log('import:', importCollection, importType, importFile)
 	// 	const self = this;
-	// 	// const orgId = roomInfo ? roomInfo.orgId : "";
+	// 	// const orgId = socketInfo ? socketInfo.orgId : "";
 	// 	if (!importCollection || !importType) {
 	// 		return;
 	// 	}

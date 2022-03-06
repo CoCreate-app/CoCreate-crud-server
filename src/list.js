@@ -8,8 +8,8 @@ class CoCreateList {
 	}
 	
 	init() {
-		this.wsManager.on('readDocumentList', (socket, data, roomInfo) => this.readDocumentList(socket, data, roomInfo));
-		this.wsManager.on('readCollectionList', (socket, data, roomInfo) => this.readCollectionList(socket, data, roomInfo));
+		this.wsManager.on('readDocumentList', (socket, data, socketInfo) => this.readDocumentList(socket, data, socketInfo));
+		this.wsManager.on('readCollectionList', (socket, data, socketInfo) => this.readCollectionList(socket, data, socketInfo));
 	}
 	
 	/**
@@ -47,7 +47,7 @@ class CoCreateList {
 			data: [] // array
 	 }
 	 **/
-	async readDocumentList(socket, req_data, roomInfo) {		
+	async readDocumentList(socket, req_data, socketInfo) {		
 		function sleep(ms) {
 			return new Promise((resolve) => {
 				setTimeout(resolve, ms);
@@ -59,7 +59,7 @@ class CoCreateList {
 		const self = this;
 		
 		if (req_data['is_collection']) {
-			var result = await this.readCollectionList(socket, req_data, roomInfo);
+			var result = await this.readCollectionList(socket, req_data, socketInfo);
 			return;
 		}
 		
@@ -116,19 +116,19 @@ class CoCreateList {
 						
 						result_data = result;
 					}
-					self.wsManager.send(socket, 'readDocumentList', { ...req_data, data: result_data, operator: {...operator, total: total}}, req_data['organization_id'], roomInfo);
+					self.wsManager.send(socket, 'readDocumentList', { ...req_data, data: result_data, operator: {...operator, total: total}}, req_data['organization_id'], socketInfo);
 				} else {
 					console.log(error)
-					self.wsManager.send(socket, 'ServerError', error, null, roomInfo);
+					self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
 				}
 			})
 		} catch (error) {
 			console.log('readDocumentList error', error);
-			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
+			this.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
 		}
 	}
 	
-	async readCollectionList(socket, data, roomInfo) {
+	async readCollectionList(socket, data, socketInfo) {
 		try {
 			var collections = [];
 			const db = this.dbClient.db(req_data['organization_id']);
@@ -145,9 +145,9 @@ class CoCreateList {
 				return result;
 			})
 			
-			this.wsManager.send(socket, 'readCollectionList', {...data, data: collections }, data['organization_id'], roomInfo);
+			this.wsManager.send(socket, 'readCollectionList', {...data, data: collections }, data['organization_id'], socketInfo);
 		} catch(error) {
-			this.wsManager.send(socket, 'ServerError', 'error', null, roomInfo);
+			this.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
 		}
 	}
 	
