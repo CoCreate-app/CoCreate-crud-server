@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.4...v1.4.0) (2022-04-01)
+
+
+### Features
+
+* readCollections to return a list of collections ([2ad15d4](https://github.com/CoCreate-app/CoCreate-crud-server/commit/2ad15d43baf22c6dabbf56582cac182dec8876ad))
+
 ## [1.3.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.3...v1.3.4) (2022-03-06)
 
 
