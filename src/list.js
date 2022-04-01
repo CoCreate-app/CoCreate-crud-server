@@ -9,7 +9,7 @@ class CoCreateList {
 	
 	init() {
 		this.wsManager.on('readDocumentList', (socket, data, socketInfo) => this.readDocumentList(socket, data, socketInfo));
-		this.wsManager.on('readCollectionList', (socket, data, socketInfo) => this.readCollectionList(socket, data, socketInfo));
+		this.wsManager.on('readCollections', (socket, data, socketInfo) => this.readCollections(socket, data, socketInfo));
 	}
 	
 	/**
@@ -40,7 +40,6 @@ class CoCreateList {
 				count: 0 (integer)
 			},
 			
-			is_collection: true | false,
 			//. case fetch document case
 			export: true | false
 			-------- additional response data -----------
@@ -53,13 +52,11 @@ class CoCreateList {
 				setTimeout(resolve, ms);
 			});
 		}
-		
-		// await sleep(3000)
 
 		const self = this;
 		
 		if (req_data['is_collection']) {
-			var result = await this.readCollectionList(socket, req_data, socketInfo);
+			var result = await this.readCollections(socket, req_data, socketInfo);
 			return;
 		}
 		
@@ -128,29 +125,20 @@ class CoCreateList {
 		}
 	}
 	
-	async readCollectionList(socket, data, socketInfo) {
+	async readCollections(socket, data, socketInfo) {
 		try {
-			var collections = [];
-			const db = this.dbClient.db(req_data['organization_id']);
-			collections = await db.listCollections().toArray().then(infos => {
-				var result = [];
-				infos.forEach(function(item) {
-					let __uuid = item.info.uuid.toString('hex')
-					result.push({
-						name: item.name,
-						_id: __uuid,
-						id: __uuid,
-					});
-				})
-				return result;
-			})
-			
-			this.wsManager.send(socket, 'readCollectionList', {...data, data: collections }, data['organization_id'], socketInfo);
+			const self = this;
+			const db = this.dbClient.db(data['organization_id']);
+			db.listCollections().toArray(function(error, result) {
+				if (!error && result && result.length > 0) {
+					self.wsManager.send(socket, 'readCollections', {...data, data: result }, data['organization_id'], socketInfo);
+				}
+			})			
 		} catch(error) {
+			console.log('readCollections error', error); 
 			this.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
 		}
 	}
-	
 	
 	/**
 	 * function that make query from data
