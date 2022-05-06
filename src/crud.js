@@ -1,4 +1,4 @@
-const {ObjectID} = require("mongodb");
+const {ObjectId} = require("mongodb");
 const {encodeObject, replaceArray} = require("./utils.crud.js")
 
 
@@ -30,7 +30,7 @@ class CoCreateCrud {
 
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
-					const response  = {...req_data, document_id: result.ops[0]._id, data:result.ops[0] } 
+					const response  = {...req_data, document_id: `${result.insertedId}`, data: insertData } 
 					// let isFlat = req_data.isFlat == false ? false : true;
 					// const response_data = isFlat ? encodeObject(response) : response;
 					// const response_data = response;
@@ -58,7 +58,7 @@ class CoCreateCrud {
 			const collection = db.collection(req_data["collection"]);
 			
 			const query = {
-				"_id": new ObjectID(req_data["document_id"])
+				"_id": new ObjectId(req_data["document_id"])
 			};
 			if (req_data['organization_id']) {
 				query['organization_id'] = req_data['organization_id'];
@@ -98,10 +98,10 @@ class CoCreateCrud {
 		try {
 			const db = this.dbClient.db(req_data['organization_id']);
 			const collection = db.collection(req_data["collection"]);
-			let objId = new ObjectID();
+			let objId = new ObjectId();
 			try {
 				if (req_data["document_id"]) {
-					objId = new ObjectID(req_data["document_id"]);
+					objId = new ObjectId(req_data["document_id"]);
 				}
 			} catch (err) {
 				console.log(err);
@@ -152,7 +152,7 @@ class CoCreateCrud {
 			const db = this.dbClient.db(req_data['organization_id']);
 			const collection = db.collection(req_data["collection"]);
 			const query = {
-				"_id": new ObjectID(req_data["document_id"])
+				"_id": new ObjectId(req_data["document_id"])
 			};
 
 			collection.deleteOne(query, function(error, result) {

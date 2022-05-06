@@ -1,4 +1,4 @@
-const {ObjectID} = require("mongodb");
+const {ObjectId} = require("mongodb");
 
 class CoCreateList {
 	constructor(wsManager, dbClient) {
@@ -158,7 +158,7 @@ class CoCreateList {
 				query[key] = {};
 			}
 			
-			if (item.name == "_id") item.value = item.value.map(v => new ObjectID(v))
+			if (item.name == "_id") item.value = item.value.map(v => new ObjectId(v))
 			
 			switch (item.operator) {
 				case '$contain':
