@@ -1,3 +1,11 @@
+## [1.4.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.0...v1.4.1) (2022-05-06)
+
+
+### Bug Fixes
+
+* replace ObjectID with ObjectId due to mongodb depreciation ([93e4294](https://github.com/CoCreate-app/CoCreate-crud-server/commit/93e42944447357ec6a244b72ce968bbd8ff5c93d))
+* update config organization_Id to organization_id ([996611b](https://github.com/CoCreate-app/CoCreate-crud-server/commit/996611baf2b2d3afbf895ef193ae15ba7226e77a))
+
 # [1.4.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.3.4...v1.4.0) (2022-04-01)
 
 
