@@ -22,11 +22,12 @@ class CoCreateCrud {
 	async createDocument(socket, req_data, socketInfo){
 		const self = this;
 		if(!req_data.data) return;
-		
+
 		try{
 			const db = this.dbClient.db(req_data['organization_id']);
 			const collection = db.collection(req_data["collection"]);
 			let insertData = replaceArray(req_data.data);
+			insertData['organization_id'] = req_data['organization_id'];
 
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
@@ -65,6 +66,11 @@ class CoCreateCrud {
 			}
 			
 			collection.find(query).toArray(function(error, result) {
+				if (req_data["collection"] == 'test') {
+					console.log('query', query)
+					console.log('readDocument request', req_data)
+					console.log('readDocument result', result)
+				}
 				if (!error && result && result.length > 0) {
 					let tmp = result[0];
 					if (req_data['exclude_fields']) {
@@ -83,6 +89,7 @@ class CoCreateCrud {
 					let isFlat = req_data.isFlat == true ? true : false;
 					self.wsManager.send(socket, 'readDocument', { ...req_data, data: isFlat ? encodeObject(tmp) : tmp }, req_data['organization_id'], socketInfo);
 				} else {
+					console.log('readDocument error', error)
 					self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
 				}
 			});
