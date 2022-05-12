@@ -66,11 +66,6 @@ class CoCreateCrud {
 			}
 			
 			collection.find(query).toArray(function(error, result) {
-				if (req_data["collection"] == 'test') {
-					console.log('query', query)
-					console.log('readDocument request', req_data)
-					console.log('readDocument result', result)
-				}
 				if (!error && result && result.length > 0) {
 					let tmp = result[0];
 					if (req_data['exclude_fields']) {
@@ -117,8 +112,10 @@ class CoCreateCrud {
 			const update = {};
 			
 			
-			if( req_data['set'] )   update['$set'] = replaceArray(req_data['set']);
-			if( req_data['unset'] ) update['$unset'] = req_data['unset'].reduce((r, d) => {r[d] = ""; return r}, {});
+			if( req_data['set'] )
+			   update['$set'] = replaceArray(req_data['set']);
+			if( req_data['unset'] ) 
+				update['$unset'] = req_data['unset'].reduce((r, d) => {r[d] = ""; return r}, {});
 			update['$set']['organization_id'] = req_data['organization_id'];
 
 			let projection = {}
@@ -135,7 +132,7 @@ class CoCreateCrud {
 				let isFlat = req_data.isFlat == true ? true : false;
 				let response_data = result.value || {};
 				
-				let response = { ...req_data, document_id: response_data._id, data: isFlat ? encodeObject(response_data) : response_data };
+				let response = { ...req_data, document_id: response_data._id, data: isFlat ? encodeObject(req_data['set']) : req_data['set'] };
 
 				if(req_data['unset']) response['delete_fields'] = req_data['unset'];
 				
