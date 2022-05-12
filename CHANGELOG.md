@@ -1,3 +1,10 @@
+## [1.4.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.2...v1.4.3) (2022-05-12)
+
+
+### Bug Fixes
+
+* updateDocument now sends updated data ([f18d5e7](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f18d5e7705658463326b276771825393603279e0))
+
 ## [1.4.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.1...v1.4.2) (2022-05-12)
 
 
