@@ -1,3 +1,10 @@
+## [1.4.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.1...v1.4.2) (2022-05-12)
+
+
+### Bug Fixes
+
+* createDocument requires organization_id to be stored ([259f56d](https://github.com/CoCreate-app/CoCreate-crud-server/commit/259f56daadc6b9e148f054c0ba2cf04443122a6a))
+
 ## [1.4.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.0...v1.4.1) (2022-05-06)
 
 
