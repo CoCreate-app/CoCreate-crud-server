@@ -84,12 +84,11 @@ class CoCreateCrud {
 					let isFlat = req_data.isFlat == true ? true : false;
 					self.wsManager.send(socket, 'readDocument', { ...req_data, data: isFlat ? encodeObject(tmp) : tmp }, req_data['organization_id'], socketInfo);
 				} else {
-					console.log('readDocument error', error)
 					self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
 				}
 			});
 		} catch (error) {
-			console.log('readDocument error', error); 
+			console.log('readDocument error', error, req_data); 
 			self.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
 		}
 	}
@@ -113,7 +112,7 @@ class CoCreateCrud {
 			
 			
 			if( req_data['set'] )
-			   update['$set'] = replaceArray(req_data['set']);
+				update['$set'] = replaceArray(req_data['set']);
 			if( req_data['unset'] ) 
 				update['$unset'] = req_data['unset'].reduce((r, d) => {r[d] = ""; return r}, {});
 			update['$set']['organization_id'] = req_data['organization_id'];
@@ -134,7 +133,8 @@ class CoCreateCrud {
 				
 				let response = { ...req_data, document_id: response_data._id, data: isFlat ? encodeObject(req_data['set']) : req_data['set'] };
 
-				if(req_data['unset']) response['delete_fields'] = req_data['unset'];
+				if(req_data['unset']) 
+					response['delete_fields'] = req_data['unset'];
 				
 				self.broadcast('updateDocument', socket, response, socketInfo)
 			}).catch((error) => {
