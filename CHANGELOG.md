@@ -1,3 +1,10 @@
+## [1.4.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.3...v1.4.4) (2022-05-13)
+
+
+### Bug Fixes
+
+* removed readDocument error console.log ([0ca8012](https://github.com/CoCreate-app/CoCreate-crud-server/commit/0ca8012b3f9e1d2efccdfb4216bf1ccfe430b026))
+
 ## [1.4.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.2...v1.4.3) (2022-05-12)
 
 
