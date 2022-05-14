@@ -8,7 +8,7 @@ class CoCreateList {
 	}
 	
 	init() {
-		this.wsManager.on('readDocumentList', (socket, data, socketInfo) => this.readDocumentList(socket, data, socketInfo));
+		this.wsManager.on('readDocuments', (socket, data, socketInfo) => this.readDocuments(socket, data, socketInfo));
 		this.wsManager.on('readCollections', (socket, data, socketInfo) => this.readCollections(socket, data, socketInfo));
 	}
 	
@@ -46,7 +46,7 @@ class CoCreateList {
 			data: [] // array
 	 }
 	 **/
-	async readDocumentList(socket, req_data, socketInfo) {		
+	async readDocuments(socket, req_data, socketInfo) {		
 		function sleep(ms) {
 			return new Promise((resolve) => {
 				setTimeout(resolve, ms);
@@ -113,14 +113,14 @@ class CoCreateList {
 						
 						result_data = result;
 					}
-					self.wsManager.send(socket, 'readDocumentList', { ...req_data, data: result_data, operator: {...operator, total: total}}, req_data['organization_id'], socketInfo);
+					self.wsManager.send(socket, 'readDocuments', { ...req_data, data: result_data, operator: {...operator, total: total}}, req_data['organization_id'], socketInfo);
 				} else {
 					console.log(error)
 					self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
 				}
 			})
 		} catch (error) {
-			console.log('readDocumentList error', error);
+			console.log('readDocuments error', error);
 			this.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
 		}
 	}
