@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.4...v1.5.0) (2022-05-14)
+
+
+### Features
+
+* function readDocumentList has been renamed to readDocuments ([3081581](https://github.com/CoCreate-app/CoCreate-crud-server/commit/308158148dccc82411e625d8270e5dd107b7df94))
+
 ## [1.4.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.3...v1.4.4) (2022-05-13)
 
 
