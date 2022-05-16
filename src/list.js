@@ -113,15 +113,15 @@ class CoCreateList {
 						
 						result_data = result;
 					}
-					self.wsManager.send(socket, 'readDocuments', { ...req_data, data: result_data, operator: {...operator, total: total}}, req_data['organization_id'], socketInfo);
+					self.wsManager.send(socket, 'readDocuments', { ...req_data, data: result_data, operator: {...operator, total: total}}, socketInfo);
 				} else {
 					console.log(error)
-					self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
 			})
 		} catch (error) {
 			console.log('readDocuments error', error);
-			this.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
+			this.wsManager.send(socket, 'ServerError', 'error', socketInfo);
 		}
 	}
 	
@@ -131,12 +131,12 @@ class CoCreateList {
 			const db = this.dbClient.db(data['organization_id']);
 			db.listCollections().toArray(function(error, result) {
 				if (!error && result && result.length > 0) {
-					self.wsManager.send(socket, 'readCollections', {...data, data: result }, data['organization_id'], socketInfo);
+					self.wsManager.send(socket, 'readCollections', {...data, data: result }, socketInfo);
 				}
 			})			
 		} catch(error) {
 			console.log('readCollections error', error); 
-			this.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
+			this.wsManager.send(socket, 'ServerError', 'error', socketInfo);
 		}
 	}
 	

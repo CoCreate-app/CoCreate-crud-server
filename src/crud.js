@@ -37,19 +37,19 @@ class CoCreateCrud {
 					// const response_data = response;
 					self.broadcast('createDocument', socket, response, socketInfo)	
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
 			});
 		}catch(error){
 			console.log('createDocument error', error);
-			self.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
 		}
 	}
 	
 	/** Read Document **/
 	async readDocument(socket, req_data, socketInfo) {
 		if (!req_data['collection'] || req_data['collection'] == 'null' || typeof req_data['collection'] !== 'string') {
-			this.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
+			this.wsManager.send(socket, 'ServerError', 'error', socketInfo);
 			return;
 		} 
 		const self = this;
@@ -82,14 +82,14 @@ class CoCreateCrud {
 					}
 					
 					let isFlat = req_data.isFlat == true ? true : false;
-					self.wsManager.send(socket, 'readDocument', { ...req_data, data: isFlat ? encodeObject(tmp) : tmp }, req_data['organization_id'], socketInfo);
+					self.wsManager.send(socket, 'readDocument', { ...req_data, data: isFlat ? encodeObject(tmp) : tmp }, socketInfo);
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
+					self.wsManager.send(socket, 'readDocument error', req_data, socketInfo);
 				}
 			});
 		} catch (error) {
 			console.log('readDocument error', error, req_data); 
-			self.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
 		}
 	}
 
@@ -139,12 +139,12 @@ class CoCreateCrud {
 				self.broadcast('updateDocument', socket, response, socketInfo)
 			}).catch((error) => {
 				console.log('error', error)
-				self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
+				self.wsManager.send(socket, 'ServerError', error, socketInfo);
 			});
 			
 		} catch (error) {
 			console.log(error)
-			self.wsManager.send(socket, 'updateDocumentError', error, req_data['organization_id']);
+			self.wsManager.send(socket, 'updateDocumentError', error, socketInfo);
 		}
 	}
 	
@@ -164,12 +164,12 @@ class CoCreateCrud {
 					let response = { ...req_data }
 					self.broadcast('deleteDocument', socket, response, socketInfo)
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, null, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
 			})
 		} catch (error) {
 			console.log(error);
-			self.wsManager.send(socket, 'ServerError', 'error', null, socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
 		}
 	}
 	
