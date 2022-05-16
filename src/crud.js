@@ -35,7 +35,7 @@ class CoCreateCrud {
 					// let isFlat = req_data.isFlat == false ? false : true;
 					// const response_data = isFlat ? encodeObject(response) : response;
 					// const response_data = response;
-					self.broadcast('createDocument', socket, response, socketInfo)	
+					self.broadcast(socket, 'createDocument', response, socketInfo)	
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -136,7 +136,7 @@ class CoCreateCrud {
 				if(req_data['unset']) 
 					response['delete_fields'] = req_data['unset'];
 				
-				self.broadcast('updateDocument', socket, response, socketInfo)
+				self.broadcast(socket, 'updateDocument', response, socketInfo)
 			}).catch((error) => {
 				console.log('error', error)
 				self.wsManager.send(socket, 'ServerError', error, socketInfo);
@@ -162,7 +162,7 @@ class CoCreateCrud {
 			collection.deleteOne(query, function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
-					self.broadcast('deleteDocument', socket, response, socketInfo)
+					self.broadcast(socket, 'deleteDocument', response, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -173,7 +173,7 @@ class CoCreateCrud {
 		}
 	}
 	
-	broadcast(component, socket, response, socketInfo) {
+	broadcast(socket, component, response, socketInfo) {
 		this.wsManager.broadcast(socket, response.namespace || response['organization_id'], response.room, component, response, socketInfo);
 		process.emit('changed-document', response)
 	}
