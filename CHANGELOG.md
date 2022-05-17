@@ -1,3 +1,11 @@
+## [1.5.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.5.0...v1.5.1) (2022-05-17)
+
+
+### Bug Fixes
+
+* get orgId from socketInfo ([da03da3](https://github.com/CoCreate-app/CoCreate-crud-server/commit/da03da39aa383c71a802bbbfa9ecea5b637c5262))
+* reorder broadcast params ([96deccb](https://github.com/CoCreate-app/CoCreate-crud-server/commit/96deccb415e47dbfbfad4311985b3a7082cb57ff))
+
 # [1.5.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.4.4...v1.5.0) (2022-05-14)
 
 
