@@ -108,11 +108,36 @@ class CoCreateCrud {
 				console.log(err);
 			}
 			const query = {"_id": objId };
-			const update = {};
+			const update = {"$set": {}};
 			
 			
 			if( req_data['set'] )
-				update['$set'] = replaceArray(req_data['set']);
+				for (const [key, value] of Object.entries(req_data['set'])) {
+					let val;
+					let valueType = typeof value;
+					if (key.includes('.')){
+						console.log('valueType', valueType)
+						console.log('key', key)
+					}
+					switch(valueType) {
+						case 'string':
+							val = value
+							break;
+						case 'number':
+							val = Number(value)
+							break;
+						case 'object':
+							if (Array.isArray(value))
+								val = new Array(...value)
+							else
+								val = new Object(value)
+							break;
+						default:
+							val = value
+					  }
+					update.$set[key] = val
+				}				
+
 			if( req_data['unset'] ) 
 				update['$unset'] = req_data['unset'].reduce((r, d) => {r[d] = ""; return r}, {});
 			update['$set']['organization_id'] = req_data['organization_id'];
