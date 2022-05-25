@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.5.1...v1.6.0) (2022-05-25)
+
+
+### Features
+
+* auto detects and updates data type ([ddb1391](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ddb1391928a8a7acccd8d9e4c920adfdeb63f002))
+
 ## [1.5.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.5.0...v1.5.1) (2022-05-17)
 
 
