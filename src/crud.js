@@ -115,10 +115,6 @@ class CoCreateCrud {
 				for (const [key, value] of Object.entries(req_data['set'])) {
 					let val;
 					let valueType = typeof value;
-					if (key.includes('.')){
-						console.log('valueType', valueType)
-						console.log('key', key)
-					}
 					switch(valueType) {
 						case 'string':
 							val = value
