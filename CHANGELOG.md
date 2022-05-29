@@ -1,3 +1,11 @@
+# [1.8.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.7.0...v1.8.0) (2022-05-29)
+
+
+### Features
+
+* added constructor ([6335895](https://github.com/CoCreate-app/CoCreate-crud-server/commit/6335895e052a34bb3c560f882db80a6abb5b1582))
+* added constructor ([8af6d34](https://github.com/CoCreate-app/CoCreate-crud-server/commit/8af6d34d0551d8380043103f0cc598d071a057d4))
+
 # [1.7.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.6.0...v1.7.0) (2022-05-28)
 
 
