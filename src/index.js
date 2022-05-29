@@ -5,9 +5,19 @@ const list = require('./list');
 const backup = require('./backup');
 const database = require('./database');
 
-module.exports.init = function(wsManager, dbClient) {
-    new crud(wsManager, dbClient);
-    new list(wsManager, dbClient);
-    new backup(wsManager, dbClient);
-    new database(wsManager, dbClient);
+class CoCreateCrudServer {
+	constructor(wsManager, dbClient) {
+		this.wsManager = wsManager
+		this.dbClient = dbClient
+		this.init()
+	}
+
+    init() {
+        new crud(this.wsManager, this.dbClient);
+        new list(this.wsManager, this.dbClient);
+        new backup(this.wsManager, this.dbClient);
+        new database(this.wsManager, this.dbClient);
+    }
 }
+
+module.exports = CoCreateCrudServer;
