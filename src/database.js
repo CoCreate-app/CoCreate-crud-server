@@ -13,7 +13,6 @@ class CoCreateDatabases {
 		if (this.wsManager) {
 			this.wsManager.on('readDatabases', (socket, data, socketInfo) => this.readDatabases(socket, data, socketInfo));
 		}
-		// this.readDatabases()
 	}
 
 	/** Create Document **/
