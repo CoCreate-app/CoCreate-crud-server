@@ -1,5 +1,5 @@
 const {ObjectId} = require("mongodb");
-const {encodeObject, replaceArray} = require("./utils.crud.js")
+const {replaceArray} = require("./utils.crud.js")
 
 
 class CoCreateCrud {
@@ -35,9 +35,6 @@ class CoCreateCrud {
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
 					const response  = {...req_data, document_id: `${result.insertedId}`, data: insertData } 
-					// let isFlat = req_data.isFlat == false ? false : true;
-					// const response_data = isFlat ? encodeObject(response) : response;
-					// const response_data = response;
 					self.broadcast(socket, 'createDocument', response, socketInfo)	
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
@@ -84,8 +81,7 @@ class CoCreateCrud {
 						tmp = resp;
 					}
 					
-					let isFlat = req_data.isFlat == true ? true : false;
-					self.wsManager.send(socket, 'readDocument', { ...req_data, data: isFlat ? encodeObject(tmp) : tmp }, socketInfo);
+					self.wsManager.send(socket, 'readDocument', { ...req_data, data: tmp }, socketInfo);
 				} else {
 					self.wsManager.send(socket, 'readDocument error', req_data, socketInfo);
 				}
@@ -110,12 +106,25 @@ class CoCreateCrud {
 			} catch (err) {
 				console.log(err);
 			}
+
+			// let requestData = req_data
+			if (req_data['data']['_id'])
+			delete req_data['data']['_id']
+			
+			if(typeof req_data['data'] === 'object')
+				req_data['set'] = req_data['data']
+			
+			if(Array.isArray(req_data['delete_fields'])) 
+				req_data['unset'] = req_data['delete_fields'];
+
+
 			const query = {"_id": objId };
 			const update = {"$set": {}};
-			
-			
-			if( req_data['set'] )
-				for (const [key, value] of Object.entries(req_data['set'])) {
+				
+			if( req_data['set'] )	{
+				let insertData = replaceArray(req_data['set']);
+
+				for (const [key, value] of Object.entries(insertData)) {
 					let val;
 					let valueType = typeof value;
 					switch(valueType) {
@@ -136,9 +145,12 @@ class CoCreateCrud {
 					  }
 					update.$set[key] = val
 				}				
-
-			if( req_data['unset'] ) 
-				update['$unset'] = req_data['unset'].reduce((r, d) => {r[d] = ""; return r}, {});
+			}
+			if( req_data['unset'] ) {
+				let unsetData = replaceArray(req_data['unset']);
+			
+				update['$unset'] = unsetData.reduce((r, d) => {r[d] = ""; return r}, {});
+			}
 			update['$set']['organization_id'] = req_data['organization_id'];
 
 			let projection = {}
@@ -152,10 +164,9 @@ class CoCreateCrud {
 					projection: projection,
 				}
 			).then((result) => {
-				let isFlat = req_data.isFlat == true ? true : false;
 				let response_data = result.value || {};
 				
-				let response = { ...req_data, document_id: response_data._id, data: isFlat ? encodeObject(req_data['set']) : req_data['set'] };
+				let response = { ...req_data, document_id: response_data._id, data: req_data['set'] };
 
 				if(req_data['unset']) 
 					response['delete_fields'] = req_data['unset'];
