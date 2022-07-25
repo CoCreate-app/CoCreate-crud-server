@@ -1,3 +1,11 @@
+# [1.9.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.8.0...v1.9.0) (2022-07-25)
+
+
+### Features
+
+* crud support on collection names ([c569657](https://github.com/CoCreate-app/CoCreate-crud-server/commit/c569657f0ab339952c4aa72bbab2a7667c0f9986))
+* update arrayValues to mongoDb dotNotation, removed isFlat ([ab2fb60](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ab2fb601f660b3b96f7584ca66be1cb3902095eb))
+
 # [1.8.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.7.0...v1.8.0) (2022-05-29)
 
 
