@@ -15,6 +15,9 @@ class CoCreateCrud {
 			this.wsManager.on('readDocument',	(socket, data, socketInfo) => this.readDocument(socket, data, socketInfo))
 			this.wsManager.on('updateDocument', (socket, data, socketInfo) => this.updateDocument(socket, data, socketInfo))
 			this.wsManager.on('deleteDocument', (socket, data, socketInfo) => this.deleteDocument(socket, data, socketInfo))
+			this.wsManager.on('createCollection', (socket, data, socketInfo) => this.createCollection(socket, data, socketInfo));
+			this.wsManager.on('updateCollection', (socket, data, socketInfo) => this.updateCollection(socket, data, socketInfo))
+			this.wsManager.on('deleteCollection', (socket, data, socketInfo) => this.deleteCollection(socket, data, socketInfo))
 		}
 	}
 
@@ -181,6 +184,68 @@ class CoCreateCrud {
 			};
 
 			collection.deleteOne(query, function(error, result) {
+				if (!error) {
+					let response = { ...req_data }
+					self.broadcast(socket, 'deleteDocument', response, socketInfo)
+				} else {
+					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+				}
+			})
+		} catch (error) {
+			console.log(error);
+			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+		}
+	}
+
+	/** Create Collection **/
+	async createCollection(socket, req_data, socketInfo) {
+		const self = this;
+
+		try {
+			const db = this.dbClient.db(req_data['organization_id']);
+			db.createCollection(req_data.collection, function(error, result) {
+				if (!error) {
+					let response = { ...req_data }
+					self.broadcast(socket, 'deleteDocument', response, socketInfo)
+				} else {
+					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+				}
+			})
+		} catch (error) {
+			console.log(error);
+			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+		}
+	}
+
+	/** Update Collection **/
+	async updateCollection(socket, req_data, socketInfo) {
+		const self = this;
+
+		try {
+			const db = this.dbClient.db(req_data['organization_id']);
+			const collection = db.collection(req_data["collection"]);
+			collection.rename(req_data.target, function(error, result) {
+				if (!error) {
+					let response = { ...req_data }
+					self.broadcast(socket, 'deleteDocument', response, socketInfo)
+				} else {
+					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+				}
+			})
+		} catch (error) {
+			console.log(error);
+			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+		}
+	}
+
+	/** Delete Collection **/
+	async deleteCollection(socket, req_data, socketInfo) {
+		const self = this;
+
+		try {
+			const db = this.dbClient.db(req_data['organization_id']);
+			const collection = db.collection(req_data["collection"]);
+			collection.drop( function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
 					self.broadcast(socket, 'deleteDocument', response, socketInfo)
