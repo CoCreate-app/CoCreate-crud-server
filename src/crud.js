@@ -217,7 +217,7 @@ class CoCreateCrud {
 			db.createCollection(req_data.collection, function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
-					self.broadcast(socket, 'deleteDocument', response, socketInfo)
+					self.broadcast(socket, 'createCollection', response, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -238,7 +238,7 @@ class CoCreateCrud {
 			collection.rename(req_data.target, function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
-					self.broadcast(socket, 'deleteDocument', response, socketInfo)
+					self.broadcast(socket, 'updateCollection', response, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -259,7 +259,7 @@ class CoCreateCrud {
 			collection.drop( function(error, result) {
 				if (!error) {
 					let response = { ...req_data }
-					self.broadcast(socket, 'deleteDocument', response, socketInfo)
+					self.broadcast(socket, 'deleteCollection', response, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
