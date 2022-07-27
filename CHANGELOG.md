@@ -1,3 +1,10 @@
+## [1.9.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.9.0...v1.9.1) (2022-07-27)
+
+
+### Bug Fixes
+
+* typo with broadcasting collection messageName ([a3a9bea](https://github.com/CoCreate-app/CoCreate-crud-server/commit/a3a9beab885014fd0f90ce1c2b7e3c73014aa221))
+
 # [1.9.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.8.0...v1.9.0) (2022-07-25)
 
 
