@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.9.1...v1.9.2) (2022-07-29)
+
+
+### Bug Fixes
+
+* set collection as collections for function readCollections ([73341cf](https://github.com/CoCreate-app/CoCreate-crud-server/commit/73341cfc11cab2c10f5f21ac791806f099fcdea0))
+
 ## [1.9.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.9.0...v1.9.1) (2022-07-27)
 
 
