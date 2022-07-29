@@ -128,6 +128,7 @@ class CoCreateList {
 	async readCollections(socket, data, socketInfo) {
 		try {
 			const self = this;
+			data['collection'] = 'collections'
 			const db = this.dbClient.db(data['organization_id']);
 			db.listCollections().toArray(function(error, result) {
 				if (!error && result && result.length > 0) {
