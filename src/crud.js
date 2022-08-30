@@ -107,24 +107,17 @@ class CoCreateCrud {
 				console.log(err);
 			}
 
-			// let requestData = req_data
-			if (req_data['data']['_id'])
-			delete req_data['data']['_id']
+			if (req_data['data'] && req_data['data']['_id'])
+				delete req_data['data']['_id']
 			
-			if(typeof req_data['data'] === 'object')
-				req_data['set'] = req_data['data']
-			
-			if(Array.isArray(req_data['delete_fields'])) 
-				req_data['unset'] = req_data['delete_fields'];
-
 
 			const query = {"_id": objId };
-			const update = {"$set": {}};
-				
-			if( req_data['set'] )	{
-				let insertData = replaceArray(req_data['set']);
+			let update = {}, projection = {};
 
-				for (const [key, value] of Object.entries(insertData)) {
+
+			if( typeof req_data['data'] === 'object' )	{
+				update['$set'] = {}
+				for (const [key, value] of Object.entries(replaceArray(req_data['data']))) {
 					let val;
 					let valueType = typeof value;
 					switch(valueType) {
@@ -143,35 +136,43 @@ class CoCreateCrud {
 						default:
 							val = value
 					  }
-					update.$set[key] = val
-				}				
-			}
-			if( req_data['unset'] ) {
-				let unsetData = replaceArray(req_data['unset']);
-			
-				update['$unset'] = unsetData.reduce((r, d) => {r[d] = ""; return r}, {});
-			}
-			update['$set']['organization_id'] = req_data['organization_id'];
+					update['$set'][key] = val
+				}	
 
-			let projection = {}
-			Object.keys(update['$set']).forEach(x => {
-				projection[x] = 1
-			})
+				update['$set']['organization_id'] = req_data['organization_id'];
 
-			collection.findOneAndUpdate( query, update, {
-					returnOriginal : false,
+				Object.keys(update['$set']).forEach(x => {
+					projection[x] = 1
+				})
+				
+			}
+
+			if( req_data['deleteName'] ) {
+				update['$unset'] = replaceArray(req_data['deleteName']);
+			}
+
+			if( req_data['updateName'] ) {
+				update['$rename'] = replaceArray(req_data['updateName'])
+				for (const [key, value] of Object.entries(update['$rename'])) {
+					let newValue = replaceArray({[value]: value})
+					let oldkey = key;
+					for (const [key] of Object.entries(newValue)) {
+						update['$rename'][oldkey] = key
+					}
+				}
+			}
+
+			collection.updateOne( query, update, {
 					upsert: req_data.upsert || false,
 					projection: projection,
 				}
 			).then((result) => {
-				let response_data = result.value || {};
-				
-				let response = { ...req_data, document_id: response_data._id, data: req_data['set'] };
-
-				if(req_data['unset']) 
-					response['delete_fields'] = req_data['unset'];
-				
-				self.broadcast(socket, 'updateDocument', response, socketInfo)
+				if (!error) {				
+					let response = { ...req_data, data: update['$set'] };
+					self.broadcast(socket, 'updateDocument', response, socketInfo)
+				} else {
+					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+				}
 			}).catch((error) => {
 				console.log('error', error)
 				self.wsManager.send(socket, 'ServerError', error, socketInfo);
