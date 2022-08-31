@@ -166,7 +166,7 @@ class CoCreateCrud {
 					upsert: req_data.upsert || false,
 					projection: projection,
 				}
-			).then((result) => {
+			).then((error, result) => {
 				if (!error) {				
 					let response = { ...req_data, data: update['$set'] };
 					self.broadcast(socket, 'updateDocument', response, socketInfo)

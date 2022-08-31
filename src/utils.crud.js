@@ -15,20 +15,6 @@ function replaceArray(data) {
   });
   
   return objectData;
-
-  // let keys = Object.keys(data)
-
-  // keys.forEach((k) => {
-  //   let reg = /\[(\d+)\]/gm.exec(k)
-  //   let newKey = null;
-  //   if (reg && reg.length == 2) {
-  //     newKey = k.replace(reg[0], "." + reg[1]);
-  //     let newData = data[k];
-  //     delete data[k];
-  //     data[newKey] = newData
-  //   }
-  // })
-  // return data;
 }
 
 module.exports = {

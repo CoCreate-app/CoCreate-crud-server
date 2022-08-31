@@ -46,7 +46,7 @@ class CoCreateList {
 			data: [] // array
 	 }
 	 **/
-	async readDocuments(socket, req_data, socketInfo) {		
+	async readDocuments(socket, data, socketInfo) {		
 		function sleep(ms) {
 			return new Promise((resolve) => {
 				setTimeout(resolve, ms);
@@ -55,65 +55,14 @@ class CoCreateList {
 
 		const self = this;
 		
-		if (req_data['is_collection']) {
-			var result = await this.readCollections(socket, req_data, socketInfo);
-			return;
-		}
-		
 		try {
-			const db = this.dbClient.db(req_data['organization_id']);
-			const collection = db.collection(req_data["collection"]);
-			const operator = {
-				filters: [],
-				orders: [],
-				search: {
-					value: [],
-					type: "or"
-				},
-				startIndex: 0,
-				...req_data.operator
-			};
-			
-			var query = {};
-			query = this.readQuery(operator);
-
-			var sort = {};
-			operator.orders.forEach((order) => {
-				sort[order.name] = order.type
-			});
+			const db = this.dbClient.db(data['organization_id']);
+			const collection = db.collection(data["collection"]);
+			let {operator, query, sort} = this.getFilters(data);
 			collection.find(query).sort(sort).toArray(function(error, result) {
 				if (result) {
-				
-				if (operator['search']['type'] == 'and') {
-						result = self.readAndSearch(result, operator['search']['value']);
-					} else {
-						result = self.readOrSearch(result, operator['search']['value']);
-					}
-					
-					const total = result.length;
-					const startIndex = operator.startIndex;
-					const count = operator.count;
-					let result_data = [];
-					
-					if (req_data.created_ids && req_data.created_ids.length > 0) {
-						let _nn = (count) ? startIndex : result.length;
-						
-						for (let ii = 0; ii < _nn; ii++) {
-							
-							const selected_item = result[ii];
-							req_data.created_ids.forEach((fetch_id, index) => {
-								if (fetch_id == selected_item['_id']) {
-									result_data.push({ item: selected_item, position: ii })
-								}
-							})
-						}
-					} else {
-						if (startIndex) result = result.slice(startIndex, total);
-						if (count) result = result.slice(0, count)
-						
-						result_data = result;
-					}
-					self.wsManager.send(socket, 'readDocuments', { ...req_data, data: result_data, operator: {...operator, total: total}}, socketInfo);
+					let result_data = self.filterResponse(result, data, operator)
+					self.wsManager.send(socket, 'readDocuments', { ...data, data: result_data, operator, socketInfo });
 				} else {
 					console.log(error)
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
@@ -129,9 +78,39 @@ class CoCreateList {
 		try {
 			const self = this;
 			data['collection'] = 'collections'
+			
+			let {operator, query, sort} = this.getFilters(data);
 			const db = this.dbClient.db(data['organization_id']);
-			db.listCollections().toArray(function(error, result) {
+			db.listCollections(query).toArray(function(error, result) {
 				if (!error && result && result.length > 0) {
+					let orderField = Object.keys(sort)[0]
+					if (orderField) {
+						let orderType = sort[orderField];
+						let orderValueType = "";
+						let sortData;
+						if (orderType == '-1') {
+							if (orderValueType == 'number')
+								sortData = result.sort((a, b) => 
+									b[orderField] - a[orderField]
+								);
+							else
+								sortData = result.sort((a, b) => 
+									b[orderField].localeCompare(a[orderField])
+								);
+						} else {
+							if (orderValueType == 'number')
+								sortData = result.sort((a, b) => 
+									a[orderField] - b[orderField]
+								);
+							else
+								sortData = result.sort((a, b) => 
+									a[orderField].localeCompare(b[orderField])
+								);
+							
+						}
+						result = sortData
+					}
+
 					self.wsManager.send(socket, 'readCollections', {...data, data: result }, socketInfo);
 				}
 			})			
@@ -145,7 +124,64 @@ class CoCreateList {
 	 * function that make query from data
 	 * 
 	 */
-	readQuery(data) {
+	filterResponse(result, data, operator) {
+		if (operator['search']['type'] == 'and') {
+			result = this.readAndSearch(result, operator['search']['value']);
+		} else {
+			result = this.readOrSearch(result, operator['search']['value']);
+		}
+		
+		const total = result.length;
+		const startIndex = operator.startIndex;
+		const count = operator.count;
+		let result_data = [];
+		
+		if (data.created_ids && data.created_ids.length > 0) {
+			let _nn = (count) ? startIndex : result.length;
+			
+			for (let ii = 0; ii < _nn; ii++) {
+				
+				const selected_item = result[ii];
+				data.created_ids.forEach((fetch_id, index) => {
+					if (fetch_id == selected_item['_id']) {
+						result_data.push({ item: selected_item, position: ii })
+					}
+				})
+			}
+		} else {
+			if (startIndex) result = result.slice(startIndex, total);
+			if (count) result = result.slice(0, count)
+			
+			result_data = result;
+		}
+		operator.startIndex = startIndex
+		operator.count = count
+		operator.total = total
+		return result_data
+	}
+
+	getFilters(data) {
+		let operator = {
+			filters: [],
+			orders: [],
+			search: {
+				value: [],
+				type: "or"
+			},
+			startIndex: 0,
+			...data.operator
+		};
+
+		let query = this.createQuery(operator);
+		let sort = {}
+		operator.orders.forEach((order) => {
+			sort[order.name] = order.type
+		});
+
+		return {operator, query, sort}
+	}
+
+	createQuery(data) {
 		var query = new Object();
 	
 		var filters = data['filters'];
