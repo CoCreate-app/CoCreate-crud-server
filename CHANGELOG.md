@@ -1,3 +1,11 @@
+# [1.10.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.9.2...v1.10.0) (2022-08-31)
+
+
+### Features
+
+* filter, query and sort collections ([6399e8c](https://github.com/CoCreate-app/CoCreate-crud-server/commit/6399e8ccae1a1ff713335d47b1bb73c7af154e85))
+* rename and delete keys from db ([03d5387](https://github.com/CoCreate-app/CoCreate-crud-server/commit/03d5387c30512b4723a60a7439b71b86c7a6834d))
+
 ## [1.9.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.9.1...v1.9.2) (2022-07-29)
 
 
