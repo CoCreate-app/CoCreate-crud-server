@@ -35,6 +35,7 @@ function filterData(result, data, operator) {
 	return result_data
 }
 
+// ToDo: merge orSearch  and andSearch
 //. or operator
 function orSearch(results, search) {
 	var tmp
