@@ -1,7 +1,6 @@
 'use strict';
 
 const crud = require('./crud');
-const list = require('./list');
 const backup = require('./backup');
 const database = require('./database');
 
@@ -14,7 +13,6 @@ class CoCreateCrudServer {
 
     init() {
         new crud(this.wsManager, this.dbClient);
-        new list(this.wsManager, this.dbClient);
         new backup(this.wsManager, this.dbClient);
         new database(this.wsManager, this.dbClient);
     }
