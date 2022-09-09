@@ -1,6 +1,6 @@
 const {ObjectId} = require("mongodb");
 const {replaceArray} = require("./utils.crud.js")
-const {filterData, sortData} = require("./filter")
+const {filterData, sortData} = require("@cocreate/filter")
 
 
 
@@ -26,19 +26,19 @@ class CoCreateCrud {
 	}
 
 	/** Create Document **/
-	async createDocument(socket, req_data, socketInfo){
+	async createDocument(socket, data, socketInfo){
 		const self = this;
-		if(!req_data.data) return;
+		if(!data.data) return;
 
 		try{
-			const db = this.dbClient.db(req_data['organization_id']);
-			const collection = db.collection(req_data["collection"]);
-			let insertData = replaceArray(req_data.data);
-			insertData['organization_id'] = req_data['organization_id'];
+			const db = this.dbClient.db(data['organization_id']);
+			const collection = db.collection(data["collection"]);
+			let insertData = replaceArray(data.data);
+			insertData['organization_id'] = data['organization_id'];
 
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
-					const response  = {...req_data, document_id: `${result.insertedId}`, data: insertData } 
+					const response  = {...data, document_id: `${result.insertedId}`, data: insertData } 
 					self.broadcast(socket, 'createDocument', response, socketInfo)	
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
@@ -51,73 +51,73 @@ class CoCreateCrud {
 	}
 	
 	/** Read Document **/
-	async readDocument(socket, req_data, socketInfo) {
-		if (!req_data['collection'] || req_data['collection'] == 'null' || typeof req_data['collection'] !== 'string') {
+	async readDocument(socket, data, socketInfo) {
+		if (!data['collection'] || data['collection'] == 'null' || typeof data['collection'] !== 'string') {
 			this.wsManager.send(socket, 'ServerError', 'error', socketInfo);
 			return;
 		} 
 		const self = this;
 
 		try {
-			const db = this.dbClient.db(req_data['organization_id']);
-			const collection = db.collection(req_data["collection"]);
+			const db = this.dbClient.db(data['organization_id']);
+			const collection = db.collection(data["collection"]);
 			
-			const {query, sort} = this.getFilters(req_data);
-			if (req_data['organization_id']) {
-				query['organization_id'] = req_data['organization_id'];
+			const {query, sort} = this.getFilters(data);
+			if (data['organization_id']) {
+				query['organization_id'] = data['organization_id'];
 			}
 			
 			collection.find(query).sort(sort).toArray(function(error, result) {
 				if (!error && result && result.length > 0) {
 					let tmp = result[0];
-					if (req_data['exclude_fields']) {
-						req_data['exclude_fields'].forEach(function(field) {
+					if (data['exclude_fields']) {
+						data['exclude_fields'].forEach(function(field) {
 							delete tmp[field];
 						})
 					}
 					
-					if (req_data.data) {
+					if (data.data) {
 						let resp = {};
 						resp['_id'] = tmp['_id']
-						req_data.data.forEach((f) => resp[f] = tmp[f])
+						data.data.forEach((f) => resp[f] = tmp[f])
 						tmp = resp;
 					}
-					
-					self.wsManager.send(socket, 'readDocument', { ...req_data, data: tmp }, socketInfo);
+					data.data = tmp
+					self.wsManager.send(socket, 'readDocument', data, socketInfo);
 				} else {
-					self.wsManager.send(socket, 'readDocument error', req_data, socketInfo);
+					self.wsManager.send(socket, 'readDocument error', data, socketInfo);
 				}
 			});
 		} catch (error) {
-			console.log('readDocument error', error, req_data); 
+			console.log('readDocument error', error, data); 
 			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
 		}
 	}
 
 	/** Update Document **/
-	async updateDocument(socket, req_data, socketInfo) {
+	async updateDocument(socket, data, socketInfo) {
 		const self = this;
 		try {			
-			let {operator, query, sort} = this.getFilters(req_data);
-			// if (req_data['data'] && req_data['data']['_id'])
-			// delete req_data['data']['_id']
+			let {query, sort} = this.getFilters(data);
+			// if (data['data'] && data['data']['_id'])
+			// delete data['data']['_id']
 
 			let update = {}, projection = {}, returnNewDocument = false;
-			if  (req_data.data) {
-				update['$set'] = this.valueTypes(req_data.data)
-				update['$set']['organization_id'] = req_data['organization_id'];
+			if  (data.data) {
+				update['$set'] = this.valueTypes(data.data)
+				update['$set']['organization_id'] = data['organization_id'];
 				Object.keys(update['$set']).forEach(x => {
 					projection[x] = 1
 				})
 			}
 			
 				
-			if( req_data['deleteName'] ) {
-				update['$unset'] = replaceArray(req_data['deleteName']);
+			if( data['deleteName'] ) {
+				update['$unset'] = replaceArray(data['deleteName']);
 			}
 			
-			if( req_data['updateName'] ) {
-				update['$rename'] = replaceArray(req_data['updateName'])
+			if( data['updateName'] ) {
+				update['$rename'] = replaceArray(data['updateName'])
 				for (const [key, value] of Object.entries(update['$rename'])) {
 					if (/\.([0-9]*)/g.test(key) || /\[([0-9]*)\]/g.test(value)) {
 						console.log('key is array', /\[([0-9]*)\]/g.test(value), /\.([0-9]*)/g.test(key))
@@ -132,18 +132,18 @@ class CoCreateCrud {
 				returnNewDocument == true
 			}
 
-			const db = this.dbClient.db(req_data['organization_id']);
-			const collection = db.collection(req_data["collection"]);
+			const db = this.dbClient.db(data['organization_id']);
+			const collection = db.collection(data["collection"]);
 			collection.findOneAndUpdate( query, update, {
 					returnOriginal: false,
 					returnNewDocument: returnNewDocument || false,
-					upsert: req_data.upsert || false,
+					upsert: data.upsert || false,
 					projection: projection,
 				}
 			).then((result) => {
 				if (result) {				
-					let response = { ...req_data, data: update['$set'] };
-					self.broadcast(socket, 'updateDocument', response, socketInfo)
+					data.data = update['$set']
+					self.broadcast(socket, 'updateDocument', data, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -159,20 +159,19 @@ class CoCreateCrud {
 	}
 	
 	/** Delete Document **/
-	async deleteDocument(socket, req_data, socketInfo) {
+	async deleteDocument(socket, data, socketInfo) {
 		const self = this;
 
 		try {
-			const db = this.dbClient.db(req_data['organization_id']);
-			const collection = db.collection(req_data["collection"]);
+			const db = this.dbClient.db(data['organization_id']);
+			const collection = db.collection(data["collection"]);
 			const query = {
-				"_id": new ObjectId(req_data["document_id"])
+				"_id": new ObjectId(data["document_id"])
 			};
 
 			collection.deleteOne(query, function(error, result) {
 				if (!error) {
-					let response = { ...req_data }
-					self.broadcast(socket, 'deleteDocument', response, socketInfo)
+					self.broadcast(socket, 'deleteDocument', data, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -195,12 +194,11 @@ class CoCreateCrud {
 		try {
 			const db = this.dbClient.db(data['organization_id']);
 			const collection = db.collection(data["collection"]);
-			let {operator, query, sort} = this.getFilters(data);
+			let {query, sort} = this.getFilters(data);
 			collection.find(query).sort(sort).toArray(function(error, result) {
 				if (result) {
-					// let result_data = self.filterResponse(result, data, operator)
-					let result_data = filterData(result, data, operator)
-					self.wsManager.send(socket, 'readDocuments', { ...data, data: result_data, operator, socketInfo });
+					data['data'] = filterData(result, data)
+					self.wsManager.send(socket, 'readDocuments', data, socketInfo );
 				} else {
 					console.log(error)
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
@@ -213,15 +211,14 @@ class CoCreateCrud {
 	}
 	
 	/** Create Collection **/
-	async createCollection(socket, req_data, socketInfo) {
+	async createCollection(socket, data, socketInfo) {
 		const self = this;
 
 		try {
-			const db = this.dbClient.db(req_data['organization_id']);
-			db.createCollection(req_data.collection, function(error, result) {
+			const db = this.dbClient.db(data['organization_id']);
+			db.createCollection(data.collection, function(error, result) {
 				if (!error) {
-					let response = { ...req_data }
-					self.broadcast(socket, 'createCollection', response, socketInfo)
+					self.broadcast(socket, 'createCollection', data, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -233,16 +230,15 @@ class CoCreateCrud {
 	}
 
 	/** Update Collection **/
-	async updateCollection(socket, req_data, socketInfo) {
+	async updateCollection(socket, data, socketInfo) {
 		const self = this;
 
 		try {
-			const db = this.dbClient.db(req_data['organization_id']);
-			const collection = db.collection(req_data["collection"]);
-			collection.rename(req_data.target, function(error, result) {
+			const db = this.dbClient.db(data['organization_id']);
+			const collection = db.collection(data["collection"]);
+			collection.rename(data.target, function(error, result) {
 				if (!error) {
-					let response = { ...req_data }
-					self.broadcast(socket, 'updateCollection', response, socketInfo)
+					self.broadcast(socket, 'updateCollection', data, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -254,16 +250,15 @@ class CoCreateCrud {
 	}
 
 	/** Delete Collection **/
-	async deleteCollection(socket, req_data, socketInfo) {
+	async deleteCollection(socket, data, socketInfo) {
 		const self = this;
 
 		try {
-			const db = this.dbClient.db(req_data['organization_id']);
-			const collection = db.collection(req_data["collection"]);
+			const db = this.dbClient.db(data['organization_id']);
+			const collection = db.collection(data["collection"]);
 			collection.drop( function(error, result) {
 				if (!error) {
-					let response = { ...req_data }
-					self.broadcast(socket, 'deleteCollection', response, socketInfo)
+					self.broadcast(socket, 'deleteCollection', data, socketInfo)
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
 				}
@@ -279,12 +274,12 @@ class CoCreateCrud {
 			const self = this;
 			data['collection'] = 'collections'
 			
-			let {operator, query, sort} = this.getFilters(data);
+			let {query, sort} = this.getFilters(data);
 			const db = this.dbClient.db(data['organization_id']);
 			db.listCollections(query).toArray(function(error, result) {
 				if (!error && result && result.length > 0) {
-					result = sortData(result, sort)
-					self.wsManager.send(socket, 'readCollections', {...data, data: result }, socketInfo);
+					data.data = sortData(result, sort)
+					self.wsManager.send(socket, 'readCollections', data, socketInfo);
 				}
 			})			
 		} catch(error) {
@@ -294,34 +289,34 @@ class CoCreateCrud {
 	}
 
 	getFilters(data) {
-		let operator = {
-			filters: [],
-			orders: [],
+		let query = {}, sort = {}
+		data.filter = {
+			query: [],
+			sort: [],
 			search: {
 				value: [],
 				type: "or"
 			},
 			startIndex: 0,
-			...data.operator
+			...data.filter
 		};
+		if (data.filter) {
 
-		let query = this.createQuery(operator['filters']);
-		if (data["document_id"]) {
-			query['_id'] = ObjectId(data["document_id"]);
+			query = this.createQuery(data['filter'].query);
+			if (data["document_id"]) {
+				query['_id'] = ObjectId(data["document_id"]);
+			}
+			if (data.filter.sort)
+				data.filter.sort.forEach((order) => {
+					sort[order.name] = order.type
+				});
 		}
-
-		let sort = {}
-		operator.orders.forEach((order) => {
-			sort[order.name] = order.type
-		});
-
-		return {operator, query, sort}
+		return {query, sort}
 	}
 
 	createQuery(filters, data) {
 		let query = new Object();
 
-		// let filters = data['filters'];
 		filters.forEach((item) => {
 			if (!item.name) {
 				return;
