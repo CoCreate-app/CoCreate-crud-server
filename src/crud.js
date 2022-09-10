@@ -38,7 +38,8 @@ class CoCreateCrud {
 
 			collection.insertOne(insertData, function(error, result) {
 				if(!error && result){
-					const response  = {...data, document_id: `${result.insertedId}`, data: insertData } 
+					const response  = {...data, document_id: `${result.insertedId}`, data: insertData }
+					response.data['_id'] = result.insertedId;
 					self.broadcast(socket, 'createDocument', response, socketInfo)	
 				} else {
 					self.wsManager.send(socket, 'ServerError', error, socketInfo);
