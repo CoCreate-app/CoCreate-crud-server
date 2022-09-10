@@ -1,6 +1,6 @@
 const {ObjectId} = require("mongodb");
 const {replaceArray} = require("./utils.crud.js")
-const {filterData, sortData} = require("@cocreate/filter")
+const {searchData, sortData} = require("@cocreate/filter")
 
 
 
@@ -197,7 +197,7 @@ class CoCreateCrud {
 			let {query, sort} = this.getFilters(data);
 			collection.find(query).sort(sort).toArray(function(error, result) {
 				if (result) {
-					data['data'] = filterData(result, data)
+					data['data'] = searchData(result, data.filter)
 					self.wsManager.send(socket, 'readDocuments', data, socketInfo );
 				} else {
 					console.log(error)
