@@ -100,13 +100,15 @@ class CoCreateCrud {
 		const self = this;
 		try {			
 			let {query, sort} = this.getFilters(data);
-			// if (data['data'] && data['data']['_id'])
-			// delete data['data']['_id']
+			if (data['data'] && data['data']['_id'])
+				delete data['data']['_id']
 
 			let update = {}, projection = {}, returnNewDocument = false;
 			if  (data.data) {
 				update['$set'] = this.valueTypes(data.data)
 				update['$set']['organization_id'] = data['organization_id'];
+				if (update['$set']['_id'])
+					delete update['$set']['_id']
 				Object.keys(update['$set']).forEach(x => {
 					projection[x] = 1
 				})
@@ -143,6 +145,8 @@ class CoCreateCrud {
 				}
 			).then((result) => {
 				if (result) {				
+					update['$set']['_id'] = data.data._id || data.document_id
+					console.log(data.data._id)
 					data.data = update['$set']
 					self.broadcast(socket, 'updateDocument', data, socketInfo)
 				} else {
@@ -327,7 +331,8 @@ class CoCreateCrud {
 				query[key] = {};
 			}
 			
-			if (item.name == "_id") item.value = item.value.map(v => new ObjectId(v))
+			if (item.name == "_id") 
+				item.value = item.value.map(v => new ObjectId(v))
 			
 			switch (item.operator) {
 				case '$contain':
@@ -355,7 +360,7 @@ class CoCreateCrud {
 				case '$lte':
 				case '$gt':
 				case '$gte':
-					query[key][item.operator] = item.value[0];
+					query[key][item.operator] = item.value[0] || item.value;
 					break;
 				case '$in':
 				case '$nin':
