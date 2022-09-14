@@ -71,13 +71,9 @@ class CoCreateCrud {
 			collection.find(query).sort(sort).toArray(function(error, result) {
 				if (!error && result && result.length > 0) {
 					let tmp = result[0];
-					if (data['exclude_fields']) {
-						data['exclude_fields'].forEach(function(field) {
-							delete tmp[field];
-						})
-					}
-					
-					if (data.data) {
+										
+					// ToDo: returns values of defined names
+					if (data.returnDocument == false && data.data) {
 						let resp = {};
 						resp['_id'] = tmp['_id']
 						data.data.forEach((f) => resp[f] = tmp[f])
@@ -422,6 +418,7 @@ class CoCreateCrud {
 		this.wsManager.broadcast(socket, response.namespace || response['organization_id'], response.room, component, response, socketInfo);
 		process.emit('changed-document', response)
 	}
+
 }
 
 module.exports = CoCreateCrud;
