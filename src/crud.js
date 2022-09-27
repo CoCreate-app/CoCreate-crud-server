@@ -327,7 +327,7 @@ class CoCreateCrud {
 			}
 			
 			if (item.name == "_id") 
-				item.value = item.value.map(v => new ObjectId(v))
+				item.value = ObjectId(item.value)
 			
 			switch (item.operator) {
 				case '$contain':
