@@ -13,20 +13,20 @@ class CoCreateCrud {
 	
 	init() {
 		if (this.wsManager) {
-			this.wsManager.on('createDocument', (socket, data, socketInfo) => this.createDocument(socket, data, socketInfo))
-			this.wsManager.on('readDocument',	(socket, data, socketInfo) => this.readDocument(socket, data, socketInfo))
-			this.wsManager.on('updateDocument', (socket, data, socketInfo) => this.updateDocument(socket, data, socketInfo))
-			this.wsManager.on('deleteDocument', (socket, data, socketInfo) => this.deleteDocument(socket, data, socketInfo))
-			this.wsManager.on('readDocuments', (socket, data, socketInfo) => this.readDocuments(socket, data, socketInfo))
-			this.wsManager.on('createCollection', (socket, data, socketInfo) => this.createCollection(socket, data, socketInfo))
-			this.wsManager.on('updateCollection', (socket, data, socketInfo) => this.updateCollection(socket, data, socketInfo))
-			this.wsManager.on('deleteCollection', (socket, data, socketInfo) => this.deleteCollection(socket, data, socketInfo))
-			this.wsManager.on('readCollections', (socket, data, socketInfo) => this.readCollections(socket, data, socketInfo))
+			this.wsManager.on('createDocument',   (socket, data) => this.createDocument(socket, data))
+			this.wsManager.on('readDocument',     (socket, data) => this.readDocument(socket, data))
+			this.wsManager.on('updateDocument',   (socket, data) => this.updateDocument(socket, data))
+			this.wsManager.on('deleteDocument',   (socket, data) => this.deleteDocument(socket, data))
+			this.wsManager.on('readDocuments', 	  (socket, data) => this.readDocuments(socket, data))
+			this.wsManager.on('createCollection', (socket, data) => this.createCollection(socket, data))
+			this.wsManager.on('updateCollection', (socket, data) => this.updateCollection(socket, data))
+			this.wsManager.on('deleteCollection', (socket, data) => this.deleteCollection(socket, data))
+			this.wsManager.on('readCollections',  (socket, data) => this.readCollections(socket, data))
 		}
 	}
 
 	/** Create Document **/
-	async createDocument(socket, data, socketInfo){
+	async createDocument(socket, data){
 		const self = this;
 		if(!data.data) return;
 
@@ -40,21 +40,21 @@ class CoCreateCrud {
 				if(!error && result){
 					const response  = {...data, document_id: `${result.insertedId}`, data: insertData }
 					response.data['_id'] = result.insertedId;
-					self.broadcast(socket, 'createDocument', response, socketInfo)	
+					self.broadcast(socket, 'createDocument', response)	
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error);
 				}
 			});
 		}catch(error){
 			console.log('createDocument error', error);
-			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 	
 	/** Read Document **/
-	async readDocument(socket, data, socketInfo) {
+	async readDocument(socket, data) {
 		if (!data['collection'] || data['collection'] == 'null' || typeof data['collection'] !== 'string') {
-			this.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			this.wsManager.send(socket, 'ServerError', 'error');
 			return;
 		} 
 		const self = this;
@@ -80,19 +80,19 @@ class CoCreateCrud {
 						tmp = resp;
 					}
 					data.data = tmp
-					self.wsManager.send(socket, 'readDocument', data, socketInfo);
+					self.wsManager.send(socket, 'readDocument', data);
 				} else {
-					self.wsManager.send(socket, 'readDocument error', data, socketInfo);
+					self.wsManager.send(socket, 'readDocument error', data);
 				}
 			});
 		} catch (error) {
 			console.log('readDocument error', error, data); 
-			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 
 	/** Update Document **/
-	async updateDocument(socket, data, socketInfo) {
+	async updateDocument(socket, data) {
 		const self = this;
 		try {			
 			let {query, sort} = this.getFilters(data);
@@ -142,25 +142,24 @@ class CoCreateCrud {
 			).then((result) => {
 				if (result) {				
 					update['$set']['_id'] = data.data._id || data.document_id
-					console.log(data.data._id)
 					data.data = update['$set']
-					self.broadcast(socket, 'updateDocument', data, socketInfo)
+					self.broadcast(socket, 'updateDocument', data)
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error);
 				}
 			}).catch((error) => {
 				console.log('error', error)
-				self.wsManager.send(socket, 'ServerError', error, socketInfo);
+				self.wsManager.send(socket, 'ServerError', error);
 			});
 			
 		} catch (error) {
 			console.log(error)
-			self.wsManager.send(socket, 'updateDocumentError', error, socketInfo);
+			self.wsManager.send(socket, 'updateDocumentError', error);
 		}
 	}
 	
 	/** Delete Document **/
-	async deleteDocument(socket, data, socketInfo) {
+	async deleteDocument(socket, data) {
 		const self = this;
 
 		try {
@@ -172,18 +171,18 @@ class CoCreateCrud {
 
 			collection.deleteOne(query, function(error, result) {
 				if (!error) {
-					self.broadcast(socket, 'deleteDocument', data, socketInfo)
+					self.broadcast(socket, 'deleteDocument', data)
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error);
 				}
 			})
 		} catch (error) {
 			console.log(error);
-			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 
-	async readDocuments(socket, data, socketInfo) {		
+	async readDocuments(socket, data) {		
 		function sleep(ms) {
 			return new Promise((resolve) => {
 				setTimeout(resolve, ms);
@@ -199,39 +198,39 @@ class CoCreateCrud {
 			collection.find(query).sort(sort).toArray(function(error, result) {
 				if (result) {
 					data['data'] = searchData(result, data.filter)
-					self.wsManager.send(socket, 'readDocuments', data, socketInfo );
+					self.wsManager.send(socket, 'readDocuments', data );
 				} else {
 					console.log(error)
-					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error);
 				}
 			})
 		} catch (error) {
 			console.log('readDocuments error', error);
-			this.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			this.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 	
 	/** Create Collection **/
-	async createCollection(socket, data, socketInfo) {
+	async createCollection(socket, data) {
 		const self = this;
 
 		try {
 			const db = this.dbClient.db(data['organization_id']);
 			db.createCollection(data.collection, function(error, result) {
 				if (!error) {
-					self.broadcast(socket, 'createCollection', data, socketInfo)
+					self.broadcast(socket, 'createCollection', data)
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error);
 				}
 			})
 		} catch (error) {
 			console.log(error);
-			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 
 	/** Update Collection **/
-	async updateCollection(socket, data, socketInfo) {
+	async updateCollection(socket, data) {
 		const self = this;
 
 		try {
@@ -239,19 +238,19 @@ class CoCreateCrud {
 			const collection = db.collection(data["collection"]);
 			collection.rename(data.target, function(error, result) {
 				if (!error) {
-					self.broadcast(socket, 'updateCollection', data, socketInfo)
+					self.broadcast(socket, 'updateCollection', data)
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error);
 				}
 			})
 		} catch (error) {
 			console.log(error);
-			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 
 	/** Delete Collection **/
-	async deleteCollection(socket, data, socketInfo) {
+	async deleteCollection(socket, data) {
 		const self = this;
 
 		try {
@@ -259,18 +258,18 @@ class CoCreateCrud {
 			const collection = db.collection(data["collection"]);
 			collection.drop( function(error, result) {
 				if (!error) {
-					self.broadcast(socket, 'deleteCollection', data, socketInfo)
+					self.broadcast(socket, 'deleteCollection', data)
 				} else {
-					self.wsManager.send(socket, 'ServerError', error, socketInfo);
+					self.wsManager.send(socket, 'ServerError', error);
 				}
 			})
 		} catch (error) {
 			console.log(error);
-			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 	
-	async readCollections(socket, data, socketInfo) {
+	async readCollections(socket, data) {
 		try {
 			const self = this;
 			data['collection'] = 'collections'
@@ -280,12 +279,12 @@ class CoCreateCrud {
 			db.listCollections(query).toArray(function(error, result) {
 				if (!error && result && result.length > 0) {
 					data.data = sortData(result, sort)
-					self.wsManager.send(socket, 'readCollections', data, socketInfo);
+					self.wsManager.send(socket, 'readCollections', data);
 				}
 			})			
 		} catch(error) {
 			console.log('readCollections error', error); 
-			this.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			this.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 
@@ -414,8 +413,8 @@ class CoCreateCrud {
 		}
 	}
 
-	broadcast(socket, component, response, socketInfo) {
-		this.wsManager.broadcast(socket, response.namespace || response['organization_id'], response.room, component, response, socketInfo);
+	broadcast(socket, component, response) {
+		this.wsManager.broadcast(socket, response.namespace || response['organization_id'], response.room, component, response);
 		process.emit('changed-document', response)
 	}
 

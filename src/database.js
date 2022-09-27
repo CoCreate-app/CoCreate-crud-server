@@ -7,12 +7,12 @@ class CoCreateDatabases {
 	
 	init() {
 		if (this.wsManager) {
-			this.wsManager.on('readDatabases', (socket, data, socketInfo) => this.readDatabases(socket, data, socketInfo));
+			this.wsManager.on('readDatabases', (socket, data) => this.readDatabases(socket, data));
 		}
 	}
 
 	/** Create Document **/
-	async readDatabases(socket, req_data, socketInfo){
+	async readDatabases(socket, req_data){
 		const self = this;
 		// if(!req_data.data) return;
 
@@ -29,13 +29,13 @@ class CoCreateDatabases {
 			})
 		} catch(error) {
 			console.log('readDatabases error', error);
-			self.wsManager.send(socket, 'ServerError', 'error', socketInfo);
+			self.wsManager.send(socket, 'ServerError', 'error');
 		}
 	}
 	
 	
-	broadcast(socket, component, response, socketInfo) {
-		this.wsManager.broadcast(socket, response.namespace || response['organization_id'], response.room, component, response, socketInfo);
+	broadcast(socket, component, response) {
+		this.wsManager.broadcast(socket, response.namespace || response['organization_id'], response.room, component, response);
 		process.emit('changed-document', response)
 	}
 }

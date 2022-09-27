@@ -13,11 +13,11 @@ class CoCreateBackup {
 	
 	init() {
 		if (this.wsManager) {
-			// this.wsManager.on('exportDB',		(socket, data, socketInfo) => this.exportData(socket, data, socketInfo));
-			// this.wsManager.on('importDB',		(socket, data, socketInfo) => this.importData(socket, data, socketInfo));
-			// this.wsManager.on('importFile2DB',	(socket, data, socketInfo) => this.importData(socket, data, socketInfo));
+			// this.wsManager.on('exportDB',		(socket, data) => this.exportData(socket, data));
+			// this.wsManager.on('importDB',		(socket, data) => this.importData(socket, data));
+			// this.wsManager.on('importFile2DB',	(socket, data) => this.importData(socket, data));
 			
-			// this.wsManager.on('downloadData',	(socket, data, socketInfo) => this.downloadData(socket, data, socketInfo))
+			// this.wsManager.on('downloadData',	(socket, data) => this.downloadData(socket, data))
 		}
 	}
 	
@@ -28,13 +28,13 @@ class CoCreateBackup {
 	 	data: JSON data
 	 }
 	**/
-	// async downloadData(socket, data, socketInfo) {
+	// async downloadData(socket, data) {
 	// 	const export_type = data.type || "json";
 		
 	// 	try {
 	// 		let binaryData = null;
 	// 		const result = data.data;
-	// 		const orgId = socketInfo ? socketInfo.orgId : "";
+	// 		const orgId = socket.config.orgId ;
 	// 		if (export_type === 'csv') {
 	// 			binaryData = await json2csv.json2csvAsync(JSON.parse(JSON.stringify(result)), {
 	// 				emptyFieldValue: ''
@@ -60,7 +60,7 @@ class CoCreateBackup {
 		
 	})
 	**/
-	// async exportData(socket, data, socketInfo) {
+	// async exportData(socket, data) {
 	// 	const self = this;
 		
 	// 	const export_type = data.export_type || "json";
@@ -68,7 +68,7 @@ class CoCreateBackup {
 	// 	try {
 			
 	// 		var collection = this.dbClient.db(data['namespace']).collection(data["collection"]);
-	// 		const orgId = socketInfo ? socketInfo.orgId : "";
+	// 		const orgId = socket.config.orgId
 			
 	// 		var query = {};
 			
@@ -92,13 +92,13 @@ class CoCreateBackup {
 	// 	}
 	// }
 	
-	// async setImportData(socket, data, socketInfo) {
+	// async setImportData(socket, data) {
 	// 	this.importCollection = data['collection']
 	// 	this.importType = data['import_type'];
 	// 	this.importDB = data['namespace'];
 	// }
 
-	// async importData(socket, data, socketInfo) {
+	// async importData(socket, data) {
 	// 	const importCollection = data['collection']
 	// 	const importType = data['import_type'];
 	// 	const importFile = data['file'];
@@ -106,7 +106,7 @@ class CoCreateBackup {
 		
 	// 	console.log('import:', importCollection, importType, importFile)
 	// 	const self = this;
-	// 	// const orgId = socketInfo ? socketInfo.orgId : "";
+	// 	//	const orgId = socket.config.orgId
 	// 	if (!importCollection || !importType) {
 	// 		return;
 	// 	}
