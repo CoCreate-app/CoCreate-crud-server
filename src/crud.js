@@ -414,7 +414,7 @@ class CoCreateCrud {
 	}
 
 	broadcast(socket, component, response) {
-		this.wsManager.broadcast(socket, response.namespace || response['organization_id'], response.room, component, response);
+		this.wsManager.broadcast(socket, component, response);
 		process.emit('changed-document', response)
 	}
 
