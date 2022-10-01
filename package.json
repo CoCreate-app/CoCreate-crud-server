@@ -1,6 +1,6 @@
 {
   "name": "@cocreate/crud-server",
-  "version": "1.10.1",
+  "version": "1.11.0",
   "description": "CoCreate-crud-server",
   "keywords": [
     "cocreate-crud",
@@ -20,7 +20,9 @@
     "html5-framework",
     "javascript-framework"
   ],
-  "publishConfig": { "access": "public" },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "demo": "PORT=5000 node demo/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -43,5 +45,7 @@
     "json-2-csv": "^3.10.3",
     "mongodb": "^4.4.0"
   },
-  "devDependencies": { "express": "^4.17.1" }
+  "devDependencies": {
+    "express": "^4.17.1"
+  }
 }

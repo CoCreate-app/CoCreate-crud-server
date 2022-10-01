@@ -1,3 +1,22 @@
+# [1.11.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.10.1...v1.11.0) (2022-10-01)
+
+
+### Bug Fixes
+
+* broadcast params reduced to socket, message, data ([ec9c8f2](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ec9c8f259e516424ef95433904a0e89d2aa0c727))
+* bump dependencies ([b5b9350](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b5b9350dbcb1b20fc945542a600d526ddb78fb91))
+* createDocument inserts  _id in the data object ([113c2ff](https://github.com/CoCreate-app/CoCreate-crud-server/commit/113c2ffb3d0a291f3af8ba645f709b1b5811089d))
+* createQuery ObjectId ([ec79e40](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ec79e40b81760e347ce5d8d70ed28f3494c49538))
+* filter value can be an object or an array ([75cd195](https://github.com/CoCreate-app/CoCreate-crud-server/commit/75cd19560d8086f01a05f55e76102793789ec1d1))
+* merged crud and list ([acff218](https://github.com/CoCreate-app/CoCreate-crud-server/commit/acff21831b2ca1274bc5af775f7d3758f2e55663))
+* relocate and import filter.js from @cocreate/filter ([b8bab38](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b8bab3882b5ece91115a4568aa80bc5eca2c80f3))
+
+
+### Features
+
+* config now accessible from socket.config ([2d892ff](https://github.com/CoCreate-app/CoCreate-crud-server/commit/2d892ff961cb48187f8253a4f3778719cb764d1c))
+* if data.returnDocument = false only defined names are returned ([652f624](https://github.com/CoCreate-app/CoCreate-crud-server/commit/652f6242c947d3b46d01deaea784f964f43450fd))
+
 ## [1.10.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.10.0...v1.10.1) (2022-09-01)
 
 
