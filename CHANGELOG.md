@@ -1,3 +1,15 @@
+# [1.12.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.11.1...v1.12.0) (2022-10-02)
+
+
+### Bug Fixes
+
+* bump dependencies ([702bf69](https://github.com/CoCreate-app/CoCreate-crud-server/commit/702bf6960c6efc9563e923325cc03ba2f1e842df))
+
+
+### Features
+
+* support for operator $contain and $regex ([fb7d4a5](https://github.com/CoCreate-app/CoCreate-crud-server/commit/fb7d4a5508c0ca75100ba40305196ed2b7ea7d6b))
+
 ## [1.11.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.11.0...v1.11.1) (2022-10-01)
 
 
