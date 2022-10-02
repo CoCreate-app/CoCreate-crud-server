@@ -195,6 +195,7 @@ class CoCreateCrud {
 			const db = this.dbClient.db(data['organization_id']);
 			const collection = db.collection(data["collection"]);
 			let {query, sort} = this.getFilters(data);
+
 			collection.find(query).sort(sort).toArray(function(error, result) {
 				if (result) {
 					data['data'] = searchData(result, data.filter)
@@ -314,6 +315,7 @@ class CoCreateCrud {
 		return {query, sort}
 	}
 
+	// ToDo: create impved mongodb query to cover many cases
 	createQuery(filters, data) {
 		let query = new Object();
 
@@ -331,12 +333,7 @@ class CoCreateCrud {
 			
 			switch (item.operator) {
 				case '$contain':
-					var in_values = [];
-					item.value.forEach(function(v) {
-						in_values.push(new RegExp(".*" + v + ".*", "i"));
-					});
-					
-					query[key] = {$in : in_values }
+					query[key]['$regex'] = item.value;
 					break;
 					
 				case '$range':
@@ -355,9 +352,17 @@ class CoCreateCrud {
 				case '$lte':
 				case '$gt':
 				case '$gte':
-					query[key][item.operator] = item.value[0] || item.value;
+				case '$regex':
+					query[key][item.operator] = item.value;
 					break;
 				case '$in':
+					var in_values = [];
+					item.value.forEach(function(v) {
+						in_values.push(new RegExp(".*" + v + ".*", "i"));
+					});
+					
+					query[key] = {$in : in_values }
+					break;
 				case '$nin':
 					query[key][item.operator] = item.value;
 					break;
