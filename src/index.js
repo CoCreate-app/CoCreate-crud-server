@@ -1,8 +1,7 @@
 'use strict';
 
-const crud = require('./crud');
+const mongodb = require('./mongodb');
 const backup = require('./backup');
-const database = require('./database');
 
 class CoCreateCrudServer {
 	constructor(wsManager, dbClient) {
@@ -12,9 +11,8 @@ class CoCreateCrudServer {
 	}
 
     init() {
-        new crud(this.wsManager, this.dbClient);
+        new mongodb(this.wsManager, this.dbClient);
         new backup(this.wsManager, this.dbClient);
-        new database(this.wsManager, this.dbClient);
     }
 }
 
