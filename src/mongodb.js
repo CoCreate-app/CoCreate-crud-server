@@ -54,10 +54,6 @@ class CoCreateMongoDB {
 
 	async document(socket, data, action){
 		const self = this;
-		let documents = [];
-		let isFilter
-		if (data.filter && data.filter.query)
-			isFilter = true
 
 		let errorLog = [];
 		const errorHandler = (error) => {
@@ -68,6 +64,15 @@ class CoCreateMongoDB {
 		}
 
 		try {
+			let documents = [];
+
+			let isFilter
+			if (data.filter && data.filter.query)
+				isFilter = true
+
+			if (data.request)
+				data.data = data.request
+	
 			let databases = data.database;  
 			if (!Array.isArray(databases))
 				databases = [databases]
