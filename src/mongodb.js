@@ -27,21 +27,24 @@ class CoCreateMongoDB {
 	}
 
 	/** Create Document **/
-	async readDatabase(socket, data){
+	async database(socket, data, action){
 		const self = this;
 		// if(!data.data) return;
 
 		try {
-			var db = this.dbClient.db().admin();
+			if (action == 'readDatabase') {
+				let db = this.dbClient.db().admin();
 
-			// List all the available databases
-			db.listDatabases(function(err, dbs) {
-				if (dbs.databases.length > 0){
-					console.log('dbs', dbs)
-				}
-				self.broadcast(socket, action, data)					
-				// db.close();
-			})
+				// List all the available databases
+				db.listDatabases(function(err, dbs) {
+					if (dbs.databases.length > 0){
+						console.log('dbs', dbs)
+					}
+					self.broadcast(socket, action, data)					
+					// db.close();
+				})
+	
+			}
 		} catch(error) {
 			self.wsManager.send(socket, 'ServerError', 'error');
 			errorLog.push(error)
@@ -51,6 +54,149 @@ class CoCreateMongoDB {
 		}
 	}
 
+	async collection(socket, data, action){
+		const self = this;
+		let type = 'collection'
+		let collectionArray = [];
+		
+		let errorLog = [];
+		const errorHandler = (error) => {
+			if (error) {
+				error.db = 'mongodb'
+				errorLog.push(error);
+			}
+		}
+
+		try {
+			if (data.request)
+				data.collection = data.request
+
+			let databases = data.database;  
+			if (!Array.isArray(databases))
+				databases = [databases]
+
+			let databasesLength = databases.length
+			for (let database of databases) {
+				const db = this.dbClient.db(database);
+				if (action == 'readCollection') {
+
+					let {query, sort} = this.getFilters(data);
+
+					db.listCollections(query).toArray(function(error, result) {
+						if (error) {
+							error.database = database
+							errorHandler(error)
+						}
+						
+						if (result)
+							for (let res of result)
+								collectionArray.push({name: res.name, database, db: 'mongodb'})
+
+						databasesLength -= 1
+						if (!databasesLength) {
+							data = self.createData(data, collectionArray, type, errorLog)
+							self.broadcast(socket, action, data)					
+						}
+					})		
+				} else {
+					let collections
+					let value
+					if (action == 'updateCollection')
+						collections = Object.entries(data.collection)
+					else
+						collections = data.collection;				
+					
+					if (!Array.isArray(collections))
+						collections = [collections]
+
+					let collectionsLength = collections.length
+					for (let collection of collections) {
+						
+						if (action == 'createCollection') {
+							db.createCollection(collection, function(error, result) {
+								if (error) {
+									error.database = database
+									error.collection = collection 
+									errorHandler(error)
+								}
+								if (result)
+									collectionArray.push({name: collection, database, db: 'mongodb'})
+
+								collectionsLength -= 1           
+								if (!collectionsLength)
+									databasesLength -= 1
+								
+								if (!databasesLength && !collectionsLength) {
+									data = self.createData(data, collectionArray, type, errorLog)
+									self.broadcast(socket, action, data)					
+								}
+							})
+						} else {
+							if (action == 'updateCollection') {
+								[collection, value] = collection
+							}
+	
+							const collectionObj = db.collection(collection);
+
+							if (action == 'updateCollection') {
+								collectionObj.rename(value, function(error, result) {
+									if (error) {
+										error.database = database
+										error.collection = collection 
+										errorHandler(error)
+									}
+					
+									if (result)
+										collectionArray.push({name: value, oldName: collection, database, db: 'mongodb'})
+									
+									collectionsLength -= 1           
+									if (!collectionsLength)
+										databasesLength -= 1
+									
+									if (!databasesLength && !collectionsLength) {
+										data = self.createData(data, collectionArray, type, errorLog)
+										self.broadcast(socket, action, data)
+									}
+
+								})
+							}
+
+							if (action == 'deleteCollection') {
+								collectionObj.drop( function(error, result) {
+									if (error) {
+										error.database = database
+										error.collection = collection 
+										errorHandler(error)
+									}
+									if (result)
+										collectionArray.push({name: collection, database, db: 'mongodb'})
+									
+									collectionsLength -= 1           
+									if (!collectionsLength)
+										databasesLength -= 1
+									
+									if (!databasesLength && !collectionsLength) {
+										data = self.createData(data, collectionArray, type, errorLog)
+										self.broadcast(socket, action, data)
+									}
+
+								})
+								
+							}
+						}
+
+					}
+				}
+			}
+		} catch(error) {
+			errorLog.push(error)
+			data['error'] = errorLog
+			console.log(action, 'error', error);
+			self.wsManager.send(socket, action, data);
+		}
+
+
+	}
 
 	async document(socket, data, action){
 		const self = this;
@@ -64,14 +210,23 @@ class CoCreateMongoDB {
 		}
 
 		try {
+			let type = 'document'
 			let documents = [];
+
+	        if (!data[type] && data.data)
+            	data[type] = data.data
+
+			if (data.request)
+				data[type] = data.request
+
+
+			if (!data['timeStamp'])
+				data['timeStamp'] = new Date().toISOString()
+	
 
 			let isFilter
 			if (data.filter && data.filter.query)
 				isFilter = true
-
-			if (data.request)
-				data.data = data.request
 	
 			let databases = data.database;  
 			if (!Array.isArray(databases))
@@ -97,38 +252,38 @@ class CoCreateMongoDB {
 					let update_ids = []
 					let updateData = {}
 
-					if (data.data) {
-						if (!Array.isArray(data.data))
-							data.data = [data.data]
-						for (let i = 0; i < data.data.length; i++) {
-							data.data[i] = replaceArray(data.data[i])
-							data.data[i]['organization_id'] = data['organization_id'];
+					if (data[type]) {
+						if (!Array.isArray(data[type]))
+							data[type] = [data[type]]
+						for (let i = 0; i < data[type].length; i++) {
+							data[type][i] = replaceArray(data[type][i])
+							data[type][i]['organization_id'] = data['organization_id'];
 
 
 							if (action == 'createDocument') {
-								if (!data.data[i]._id)
-									data.data[i]._id = ObjectId()
-									data.data[i]['created'] = {on: data.timeStamp, by: data.user || data.clientId}
+								if (!data[type][i]._id)
+									data[type][i]._id = ObjectId()
+									data[type][i]['created'] = {on: data.timeStamp, by: data.user || data.clientId}
 
 							}
 							if (action == 'readDocument') {
-								if (data.data[i]._id)
-									_ids.push(data.data[i]._id)
+								if (data[type][i]._id)
+									_ids.push(data[type][i]._id)
 							}
 							if (action =='updateDocument') {
-								if (data.data[i]._id)
-									update_ids.push({_id: data.data[i]._id, updateDoc: data.data[i], updateType: '_id'})
+								if (data[type][i]._id)
+									update_ids.push({_id: data[type][i]._id, updateDoc: data[type][i], updateType: '_id'})
 							
-								if (!data.data[i]._id)
-									updateData = self.createUpdate({data: [data.data[i]]})
+								if (!data[type][i]._id)
+									updateData = self.createUpdate({data: [data[type][i]]}, type)
 
-								data.data[i]['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
+								data[type][i]['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
 
 							}
 							if (action =='deleteDocument') {
-								if (data.data[i]._id) {
-									_ids.push(data.data[i]._id)
-									documents.push({_id: data.data[i]._id, db: 'mongodb', database, collection})
+								if (data[type][i]._id) {
+									_ids.push(data[type][i]._id)
+									documents.push({_id: data[type][i]._id, db: 'mongodb', database, collection})
 								}
 							}
 						}
@@ -140,25 +295,21 @@ class CoCreateMongoDB {
 					
 
 					if (action == 'createDocument') {
-						collectionObj.insertMany(data.data, function(error, result) {
+						collectionObj.insertMany(data[type], function(error, result) {
 							if (error) {
 								error.database = database
 								error.collection = collection 
 								errorHandler(error)
 							}
 							
-							documents.push(...data.data)
+							documents.push(...data[type])
 
 							collectionsLength -= 1           
 							if (!collectionsLength)
 								databasesLength -= 1
 							
 							if (!databasesLength && !collectionsLength) {
-								if (errorLog.length > 0) {
-									data['error'] = errorLog
-								}
-
-								data.data = documents
+								data = self.createData(data, documents, type, errorLog)
 								self.broadcast(socket, action, data)					
 							}
 						});	
@@ -188,7 +339,7 @@ class CoCreateMongoDB {
 									for (let item of data['data'])  {
 										let resp = {};
 										resp['_id'] = tmp['_id']
-										data.data.forEach((f) => resp[f] = item[f])
+										data[type].forEach((f) => resp[f] = item[f])
 										documents.push(resp);
 									}
 		
@@ -201,10 +352,7 @@ class CoCreateMongoDB {
 								databasesLength -= 1
 							
 							if (!databasesLength && !collectionsLength) {
-								if (errorLog.length > 0) {
-									data['error'] = errorLog
-								}
-								data.data = documents
+								data = self.createData(data, documents, type, errorLog)
 								self.broadcast(socket, action, data)					
 							}
 						});
@@ -232,13 +380,15 @@ class CoCreateMongoDB {
 						let Result, $update, update, projection;
 
 						if (isFilter && data.returnDocument != false)
-							Result = await queryDocs()
+							if (action == 'deleteDocument' || action == 'updateDocument' && updateData.update)
+								Result = await queryDocs()
 
 						if (Result) {
 							for (let doc of Result) {
 								if (action == 'deleteDocument')
 									documents.push({_id: doc._id, db: 'mongodb', database, collection})
-								doc['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
+								else
+									doc['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
 	
 								_ids.push(doc._id)
 							}
@@ -252,7 +402,7 @@ class CoCreateMongoDB {
 								if (updateType == '_id') {
 									let update_id = updateDoc._id
 									query['_id'] = ObjectId(update_id)
-									$update = self.createUpdate({data: [updateDoc]})
+									$update = self.createUpdate({data: [updateDoc]}, type)
 									update = $update.update
 									projection = $update.projection
 									documents.push({_id: update_id, db: 'mongodb', database, collection, ...update['$set']})
@@ -287,11 +437,7 @@ class CoCreateMongoDB {
 										databasesLength -= 1
 									
 									if (!databasesLength && !collectionsLength) {
-										if (errorLog.length > 0) {
-											data['error'] = errorLog
-										}
-										if (data.returnDocument != false)
-											data.data = documents
+										data = self.createData(data, documents, type, errorLog)
 										self.broadcast(socket, action, data)					
 									}
 								})
@@ -307,11 +453,7 @@ class CoCreateMongoDB {
 									databasesLength -= 1
 								
 								if (!databasesLength && !collectionsLength) {
-									if (errorLog.length > 0) {
-										data['error'] = errorLog
-									}
-									if (data.returnDocument != false)
-										data.data = documents
+									data = self.createData(data, documents, type, errorLog)
 									self.broadcast(socket, action, data)					
 								}
 								
@@ -331,11 +473,10 @@ class CoCreateMongoDB {
 		}
 	}
 
-
-	createUpdate(data) {
+	createUpdate(data, type) {
 		let update = {}, projection = {};
-		if  (data.data[0]) {
-			update['$set'] = this.valueTypes(data.data[0])
+		if  (data[type][0]) {
+			update['$set'] = this.valueTypes(data[type][0])
 			// update['$set']['organization_id'] = data['organization_id'];
 			if (update['$set']['_id'])
 				delete update['$set']['_id']
@@ -367,161 +508,28 @@ class CoCreateMongoDB {
 	
 	}
 	
-	async collection(socket, data, action){
-		const self = this;
-		let collectionArray = [];
-		
-		let errorLog = [];
-		const errorHandler = (error) => {
-			if (error) {
-				error.db = 'mongodb'
-				errorLog.push(error);
-			}
-		}
-
-		try{
-			let databases = data.database;  
-			if (!Array.isArray(databases))
-				databases = [databases]
-
-			let databasesLength = databases.length
-			for (let database of databases) {
-				const db = this.dbClient.db(database);
-				if (action == 'readCollection') {
-
-					let {query, sort} = this.getFilters(data);
-
-					db.listCollections(query).toArray(function(error, result) {
-						if (error) {
-							error.database = database
-							errorHandler(error)
-						}
-						
-						if (result)
-							for (let res of result)
-								collectionArray.push({name: res.name, database, db: 'mongodb'})
-
-						databasesLength -= 1
-						if (!databasesLength) {
-							if (errorLog.length > 0) {
-								data['error'] = errorLog
-							}
-
-							data.collection = collectionArray
-							self.broadcast(socket, action, data)					
-						}
-					})		
-				} else {
-					let collections
-					let value
-					if (action == 'updateCollection')
-						collections = Object.entries(data.collection)
-					else
-						collections = data.collection;				
-					
-					if (!Array.isArray(collections))
-						collections = [collections]
-
-					let collectionsLength = collections.length
-					for (let collection of collections) {
-						
-						if (action == 'createCollection') {
-							db.createCollection(collection, function(error, result) {
-								if (error) {
-									error.database = database
-									error.collection = collection 
-									errorHandler(error)
-								}
-								if (result)
-									collectionArray.push({name: collection, database, db: 'mongodb'})
-
-								collectionsLength -= 1           
-								if (!collectionsLength)
-									databasesLength -= 1
-								
-								if (!databasesLength && !collectionsLength) {
-									if (errorLog.length > 0) {
-										data['error'] = errorLog
-									}
-									data.collection = collectionArray
-									self.broadcast(socket, action, data)					
-								}
-							})
-						} else {
-							if (action == 'updateCollection') {
-								[collection, value] = collection
-							}
-	
-							const collectionObj = db.collection(collection);
-
-							if (action == 'updateCollection') {
-								collectionObj.rename(value, function(error, result) {
-									if (error) {
-										error.database = database
-										error.collection = collection 
-										errorHandler(error)
-									}
-					
-									if (result)
-										collectionArray.push({name: value, oldName: collection, database, db: 'mongodb'})
-									
-									collectionsLength -= 1           
-									if (!collectionsLength)
-										databasesLength -= 1
-									
-									if (!databasesLength && !collectionsLength) {
-										if (errorLog.length > 0) {
-											data['error'] = errorLog
-										}
-
-										let {query, sort} = self.getFilters(data);
-										data.collection = sortData(collectionArray, sort)
-
-										self.broadcast(socket, action, data)
-									}
-
-								})
-							}
-
-							if (action == 'deleteCollection') {
-								collectionObj.drop( function(error, result) {
-									if (error) {
-										error.database = database
-										error.collection = collection 
-										errorHandler(error)
-									}
-									if (result)
-										collectionArray.push({name: collection, database, db: 'mongodb'})
-									
-									collectionsLength -= 1           
-									if (!collectionsLength)
-										databasesLength -= 1
-									
-									if (!databasesLength && !collectionsLength) {
-										if (errorLog.length > 0) {
-											data['error'] = errorLog
-										}
-
-										data.collection = collectionArray
-										self.broadcast(socket, action, data)
-									}
-
-								})
-								
-							}
-						}
-
-					}
-				}
-			}
-		} catch(error) {
-			errorLog.push(error)
+	createData(data, array, type, errorLog) {
+		if (errorLog.length > 0)
 			data['error'] = errorLog
-			console.log(action, 'error', error);
-			self.wsManager.send(socket, action, data);
+
+		if (!data.request)
+			data.request = data.data || data[type] || {}
+	
+		if (data.filter && data.filter.sort)
+			data[type] = sortData(array, data.filter.sort)
+		else
+			data[type] = array
+	
+		if (type == 'document' || type == 'doc')
+			data.data = data[type]
+		
+		if (data.returnLog){
+			if (!data.log)
+				data.log = []
+			data.log.push(...data[type])
 		}
-
-
+	
+		return data
 	}
 
 
