@@ -275,7 +275,7 @@ class CoCreateMongoDB {
 									update_ids.push({_id: data[type][i]._id, updateDoc: data[type][i], updateType: '_id'})
 							
 								if (!data[type][i]._id)
-									updateData = self.createUpdate({data: [data[type][i]]}, type)
+									updateData = self.createUpdate({document: [data[type][i]]}, type)
 
 								data[type][i]['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
 
@@ -402,7 +402,7 @@ class CoCreateMongoDB {
 								if (updateType == '_id') {
 									let update_id = updateDoc._id
 									query['_id'] = ObjectId(update_id)
-									$update = self.createUpdate({data: [updateDoc]}, type)
+									$update = self.createUpdate({document: [updateDoc]}, type)
 									update = $update.update
 									projection = $update.projection
 									documents.push({_id: update_id, db: 'mongodb', database, collection, ...update['$set']})
