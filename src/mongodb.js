@@ -519,10 +519,7 @@ class CoCreateMongoDB {
 			data[type] = sortData(array, data.filter.sort)
 		else
 			data[type] = array
-	
-		if (type == 'document' || type == 'doc')
-			data.data = data[type]
-		
+			
 		if (data.returnLog){
 			if (!data.log)
 				data.log = []
