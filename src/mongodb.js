@@ -29,7 +29,6 @@ class CoCreateMongoDB {
 	/** Create Document **/
 	async database(socket, data, action){
 		const self = this;
-		// if(!data.data) return;
 
 		try {
 			if (action == 'readDatabase') {
@@ -213,9 +212,6 @@ class CoCreateMongoDB {
 			let type = 'document'
 			let documents = [];
 
-	        if (!data[type] && data.data)
-            	data[type] = data.data
-
 			if (data.request)
 				data[type] = data.request
 
@@ -302,7 +298,8 @@ class CoCreateMongoDB {
 								errorHandler(error)
 							}
 							
-							documents.push(...data[type])
+							for (let i = 0; i < data[type].length; i++)
+								documents.push({db: 'mongodb', database, collection, ...data[type][i]})
 
 							collectionsLength -= 1           
 							if (!collectionsLength)
@@ -513,7 +510,7 @@ class CoCreateMongoDB {
 			data['error'] = errorLog
 
 		if (!data.request)
-			data.request = data.data || data[type] || {}
+			data.request = data[type] || {}
 	
 		if (data.filter && data.filter.sort)
 			data[type] = sortData(array, data.filter.sort)
