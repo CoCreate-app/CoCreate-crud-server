@@ -259,8 +259,9 @@ class CoCreateMongoDB {
 							if (action == 'createDocument') {
 								if (!data[type][i]._id)
 									data[type][i]._id = ObjectId()
-									data[type][i]['created'] = {on: data.timeStamp, by: data.user || data.clientId}
-
+								else 
+									data[type][i]._id = ObjectId(data[type][i]._id)
+								data[type][i]['created'] = {on: data.timeStamp, by: data.user || data.clientId}
 							}
 							if (action == 'readDocument') {
 								if (data[type][i]._id)
@@ -404,6 +405,7 @@ class CoCreateMongoDB {
 									projection = $update.projection
 									documents.push({_id: update_id, db: 'mongodb', database, collection, ...update['$set']})
 								}
+								
 								if (updateType == 'filter') {
 									query['_id'] = {$in: _ids}
 									$update = updateData
@@ -443,7 +445,10 @@ class CoCreateMongoDB {
 						}
 
 						if (action == 'deleteDocument') {
-							query['_id'] = {$in: _ids}
+							if (_ids.length == 1)
+								query['_id'] = ObjectId(_ids[0])
+							else if (_ids.length > 0)
+								query['_id'] = {$in: _ids}
 							collectionObj.deleteMany(query, function(error, result) {
 								collectionsLength -= 1           
 								if (!collectionsLength)
