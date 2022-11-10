@@ -194,7 +194,6 @@ class CoCreateMongoDB {
 			self.wsManager.send(socket, action, data);
 		}
 
-
 	}
 
 	async document(socket, data, action){
@@ -527,7 +526,7 @@ class CoCreateMongoDB {
 				data.log = []
 			data.log.push(...data[type])
 		}
-	
+		
 		return data
 	}
 
