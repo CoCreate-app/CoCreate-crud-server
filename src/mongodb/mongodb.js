@@ -1,59 +1,101 @@
-const {ObjectId} = require("mongodb");
-const {replaceArray} = require("./utils.crud.js")
+// const {mongoClient} = require("./db")
+const {MongoClient, ObjectId} = require('mongodb');
+const {replaceArray} = require("../utils.crud.js")
 const {searchData, sortData} = require("@cocreate/filter")
 
-
-
-class CoCreateMongoDB {
-	constructor(wsManager, dbClient) {
-		this.wsManager = wsManager
-		this.dbClient = dbClient
-		this.init();
-	}
-	
-	init() {
-		if (this.wsManager) {
-			this.wsManager.on('readDatabase',		(socket, data) => this.document(socket, data, 'readDatabase'))
-			this.wsManager.on('createDocument',		(socket, data) => this.document(socket, data, 'createDocument'))
-			this.wsManager.on('readDocument',		(socket, data) => this.document(socket, data, 'readDocument',))
-			this.wsManager.on('updateDocument',		(socket, data) => this.document(socket, data, 'updateDocument'))
-			this.wsManager.on('deleteDocument',		(socket, data) => this.document(socket, data, 'deleteDocument'))
-			this.wsManager.on('createCollection',	(socket, data) => this.collection(socket, data, 'createCollection'))
-			this.wsManager.on('readCollection',		(socket, data) => this.collection(socket, data, 'readCollection'))
-			this.wsManager.on('updateCollection',	(socket, data) => this.collection(socket, data, 'updateCollection'))
-			this.wsManager.on('deleteCollection',	(socket, data) => this.collection(socket, data, 'deleteCollection'))
-			this.wsManager.on('readCollections',	(socket, data) => this.collection(socket, data, 'readCollection'))
+function mongoClient(dbUrl) {
+	try {
+		dbUrl = "mongodb+srv://cocreate-app:rolling123@cocreatedb.dnjr1.mongodb.net" || dbUrl || process.env.MONGO_URL || config.db_url;
+		if (!dbUrl || !dbUrl.includes('mongodb'))
+			console.log('CoCreate.config.js missing dbUrl')
+		dbClient = MongoClient.connect(dbUrl, { useNewUrlParser: true, useUnifiedTopology: true });
+		return dbClient;
+	} catch (error) {
+		console.error(error)
+		return {
+			status: false
 		}
 	}
+}
 
-	/** Create Document **/
-	async database(socket, data, action){
+let dbClient;
+mongoClient().then(Client => {
+	dbClient = Client
+});
+
+async function databaseStats(data) {
+	let stats = await dbClient.db(data.organization_id).stats()
+	return stats
+}
+
+function createDatabase(data) {
+	return database('createDatabase', data)
+}
+
+function readDatabase(data) {
+	return database('readDatabase', data)
+}
+
+function updateDatabase(data) {
+	return database('updateDatabase', data)
+}
+
+function deleteDatabase(data) {
+	return database('deleteDatabase', data)
+}
+
+function database(action, data){
+	return new Promise((resolve, reject) => {
 		const self = this;
 
 		try {
 			if (action == 'readDatabase') {
-				let db = this.dbClient.db().admin();
+				let db = dbClient.db().admin();
 
 				// List all the available databases
 				db.listDatabases(function(err, dbs) {
-					if (dbs.databases.length > 0){
-						console.log('dbs', dbs)
-					}
-					self.broadcast(socket, action, data)					
-					// db.close();
+					resolve({...data, database: dbs.databases})					
 				})
 	
 			}
+			if (action == 'deleteDatabase') {
+				const db = dbClient.db(data.database);
+				db.dropDatabase().then(response => {
+					resolve(response)
+				})
+			}
 		} catch(error) {
-			self.wsManager.send(socket, 'ServerError', 'error');
 			errorLog.push(error)
 			data['error'] = errorLog
 			console.log(action, 'error', error);
-			self.wsManager.send(socket, action, data);
+			resolve(data);
 		}
-	}
 
-	async collection(socket, data, action){
+	}, (err) => {
+		errorHandler(data, err)
+	});
+}
+
+function createCollection(data){
+	return collection('createCollection', data)
+}
+
+function readCollection(data) {
+	return collection('readCollection', data)
+}
+
+function updateCollection(data) {
+	return collection('updateCollection', data)
+}
+
+function deleteCollection(data) {
+	return collection('deleteCollection', data)
+}
+
+
+function collection(action, data){
+	return new Promise((resolve, reject) => {
+
 		const self = this;
 		let type = 'collection'
 		let collectionArray = [];
@@ -76,10 +118,10 @@ class CoCreateMongoDB {
 
 			let databasesLength = databases.length
 			for (let database of databases) {
-				const db = this.dbClient.db(database);
+				const db = dbClient.db(database);
 				if (action == 'readCollection') {
 
-					let {query, sort} = this.getFilters(data);
+					let {query, sort} = getFilters(data);
 
 					db.listCollections(query).toArray(function(error, result) {
 						if (error) {
@@ -93,8 +135,8 @@ class CoCreateMongoDB {
 
 						databasesLength -= 1
 						if (!databasesLength) {
-							data = self.createData(data, collectionArray, type, errorLog)
-							self.broadcast(socket, action, data)					
+							data = createData(data, collectionArray, type, errorLog)
+							resolve(data)					
 						}
 					})		
 				} else {
@@ -126,8 +168,8 @@ class CoCreateMongoDB {
 									databasesLength -= 1
 								
 								if (!databasesLength && !collectionsLength) {
-									data = self.createData(data, collectionArray, type, errorLog)
-									self.broadcast(socket, action, data)					
+									data = createData(data, collectionArray, type, errorLog)
+									resolve(data)					
 								}
 							})
 						} else {
@@ -153,8 +195,8 @@ class CoCreateMongoDB {
 										databasesLength -= 1
 									
 									if (!databasesLength && !collectionsLength) {
-										data = self.createData(data, collectionArray, type, errorLog)
-										self.broadcast(socket, action, data)
+										data = createData(data, collectionArray, type, errorLog)
+										resolve(data)
 									}
 
 								})
@@ -175,8 +217,8 @@ class CoCreateMongoDB {
 										databasesLength -= 1
 									
 									if (!databasesLength && !collectionsLength) {
-										data = self.createData(data, collectionArray, type, errorLog)
-										self.broadcast(socket, action, data)
+										data = createData(data, collectionArray, type, errorLog)
+										resolve(data)
 									}
 
 								})
@@ -191,12 +233,32 @@ class CoCreateMongoDB {
 			errorLog.push(error)
 			data['error'] = errorLog
 			console.log(action, 'error', error);
-			self.wsManager.send(socket, action, data);
+			resolve(data);
 		}
+	}, (err) => {
+		errorHandler(data, err)
+	});
+}
 
-	}
+function createDocument(data){
+	return document('createDocument', data)
+}
 
-	async document(socket, data, action){
+function readDocument(data) {
+	return document('readDocument', data)
+}
+
+function updateDocument(data) {
+	return document('updateDocument', data)
+}
+
+function deleteDocument(data) {
+	return document('deleteDocument', data)
+}
+
+function document(action, data){
+	return new Promise(async (resolve, reject) => {
+
 		const self = this;
 
 		let errorLog = [];
@@ -233,14 +295,14 @@ class CoCreateMongoDB {
 				if (!Array.isArray(collections))
 					collections = [collections]
 
-        		let collectionsLength = collections.length
+				let collectionsLength = collections.length
 				for (let collection of collections) {
-					const db = this.dbClient.db(database);
+					const db = dbClient.db(database);
 					const collectionObj = db.collection(collection);
 					
-					let {query, sort} = this.getFilters(data);
+					let {query, sort} = getFilters(data);
 					if (data['organization_id']) {
-						query['organization_id'] = data['organization_id'];
+						query['organization_id'] = { $eq: data['organization_id'] }
 					}
 
 					let _ids = []
@@ -271,7 +333,7 @@ class CoCreateMongoDB {
 									update_ids.push({_id: data[type][i]._id, updateDoc: data[type][i], updateType: '_id'})
 							
 								if (!data[type][i]._id)
-									updateData = self.createUpdate({document: [data[type][i]]}, type)
+									updateData = createUpdate({document: [data[type][i]]}, type)
 
 								data[type][i]['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
 
@@ -306,8 +368,8 @@ class CoCreateMongoDB {
 								databasesLength -= 1
 							
 							if (!databasesLength && !collectionsLength) {
-								data = self.createData(data, documents, type, errorLog)
-								self.broadcast(socket, action, data)					
+								data = createData(data, documents, type, errorLog)
+								resolve(data)					
 							}
 						});	
 					}
@@ -349,8 +411,8 @@ class CoCreateMongoDB {
 								databasesLength -= 1
 							
 							if (!databasesLength && !collectionsLength) {
-								data = self.createData(data, documents, type, errorLog)
-								self.broadcast(socket, action, data)					
+								data = createData(data, documents, type, errorLog)
+								resolve(data)					
 							}
 						});
 					}
@@ -399,7 +461,7 @@ class CoCreateMongoDB {
 								if (updateType == '_id') {
 									let update_id = updateDoc._id
 									query['_id'] = ObjectId(update_id)
-									$update = self.createUpdate({document: [updateDoc]}, type)
+									$update = createUpdate({document: [updateDoc]}, type)
 									update = $update.update
 									projection = $update.projection
 									documents.push({_id: update_id, db: 'mongodb', database, collection, ...update['$set']})
@@ -435,10 +497,24 @@ class CoCreateMongoDB {
 										databasesLength -= 1
 									
 									if (!databasesLength && !collectionsLength) {
-										data = self.createData(data, documents, type, errorLog)
-										self.broadcast(socket, action, data)					
+										data = createData(data, documents, type, errorLog)
+										resolve(data)					
 									}
 								})
+							} 
+							
+							if (!update_ids.length) {
+								docsLength -= 1
+								if (!docsLength)
+									collectionsLength -= 1  
+
+								if (!collectionsLength)
+									databasesLength -= 1
+								
+								if (!databasesLength && !collectionsLength) {
+									data = createData(data, documents, type, errorLog)
+									resolve(data)					
+								}
 							}
 
 						}
@@ -454,8 +530,8 @@ class CoCreateMongoDB {
 									databasesLength -= 1
 								
 								if (!databasesLength && !collectionsLength) {
-									data = self.createData(data, documents, type, errorLog)
-									self.broadcast(socket, action, data)					
+									data = createData(data, documents, type, errorLog)
+									resolve(data)					
 								}
 								
 							})
@@ -470,200 +546,231 @@ class CoCreateMongoDB {
 			errorLog.push(error)
 			data['error'] = errorLog
 			console.log(action, 'error', error);
-			self.wsManager.send(socket, action, data);
+			resolve(data);
 		}
-	}
-
-	createUpdate(data, type) {
-		let update = {}, projection = {};
-		if  (data[type][0]) {
-			update['$set'] = this.valueTypes(data[type][0])
-			// update['$set']['organization_id'] = data['organization_id'];
-			if (update['$set']['_id'])
-				delete update['$set']['_id']
-			Object.keys(update['$set']).forEach(x => {
-				projection[x] = 1
-			})
-		}
-			
-		if( data['deleteName'] ) {
-			update['$unset'] = replaceArray(data['deleteName']);
-		}
-		
-		if( data['updateName'] ) {
-			update['$rename'] = replaceArray(data['updateName'])
-			for (const [key, value] of Object.entries(update['$rename'])) {
-				if (/\.([0-9]*)/g.test(key) || /\[([0-9]*)\]/g.test(value)) {
-					console.log('key is array', /\[([0-9]*)\]/g.test(value), /\.([0-9]*)/g.test(key))
-				} else {
-					let newValue = replaceArray({[value]: value})
-					let oldkey = key;
-					for (const [key] of Object.entries(newValue)) {
-						update['$rename'][oldkey] = key
-					}
-				}
-			}
-		}
-
-		return {update, projection}
-	
-	}
-	
-	createData(data, array, type, errorLog) {
-		if (errorLog.length > 0)
-			data['error'] = errorLog
-
-		if (!data.request)
-			data.request = data[type] || {}
-	
-		if (data.filter && data.filter.sort)
-			data[type] = sortData(array, data.filter.sort)
-		else
-			data[type] = array
-			
-		if (data.returnLog){
-			if (!data.log)
-				data.log = []
-			data.log.push(...data[type])
-		}
-		
-		return data
-	}
-
-
-	getFilters(data) {
-		let query = {}, sort = {}
-		let filter = {
-			query: [],
-			sort: [],
-			search: {
-				value: [],
-				type: "or"
-			},
-			startIndex: 0,
-			...data.filter
-		};
-
-		query = this.createQuery(filter.query);
-	
-
-		if (filter.sort)
-			filter.sort.forEach((order) => {
-				sort[order.name] = order.type
-			});
-		
-		return {query, sort}
-	}
-
-	// ToDo: create impved mongodb query to cover many cases
-	createQuery(filters) {
-		let query = new Object();
-
-		filters.forEach((item) => {
-			if (!item.name) {
-				return;
-			}
-			var key = item.name;
-			if (!query[key]) {
-				query[key] = {};
-			}
-			
-			if (item.name == "_id") 
-				item.value = ObjectId(item.value)
-			
-			switch (item.operator) {
-				case '$contain':
-					query[key]['$regex'] = item.value;
-					break;
-					
-				case '$range':
-					if (item.value[0] !== null && item.value[1] !== null) {
-						query[key] = {$gte: item.value[0], $lte: item.value[1]};
-					} else if (item.value[0] !== null) {
-						query[key] = {$gte: item.value[0]};
-					} else if (item.value[1] !== null) {
-						query[key] = {$lte: item.value[1]};
-					}
-					break;
-					
-				case '$eq':
-				case '$ne':
-				case '$lt':
-				case '$lte':
-				case '$gt':
-				case '$gte':
-				case '$regex':
-					query[key][item.operator] = item.value;
-					break;
-				case '$in':
-					var in_values = [];
-					item.value.forEach(function(v) {
-						in_values.push(new RegExp(".*" + v + ".*", "i"));
-					});
-					
-					query[key] = {$in : in_values }
-					break;
-				case '$nin':
-					query[key][item.operator] = item.value;
-					break;
-				case '$geoWithin':
-					try {
-						let value = JSON.parse(item.value);
-						if (item.type) {
-							query[key]['$geoWithin'] = {
-								[item.type]: value
-							} 
-						}
-					} catch(e) {
-						console.log('geowithin error');
-					}
-					break;
-			}    
-		})
-	
-		//. global search
-		//. we have to set indexes in text fields ex: db.chart.createIndex({ "$**": "text" })
-		// if (data['searchKey']) {
-		//   query["$text"] = {$search: "\"Ni\""};
-		// }
-
-		return query;
-	}
-
-	valueTypes(data) {
-		let object = {}
-		if( typeof data === 'object' ) {
-			// update['$set'] = {}
-			for (const [key, value] of Object.entries(data)) {
-				let val;
-				let valueType = typeof value;
-				switch(valueType) {
-					case 'string':
-						val = value
-						break;
-					case 'number':
-						val = Number(value)
-						break;
-					case 'object':
-						if (Array.isArray(value))
-							val = new Array(...value)
-						else
-							val = new Object(value)
-						break;
-					default:
-						val = value
-				}
-				object[key] = val
-			}	
-			return object;
-		}
-	}
-
-	broadcast(socket, component, response) {
-		this.wsManager.broadcast(socket, component, response);
-		process.emit('changed-document', response)
-	}
+	}, (err) => {
+		errorHandler(data, err)
+	});
 
 }
 
-module.exports = CoCreateMongoDB;
+function createUpdate(data, type) {
+	let update = {}, projection = {};
+	if  (data[type][0]) {
+		update['$set'] = valueTypes(data[type][0])
+		// update['$set']['organization_id'] = data['organization_id'];
+		if (update['$set']['_id'])
+			delete update['$set']['_id']
+		Object.keys(update['$set']).forEach(x => {
+			projection[x] = 1
+		})
+	}
+		
+	if( data['deleteName'] ) {
+		update['$unset'] = replaceArray(data['deleteName']);
+	}
+	
+	if( data['updateName'] ) {
+		update['$rename'] = replaceArray(data['updateName'])
+		for (const [key, value] of Object.entries(update['$rename'])) {
+			if (/\.([0-9]*)/g.test(key) || /\[([0-9]*)\]/g.test(value)) {
+				console.log('key is array', /\[([0-9]*)\]/g.test(value), /\.([0-9]*)/g.test(key))
+			} else {
+				let newValue = replaceArray({[value]: value})
+				let oldkey = key;
+				for (const [key] of Object.entries(newValue)) {
+					update['$rename'][oldkey] = key
+				}
+			}
+		}
+	}
+
+	return {update, projection}
+
+}
+
+function createData(data, array, type, errorLog) {
+	if (errorLog.length > 0)
+		data['error'] = errorLog
+
+	if (!data.request)
+		data.request = data[type] || {}
+
+	if (data.filter && data.filter.sort)
+		data[type] = sortData(array, data.filter.sort)
+	else
+		data[type] = array
+		
+	if (data.returnLog){
+		if (!data.log)
+			data.log = []
+		data.log.push(...data[type])
+	}
+	
+	return data
+}
+
+function getFilters(data) {
+	let query = {}, sort = {}
+	let filter = {
+		query: [],
+		sort: [],
+		search: {
+			value: [],
+			type: "or"
+		},
+		startIndex: 0,
+		...data.filter
+	};
+
+	query = createQuery(filter.query);
+
+
+	if (filter.sort)
+		filter.sort.forEach((order) => {
+			sort[order.name] = order.type
+		});
+	
+	return {query, sort}
+}
+
+// ToDo: create impved mongodb query to cover many cases
+function createQuery(filters) {
+	let query = new Object();
+
+	filters.forEach((item) => {
+		if (!item.name) {
+			return;
+		}
+		var key = item.name;
+		if (!query[key]) {
+			query[key] = {};
+		}
+		
+		if (item.name == "_id") 
+			item.value = ObjectId(item.value)
+		
+		switch (item.operator) {
+			case '$contain':
+				query[key]['$regex'] = item.value;
+				break;
+				
+			case '$range':
+				if (item.value[0] !== null && item.value[1] !== null) {
+					query[key] = {$gte: item.value[0], $lte: item.value[1]};
+				} else if (item.value[0] !== null) {
+					query[key] = {$gte: item.value[0]};
+				} else if (item.value[1] !== null) {
+					query[key] = {$lte: item.value[1]};
+				}
+				break;
+				
+			case '$eq':
+			case '$ne':
+			case '$lt':
+			case '$lte':
+			case '$gt':
+			case '$gte':
+			case '$regex':
+				query[key][item.operator] = item.value;
+				break;
+			case '$in':
+				var in_values = [];
+				item.value.forEach(function(v) {
+					in_values.push(new RegExp(".*" + v + ".*", "i"));
+				});
+				
+				query[key] = {$in : in_values }
+				break;
+			case '$nin':
+				query[key][item.operator] = item.value;
+				break;
+			case '$geoWithin':
+				try {
+					let value = JSON.parse(item.value);
+					if (item.type) {
+						query[key]['$geoWithin'] = {
+							[item.type]: value
+						} 
+					}
+				} catch(e) {
+					console.log('geowithin error');
+				}
+				break;
+		}    
+	})
+
+	//. global search
+	//. we have to set indexes in text fields ex: db.chart.createIndex({ "$**": "text" })
+	// if (data['searchKey']) {
+	//   query["$text"] = {$search: "\"Ni\""};
+	// }
+
+	return query;
+}
+
+function valueTypes(data) {
+	let object = {}
+	if( typeof data === 'object' ) {
+		// update['$set'] = {}
+		for (const [key, value] of Object.entries(data)) {
+			let val;
+			let valueType = typeof value;
+			switch(valueType) {
+				case 'string':
+					val = value
+					break;
+				case 'number':
+					val = Number(value)
+					break;
+				case 'object':
+					if (Array.isArray(value))
+						val = new Array(...value)
+					else
+						val = new Object(value)
+					break;
+				default:
+					val = value
+			}
+			object[key] = val
+		}	
+		return object;
+	}
+}
+
+function errorHandler(data, error, database, collection){
+	if (typeof error == 'object')
+		error['db'] = 'mongodb'
+	else
+		error = {db: 'mongodb', message: error}
+
+	if (database)
+		error['database'] = database
+	if (collection)
+		error['collection'] = collection
+	if(data.error)
+		data.error.push(error)
+	else
+		data.error = [error]
+}
+	
+
+
+
+module.exports = {
+	databaseStats,
+    createDatabase,
+    readDatabase,
+    updateDatabase,
+    deleteDatabase,
+    
+    createCollection,
+    readCollection,
+    updateCollection,
+    deleteCollection, 
+
+    createDocument, 
+    readDocument,
+    updateDocument, 
+    deleteDocument, 
+}
