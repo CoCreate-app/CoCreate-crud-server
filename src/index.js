@@ -115,6 +115,16 @@ class CoCreateCrudServer {
 								}
 							}
 						})
+					} else {
+						if (!dbsLength) {
+							if (socket) {
+								this.wsManager.broadcast(socket, action, data);
+								process.emit('changed-document', data)
+								resolve()
+							} else {
+								resolve(data)
+							}
+						}
 					}
 				}
 			} catch(error) {
