@@ -1,3 +1,10 @@
+## [1.13.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.13.1...v1.13.2) (2022-11-21)
+
+
+### Bug Fixes
+
+* add timeStamp if does not already exist ([3f8f432](https://github.com/CoCreate-app/CoCreate-crud-server/commit/3f8f432e0fa9da67945b70fdbd05e9821afb15cb))
+
 ## [1.13.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.13.0...v1.13.1) (2022-11-21)
 
 
