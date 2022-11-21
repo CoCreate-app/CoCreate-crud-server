@@ -10,7 +10,7 @@ module.exports = {
             "collection": "files",
             "document_id": "6204253480b409001727b73e",
             "key": "src",
-            "data": {
+            "document": {
                 "name": "index.html",
                 "path": "/docs/crud-server/index.html",
                 "domains": [

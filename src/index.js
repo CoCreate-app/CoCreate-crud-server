@@ -82,7 +82,8 @@ class CoCreateCrudServer {
 	async db(socket, action, data) {
 		return new Promise(async (resolve) => {
 			try {
-				data['timeStamp'] = new Date().toISOString()
+				if (!data['timeStamp'])
+					data['timeStamp'] = new Date().toISOString()
 
                 if (action == 'updateDocument' && data.upsert != false)
                     data.upsert = true
