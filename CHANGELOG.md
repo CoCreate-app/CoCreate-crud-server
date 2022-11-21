@@ -1,3 +1,23 @@
+# [1.13.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.12.0...v1.13.0) (2022-11-21)
+
+
+### Bug Fixes
+
+* bump [@cocreate](https://github.com/cocreate) dependencies ([a7abd3b](https://github.com/CoCreate-app/CoCreate-crud-server/commit/a7abd3bb30a8d6c46dce0033a2fa67e33ff6e548))
+* data.request takes priority ([d8f584e](https://github.com/CoCreate-app/CoCreate-crud-server/commit/d8f584ee978c4ae6dcd66e30a46f66724d60bb04))
+* removed data.data ([cc66783](https://github.com/CoCreate-app/CoCreate-crud-server/commit/cc66783f6733ea67ae990f9894a94cea0993f069))
+* renamed data.data to data.document ([ed5348f](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ed5348f9a5da8055b885b7e142acd2eec5e02be8))
+* set _id using ObjectId ([f2420f6](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f2420f6ac26bc636c76a81fc152e474cdb3075a4))
+
+
+### Features
+
+* broadcast crud  even if no database exist in server ([5b53fc2](https://github.com/CoCreate-app/CoCreate-crud-server/commit/5b53fc27a353f00617638fb36da278e76aa88b79))
+* crud can connect to multiple databases, mongodb adapter for crud ([b4e6b61](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b4e6b618e4c6197a9fe1cb2a32f7419898e86d30))
+* data response also available as data.document, improved handeling of data[type] ([bb25d9f](https://github.com/CoCreate-app/CoCreate-crud-server/commit/bb25d9f57875bbaa03bd2cafd9333e5f9d0c57f9))
+* mongodb - crud multiple databases, collections, and documents ([1ec4b27](https://github.com/CoCreate-app/CoCreate-crud-server/commit/1ec4b278e4ce830d8e452944c144ecb434027c37))
+* return documents containing db, database, and collection ([d13db96](https://github.com/CoCreate-app/CoCreate-crud-server/commit/d13db962500fc196af68f6c8e227ce9ba3241188))
+
 # [1.12.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.11.1...v1.12.0) (2022-10-02)
 
 
