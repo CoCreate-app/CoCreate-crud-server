@@ -153,7 +153,7 @@ class CoCreateCrudServer {
 		if (database)
 			error['database'] = database
 		
-		if(data.error)
+		if (data.error)
 			data.error.push(error)
 		else
 			data.error = [error]

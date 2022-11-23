@@ -566,11 +566,11 @@ function createUpdate(data, type) {
 		})
 	}
 		
-	if( data['deleteName'] ) {
+	if ( data['deleteName'] ) {
 		update['$unset'] = replaceArray(data['deleteName']);
 	}
 	
-	if( data['updateName'] ) {
+	if ( data['updateName'] ) {
 		update['$rename'] = replaceArray(data['updateName'])
 		for (const [key, value] of Object.entries(update['$rename'])) {
 			if (/\.([0-9]*)/g.test(key) || /\[([0-9]*)\]/g.test(value)) {
@@ -711,7 +711,7 @@ function createQuery(filters) {
 
 function valueTypes(data) {
 	let object = {}
-	if( typeof data === 'object' ) {
+	if ( typeof data === 'object' ) {
 		// update['$set'] = {}
 		for (const [key, value] of Object.entries(data)) {
 			let val;
@@ -748,7 +748,7 @@ function errorHandler(data, error, database, collection){
 		error['database'] = database
 	if (collection)
 		error['collection'] = collection
-	if(data.error)
+	if (data.error)
 		data.error.push(error)
 	else
 		data.error = [error]
