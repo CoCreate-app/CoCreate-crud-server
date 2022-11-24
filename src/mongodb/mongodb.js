@@ -326,7 +326,7 @@ function document(action, data){
 							}
 							if (action == 'readDocument') {
 								if (data[type][i]._id)
-									_ids.push(data[type][i]._id)
+									_ids.push(ObjectId(data[type][i]._id))
 							}
 							if (action =='updateDocument') {
 								if (data[type][i]._id)
@@ -340,7 +340,7 @@ function document(action, data){
 							}
 							if (action =='deleteDocument') {
 								if (data[type][i]._id) {
-									_ids.push(data[type][i]._id)
+									_ids.push(ObjectId(data[type][i]._id))
 									documents.push({_id: data[type][i]._id, db: 'mongodb', database, collection})
 								}
 							}
@@ -448,7 +448,7 @@ function document(action, data){
 									documents.push({_id: doc._id, db: 'mongodb', database, collection})
 								else
 									doc['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
-	
+								
 								_ids.push(doc._id)
 							}
 							update_ids.push({updateType: 'filter'})
@@ -480,11 +480,10 @@ function document(action, data){
 								update['$set']['organization_id'] = data.organization_id
 								
 								collectionObj.updateMany(query, update, {
-									upsert: false,
+									upsert: data.upsert,
 									projection
 								}).then((result) => {	
-	
-										
+
 								}).catch((error) => {
 									errorLog.push(error)
 									console.log(action, 'error', error);
