@@ -1,6 +1,6 @@
 // const {mongoClient} = require("./db")
 const {MongoClient, ObjectId} = require('mongodb');
-const {replaceArray} = require("../utils.crud.js")
+const {dotNotationToObject} = require('@cocreate/utils')
 const {searchData, sortData} = require("@cocreate/filter")
 
 function mongoClient(dbUrl) {
@@ -318,6 +318,8 @@ function document(action, data){
 
 
 							if (action == 'createDocument') {
+								data[type][i] = dotNotationToObject(data[type][i])
+
 								if (!data[type][i]._id)
 									data[type][i]._id = ObjectId()
 								else 
@@ -556,7 +558,7 @@ function document(action, data){
 function createUpdate(data, type) {
 	let update = {}, projection = {};
 	if  (data[type][0]) {
-		update['$set'] = valueTypes(data[type][0])
+		update['$set'] = data[type][0]
 		// update['$set']['organization_id'] = data['organization_id'];
 		if (update['$set']['_id'])
 			delete update['$set']['_id']
@@ -708,35 +710,6 @@ function createQuery(filters) {
 	return query;
 }
 
-function valueTypes(data) {
-	let object = {}
-	if ( typeof data === 'object' ) {
-		// update['$set'] = {}
-		for (const [key, value] of Object.entries(data)) {
-			let val;
-			let valueType = typeof value;
-			switch(valueType) {
-				case 'string':
-					val = value
-					break;
-				case 'number':
-					val = Number(value)
-					break;
-				case 'object':
-					if (Array.isArray(value))
-						val = new Array(...value)
-					else
-						val = new Object(value)
-					break;
-				default:
-					val = value
-			}
-			object[key] = val
-		}	
-		return object;
-	}
-}
-
 function errorHandler(data, error, database, collection){
 	if (typeof error == 'object')
 		error['db'] = 'mongodb'
@@ -753,7 +726,24 @@ function errorHandler(data, error, database, collection){
 		data.error = [error]
 }
 	
-
+function replaceArray(data) {
+	let keys = Object.keys(data);
+	let objectData = {};
+  
+	keys.forEach((k) => {
+	  let nk = k
+	  if (/\[([0-9]*)\]/g.test(k)) {
+		nk = nk.replace(/\[/g, '.');
+		if (nk.endsWith(']'))
+		  nk = nk.slice(0, -1)
+		nk = nk.replace(/\]./g, '.');
+		nk = nk.replace(/\]/g, '.');
+	  }
+	  objectData[nk] = data[k];
+	});
+	
+	return objectData;
+  }
 
 
 module.exports = {

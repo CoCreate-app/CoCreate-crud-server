@@ -2,51 +2,96 @@
 # yarn lockfile v1
 
 
-"@cocreate/crud-client@^1.10.0":
-  version "1.10.1"
-  resolved "https://registry.yarnpkg.com/@cocreate/crud-client/-/crud-client-1.10.1.tgz#ed5f73a626a9852f901425be1e1ae859bdb84a18"
-  integrity sha512-T40SOw0vHQuUv91rEF4TUt3zHW+Ha+Puc2iO2B3Q5EfGMWdDcQyWXQq7kF4yPu1HebZhPcRUQ+RapApDJvgVAg==
+"@cocreate/actions@^1.5.21":
+  version "1.5.22"
+  resolved "https://registry.yarnpkg.com/@cocreate/actions/-/actions-1.5.22.tgz#6c845e7ad27487d5c9b65d0c4dd5ecbdb8bde185"
+  integrity sha512-gMLwB1XdBVWPqcPzVh4otbWF8h8fzz2VqvbMz1dxPbg9NGQ5ULaN0sZ9yP+y1r+1nSmyQcnQzni/4ceSuIQ4Hg==
   dependencies:
-    "@cocreate/docs" "^1.3.5"
-    "@cocreate/socket-client" "^1.5.6"
+    "@cocreate/docs" "^1.4.3"
+    "@cocreate/hosting" "^1.6.2"
+    "@cocreate/utils" "^1.10.22"
 
-"@cocreate/docs@^1.3.5", "@cocreate/docs@^1.3.6":
-  version "1.3.6"
-  resolved "https://registry.yarnpkg.com/@cocreate/docs/-/docs-1.3.6.tgz#16cd49f5767c648cd7de28994329e0568c5ce9cb"
-  integrity sha512-YvuFZn9Oek9b5nCXH/Sn0jXSAe5vf9cxjeHybjjrJ4umb1bCDb6JQkwL0zSNdNI/bQBFMvhcH0YKBktY6KIZlw==
+"@cocreate/crud-client@^1.14.2":
+  version "1.14.3"
+  resolved "https://registry.yarnpkg.com/@cocreate/crud-client/-/crud-client-1.14.3.tgz#b60771161f31d322b071b252c3629483e26ea69c"
+  integrity sha512-NawqJQ8HtK0130e1zQA2txOov2LAnRYTHL5SW2s/0AItIjKlS4K15/RvAzEOdt6tkbJkSkYCopPDRJ1/0MX4iQ==
   dependencies:
-    "@cocreate/crud-client" "^1.10.0"
-    "@cocreate/hosting" "^1.3.4"
-    "@cocreate/socket-client" "^1.5.6"
+    "@cocreate/docs" "^1.4.3"
+    "@cocreate/indexeddb" "^1.3.6"
+    "@cocreate/socket-client" "^1.11.1"
+
+"@cocreate/docs@^1.4.3":
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/@cocreate/docs/-/docs-1.4.4.tgz#ec00e7ed7a2d7d91978f47392c980f8fb436bba3"
+  integrity sha512-BOKq9vQCAT0dUrLq5GI7Zv5eNEI1joeLBacIHwqCJQTrPeVpO0adY0lN5RzJ0XAu3PIRPMo7CAiWfikSzwzGYA==
+  dependencies:
+    "@cocreate/crud-client" "^1.14.2"
+    "@cocreate/hosting" "^1.6.2"
     extract-comments "^1.1.0"
     glob "^7.1.6"
     parse-html-comments "^1.3.1"
 
-"@cocreate/hosting@^1.3.4":
-  version "1.3.5"
-  resolved "https://registry.yarnpkg.com/@cocreate/hosting/-/hosting-1.3.5.tgz#ddb4e2acfc3b961aec630e99e00782b227a95d75"
-  integrity sha512-j/uk0PbHOgI0JVxBj32+SiELkfpi9X8+qSzvBpnlelGUmUFiDuJpJmWuYTT2BjF3ua03xwJt88pDDhPMb/aBCw==
+"@cocreate/filter@^1.10.2":
+  version "1.10.3"
+  resolved "https://registry.yarnpkg.com/@cocreate/filter/-/filter-1.10.3.tgz#3182018317cef352436fd7f422afbc1cf1ba8eee"
+  integrity sha512-QX8FleCQJaj6lrndt6zy5u8z4uNOouqk2dcvqSkGPQkhams0HcXdkBbu022LrjyXFkeBe8upfiXPguItCUH/6A==
   dependencies:
-    "@cocreate/crud-client" "^1.10.0"
-    "@cocreate/docs" "^1.3.5"
-    "@cocreate/socket-client" "^1.5.6"
+    "@cocreate/actions" "^1.5.21"
+    "@cocreate/crud-client" "^1.14.2"
+    "@cocreate/docs" "^1.4.3"
+    "@cocreate/observer" "^1.5.26"
+
+"@cocreate/hosting@^1.6.2":
+  version "1.6.3"
+  resolved "https://registry.yarnpkg.com/@cocreate/hosting/-/hosting-1.6.3.tgz#5756a3f3383600ff0b6077de1255f51f55af9b8e"
+  integrity sha512-MCKeaQF0oZH2HepHDkBey9ZAF624T4uJY+oufOfL+D40fix/d79blMJ8RHpVyww2tUaUak3TD7ofjZEJCoUz3A==
+  dependencies:
+    "@cocreate/crud-client" "^1.14.2"
+    "@cocreate/docs" "^1.4.3"
     mime-types "^2.1.30"
 
-"@cocreate/socket-client@^1.5.6":
-  version "1.5.7"
-  resolved "https://registry.yarnpkg.com/@cocreate/socket-client/-/socket-client-1.5.7.tgz#2ad7093677f0a4e0e52f495ce07e1a81dce648fd"
-  integrity sha512-xAE/M1ZdGHPciT2+gM6jt15y+tDj1GqMAiiUMzwIwGByypKNYwgV9vWB/p4MjPDRZpy89PHx7ZC7u1aT8S+TKA==
+"@cocreate/indexeddb@^1.3.6":
+  version "1.3.7"
+  resolved "https://registry.yarnpkg.com/@cocreate/indexeddb/-/indexeddb-1.3.7.tgz#af07681c785d953564f3e1a41347ca800cf0879c"
+  integrity sha512-lMluOcq1IYSw1EL5PKtPXZjnCR9tVLkxXtIl856Yhd56rK6oIlwZTAMMQMZhf34nz0QPwLZu1B6qhW4qQiF0gg==
   dependencies:
-    "@cocreate/docs" "^1.3.5"
-    "@cocreate/uuid" "^1.2.5"
-    ws "^7.4.4"
+    "@cocreate/docs" "^1.4.3"
+    "@cocreate/filter" "^1.10.2"
+    "@cocreate/hosting" "^1.6.2"
+    "@cocreate/utils" "^1.10.22"
 
-"@cocreate/uuid@^1.2.5":
-  version "1.2.6"
-  resolved "https://registry.yarnpkg.com/@cocreate/uuid/-/uuid-1.2.6.tgz#13726e008d47552945c0c0990b46880aff382ca7"
-  integrity sha512-7GhMRsNKJSEfwk720ENRx7iMBsablxzyMdu3X/lHU3qeaeC8xa5D+iCn59CKz1V7EMSIelAbR/SQo2RkQe8X9w==
+"@cocreate/observer@^1.5.26":
+  version "1.5.27"
+  resolved "https://registry.yarnpkg.com/@cocreate/observer/-/observer-1.5.27.tgz#30a6d8314d61d0d09fe088ba8cf65cff34bff1f8"
+  integrity sha512-bj3FbkhWMnl+w1tdxJKdbZxkcdA8RTYpG2+kMmubRyb39TF7qqocYSjbVeUul8uLwWfF08oYhTOGiyD/N3f1Cg==
   dependencies:
-    "@cocreate/docs" "^1.3.5"
+    "@cocreate/docs" "^1.4.3"
+    "@cocreate/utils" "^1.10.22"
+    css-selector-parser "^1.4.1"
+
+"@cocreate/socket-client@^1.11.1":
+  version "1.11.2"
+  resolved "https://registry.yarnpkg.com/@cocreate/socket-client/-/socket-client-1.11.2.tgz#19fbc54eb3005a76a7651fd39dd03c6e28e0e1a0"
+  integrity sha512-WiuaEJh1im4moKj0jSTsRVsH/xb5fJo7xZfmySNCs8GddxdV8P1A6/pibvmSparkbUTrqaGFrpQFWmeTAvi8XQ==
+  dependencies:
+    "@cocreate/docs" "^1.4.3"
+    "@cocreate/indexeddb" "^1.3.6"
+    "@cocreate/uuid" "^1.2.24"
+    ws "7.5.9"
+
+"@cocreate/utils@^1.10.22", "@cocreate/utils@^1.10.23":
+  version "1.10.23"
+  resolved "https://registry.yarnpkg.com/@cocreate/utils/-/utils-1.10.23.tgz#7b98af01070129d20ddc7dfca0f8f28ed5b864ca"
+  integrity sha512-UWAnAtVg6vYPwOckcLB9m1iP6mAtTiiQHzjIcM5cLogXIik76GwJfyCk8KvPAs3KqySoFc3bCyNii08DhX4VgQ==
+  dependencies:
+    "@cocreate/docs" "^1.4.3"
+
+"@cocreate/uuid@^1.2.24":
+  version "1.2.25"
+  resolved "https://registry.yarnpkg.com/@cocreate/uuid/-/uuid-1.2.25.tgz#a86313fa7d0b7df7509457089090181d0d30393d"
+  integrity sha512-5URDY8Q2bJtJoz+SkW8hLTw6ANJwkPvyBFQGimCAtSlJCrGgWk6KB+CKCRUp+9zmrngnGHTslsoMi9MO3eQgYg==
+  dependencies:
+    "@cocreate/docs" "^1.4.3"
 
 "@types/node@*":
   version "16.11.7"
@@ -164,6 +209,11 @@ cookie@0.4.0:
   version "0.4.0"
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.0.tgz#beb437e7022b3b6d49019d088665303ebe9c14ba"
   integrity sha512-+Hp8fLp57wnUSt0tY0tHEXh4voZRDnoIrZPqlo3DPiI4y9lwg/jqx+1Om94/W6ZaPDOUbnjOt/99w66zk+l1Xg==
+
+css-selector-parser@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/css-selector-parser/-/css-selector-parser-1.4.1.tgz#03f9cb8a81c3e5ab2c51684557d5aaf6d2569759"
+  integrity sha512-HYPSb7y/Z7BNDCOrakL4raGO2zltZkbeXyAd6Tg9obzix6QhzxCotdBl6VT0Dv4vZfJGVz3WL/xaEI9Ly3ul0g==
 
 csvtojson@^2.0.10:
   version "2.0.10"
@@ -689,7 +739,7 @@ wrappy@1:
   resolved "https://registry.yarnpkg.com/wrappy/-/wrappy-1.0.2.tgz#b5243d8f3ec1aa35f1364605bc0d1036e30ab69f"
   integrity sha1-tSQ9jz7BqjXxNkYFvA0QNuMKtp8=
 
-ws@^7.4.4:
-  version "7.5.5"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.5.tgz#8b4bc4af518cfabd0473ae4f99144287b33eb881"
-  integrity sha512-BAkMFcAzl8as1G/hArkxOxq3G7pjUqQ3gzYbLL0/5zNkph70e+lCoxBGnm6AW1+/aiNeV4fnKqZ8m4GZewmH2w==
+ws@7.5.9:
+  version "7.5.9"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-7.5.9.tgz#54fa7db29f4c7cec68b1ddd3a89de099942bb591"
+  integrity sha512-F+P9Jil7UiSKSkppIiD94dN07AwvFixvLIj1Og1Rl9GGMuNipJnV9JzjD6XuqmAeiswGvUmNLjr5cFuXwNS77Q==
