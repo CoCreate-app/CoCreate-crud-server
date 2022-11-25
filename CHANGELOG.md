@@ -1,3 +1,16 @@
+# [1.14.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.13.7...v1.14.0) (2022-11-25)
+
+
+### Bug Fixes
+
+* querying an array of documents requires the _id to be wrapped in ObjectId ([d988da8](https://github.com/CoCreate-app/CoCreate-crud-server/commit/d988da872248cf68bbeaf4d47bec6d8875ddda23))
+* replaced @cocreate/filter with @cocreate/utils fo search, query and sort functions ([f91fb78](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f91fb78dea770b4afc72dd5ad2842e4745d659f8))
+
+
+### Features
+
+* run dotNotationToObject on createDocument ([133cc30](https://github.com/CoCreate-app/CoCreate-crud-server/commit/133cc302771ef139642e47f31c0f308a69c07869))
+
 ## [1.13.7](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.13.6...v1.13.7) (2022-11-24)
 
 
