@@ -1,7 +1,6 @@
 'use strict';
 
-const {replaceArray} = require("./utils.crud.js")
-const {searchData, sortData} = require("@cocreate/filter")
+const {searchData, sortData} = require("@cocreate/utils");
 const mongodb = require('./mongodb/mongodb');
 
 class CoCreateCrudServer {
