@@ -384,13 +384,17 @@ function document(action, data){
 							}
 	
 							if (result) {
-								// ToDo: forEach at cursor, searchData can can be an object or an array to 1 or many docs
-								let searchResult = searchData(result, data.filter)
-								for (let doc of searchResult) {
-									doc.db = 'mongodb'
-									doc.database = database
-									doc.collection = collection
-									documents.push(doc)
+								// ToDo: forEach at cursor
+								for (let doc of result) {
+									let isFilter = true
+									if (data.filter['search'])
+										isFilter = searchData(doc, data.filter['search'])
+									if (isFilter) {
+										doc.db = 'mongodb'
+										doc.database = database
+										doc.collection = collection
+										documents.push(doc)
+									}
 								}
 
 								if (data.returnDocument == false) {
