@@ -1,3 +1,10 @@
+## [1.14.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.14.1...v1.14.2) (2022-11-27)
+
+
+### Bug Fixes
+
+* improved readDocument filter, bump dependencies ([df58e49](https://github.com/CoCreate-app/CoCreate-crud-server/commit/df58e499709723b44882e7ce67a934c20d833f30))
+
 ## [1.14.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.14.0...v1.14.1) (2022-11-26)
 
 
