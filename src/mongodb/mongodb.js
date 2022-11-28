@@ -387,7 +387,7 @@ function document(action, data){
 								// ToDo: forEach at cursor
 								for (let doc of result) {
 									let isFilter = true
-									if (data.filter['search'])
+									if (data.filter && data.filter['search'])
 										isFilter = searchData(doc, data.filter['search'])
 									if (isFilter) {
 										doc.db = 'mongodb'
