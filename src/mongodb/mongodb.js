@@ -375,8 +375,20 @@ function document(action, data){
 					}
 
 					if (action == 'readDocument') {
-
-						collectionObj.find(query).sort(sort).toArray(function(error, result) {
+						let index = 0, limit = 0
+						if (data.filter) {
+							const count = await collectionObj.estimatedDocumentCount()
+							data.filter.count = count
+	
+							if (data.filter.startIndex)
+								index = data.filter.startIndex
+							if (data.filter.limit)
+								limit = data.filter.limit
+							if (limit)
+								limit = index + limit;
+						}
+				
+						collectionObj.find(query).limit(limit).sort(sort).toArray(function(error, result) {
 							if (error) {
 								error.database = database
 								error.collection = collection 
@@ -386,15 +398,19 @@ function document(action, data){
 							if (result) {
 								// ToDo: forEach at cursor
 								for (let doc of result) {
-									let isFilter = true
+									let isMatch = true
 									if (data.filter && data.filter['search'])
-										isFilter = searchData(doc, data.filter['search'])
-									if (isFilter) {
+										isMatch = searchData(doc, data.filter['search'])
+									if (isMatch) {
 										doc.db = 'mongodb'
 										doc.database = database
 										doc.collection = collection
 										documents.push(doc)
 									}
+								}
+
+								if (index && limit) {
+									documents = documents.slice(index, limit)
 								}
 
 								if (data.returnDocument == false) {
@@ -431,9 +447,17 @@ function document(action, data){
 										error.collection = collection 
 										errorHandler(error)
 									}
-					
-									let searchResult = searchData(result, data.filter)
-									resolve(searchResult)
+									if (data.filter && data.filter.search) {
+										let searchResult = []
+
+										for (let doc of result) {
+											let isMatch = searchData(doc, data.filter.search)
+											if (isMatch)
+												searchResult.push(doc)
+										}
+										result = searchResult
+									}
+									resolve(result)
 								})
 							}, (err) => {
 								console.log(err);
