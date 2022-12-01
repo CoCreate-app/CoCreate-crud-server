@@ -654,9 +654,8 @@ function getFilters(data) {
 
 
 	if (filter.sort)
-		filter.sort.forEach((order) => {
-			sort[order.name] = order.type
-		});
+		for (let i = 0; i < filter.sort.length; i++)
+			sort[filter.sort[i].name] = filter.sort[i].direction
 	
 	return {query, sort}
 }
@@ -678,7 +677,7 @@ function createQuery(filters) {
 			item.value = ObjectId(item.value)
 		
 		switch (item.operator) {
-			case '$contain':
+			case '$includes':
 				query[key]['$regex'] = item.value;
 				break;
 				
