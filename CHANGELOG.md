@@ -1,3 +1,17 @@
+# [1.15.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.14.5...v1.15.0) (2022-12-02)
+
+
+### Bug Fixes
+
+* bump dependencies ([e9921ac](https://github.com/CoCreate-app/CoCreate-crud-server/commit/e9921acc5404d9bc7b04718e1cd6520949ceccd9))
+* data.user to data.user_id ([645493a](https://github.com/CoCreate-app/CoCreate-crud-server/commit/645493ab7795559ddaa7e04b040777b6288ead37))
+* renamed $contain to $include ([42d351e](https://github.com/CoCreate-app/CoCreate-crud-server/commit/42d351e435ebe5f2328682c8c836092f41eea2b7))
+
+
+### Features
+
+* supports index and limit. improved search ([2ce163a](https://github.com/CoCreate-app/CoCreate-crud-server/commit/2ce163a60a9503f276ffb3ac1ffedf6016ba4d92))
+
 ## [1.14.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.14.4...v1.14.5) (2022-11-28)
 
 
