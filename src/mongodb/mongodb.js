@@ -322,7 +322,7 @@ function document(action, data){
 									data[type][i]._id = ObjectId()
 								else 
 									data[type][i]._id = ObjectId(data[type][i]._id)
-								data[type][i]['created'] = {on: data.timeStamp, by: data.user || data.clientId}
+								data[type][i]['created'] = {on: data.timeStamp, by: data.user_id || data.clientId}
 							}
 							if (action == 'readDocument') {
 								if (data[type][i]._id)
@@ -335,7 +335,7 @@ function document(action, data){
 								if (!data[type][i]._id)
 									updateData = createUpdate({document: [data[type][i]]}, type)
 
-								data[type][i]['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
+								data[type][i]['modified'] = {on: data.timeStamp, by: data.user_id || data.clientId}
 
 							}
 							if (action =='deleteDocument') {
@@ -475,7 +475,7 @@ function document(action, data){
 								if (action == 'deleteDocument')
 									documents.push({_id: doc._id, db: 'mongodb', database, collection})
 								else
-									doc['modified'] = {on: data.timeStamp, by: data.user || data.clientId}
+									doc['modified'] = {on: data.timeStamp, by: data.user_id || data.clientId}
 								
 								_ids.push(doc._id)
 							}
