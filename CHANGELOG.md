@@ -1,3 +1,10 @@
+## [1.15.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.15.2...v1.15.3) (2022-12-04)
+
+
+### Bug Fixes
+
+* readDocument doc._id.toString() ([ab22fea](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ab22fea26e94282190800f1c0484faadef9ffdb9))
+
 ## [1.15.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.15.1...v1.15.2) (2022-12-04)
 
 
