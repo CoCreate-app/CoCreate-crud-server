@@ -1,13 +1,11 @@
 'use strict';
 
 const {ObjectId, searchData, sortData} = require("@cocreate/utils");
-const mongodb = require('./mongodb/mongodb');
 
 class CoCreateCrudServer {
-	constructor(wsManager) {
+	constructor(wsManager, databases) {
 		this.wsManager = wsManager
-		this.dbs = ['mongodb']
-		this.mongodb = mongodb
+		this.databases = databases
 		this.ObjectId = ObjectId
 		this.init();
 	}
@@ -99,12 +97,12 @@ class CoCreateCrudServer {
                 }
 
 				if (!data.db || !data.db.length)
-					data.db = this.dbs
+					data.db = ['mongodb']
 				let dbsLength = data.db.length
 				for (let i = 0; i < data.db.length; i++) {
 					dbsLength -= 1
-					if (this.dbs.includes(data.db[i])) {
-						this[data.db[i]][action](data).then((data) => {
+					if (this.databases[data.db[i]]) {
+						this.databases[data.db[i]][action](data).then((data) => {
 							//ToDo: sorting should take place here in order to return sorted values from multiple dbs
 							if (!dbsLength) {
 								if (socket) {
