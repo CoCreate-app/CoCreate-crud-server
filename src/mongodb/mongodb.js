@@ -405,6 +405,7 @@ function document(action, data){
 										doc.db = 'mongodb'
 										doc.database = database
 										doc.collection = collection
+										doc._id = doc._id.toString()
 										documents.push(doc)
 									}
 								}

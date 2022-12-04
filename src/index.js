@@ -98,8 +98,6 @@ class CoCreateCrudServer {
                         data['organization_id'] = process.env.organization_id
                 }
 
-				console.log('crud-server-----', data['organization_id'], data.collection, data.database)
-
 				if (!data.db || !data.db.length)
 					data.db = this.dbs
 				let dbsLength = data.db.length
