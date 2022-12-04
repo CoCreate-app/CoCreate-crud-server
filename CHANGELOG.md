@@ -1,3 +1,10 @@
+## [1.15.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.15.3...v1.15.4) (2022-12-04)
+
+
+### Bug Fixes
+
+*  opertor throwing a regex error ([6683f40](https://github.com/CoCreate-app/CoCreate-crud-server/commit/6683f4012353f81614a97ad997e622f985613f5a))
+
 ## [1.15.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.15.2...v1.15.3) (2022-12-04)
 
 
