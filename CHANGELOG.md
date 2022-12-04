@@ -1,3 +1,10 @@
+## [1.15.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.15.1...v1.15.2) (2022-12-04)
+
+
+### Bug Fixes
+
+* console.log to trace error in deployment ([cd77e4b](https://github.com/CoCreate-app/CoCreate-crud-server/commit/cd77e4b4dee62511d7bba16fef5ba42f89421af7))
+
 ## [1.15.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.15.0...v1.15.1) (2022-12-02)
 
 
