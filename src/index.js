@@ -1,6 +1,6 @@
 'use strict';
 
-const {searchData, sortData} = require("@cocreate/utils");
+const {ObjectId, searchData, sortData} = require("@cocreate/utils");
 const mongodb = require('./mongodb/mongodb');
 
 class CoCreateCrudServer {
@@ -8,6 +8,7 @@ class CoCreateCrudServer {
 		this.wsManager = wsManager
 		this.dbs = ['mongodb']
 		this.mongodb = mongodb
+		this.ObjectId = ObjectId
 		this.init();
 	}
 		
@@ -97,6 +98,8 @@ class CoCreateCrudServer {
                         data['organization_id'] = process.env.organization_id
                 }
 
+				console.log('crud-server-----', data['organization_id'], data.collection, data.database)
+
 				if (!data.db || !data.db.length)
 					data.db = this.dbs
 				let dbsLength = data.db.length
@@ -138,10 +141,6 @@ class CoCreateCrudServer {
 			}
 		});
 	}
-
-	ObjectId = (rnd = r16 => Math.floor(r16).toString(16)) =>
-    rnd(Date.now()/1000) + ' '.repeat(16).replace(/./g, () => rnd(Math.random()*16))
-
 
 	errorHandler(data, error, database, collection){
 		if (typeof error == 'object')
