@@ -1,3 +1,10 @@
+# [1.16.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.15.4...v1.16.0) (2022-12-04)
+
+
+### Features
+
+* accepts an object of databases, currently supports mongodb ([743ea2d](https://github.com/CoCreate-app/CoCreate-crud-server/commit/743ea2d3ab58101be1d9cfa842083d0c95ffd0e4))
+
 ## [1.15.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.15.3...v1.15.4) (2022-12-04)
 
 
