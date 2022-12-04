@@ -702,12 +702,12 @@ function createQuery(filters) {
 				query[key][item.operator] = item.value;
 				break;
 			case '$in':
-				var in_values = [];
-				item.value.forEach(function(v) {
-					in_values.push(new RegExp(".*" + v + ".*", "i"));
-				});
+				// var in_values = [];
+				// item.value.forEach(function(v) {
+				// 	in_values.push(new RegExp(".*" + v + ".*", "i"));
+				// });
 				
-				query[key] = {$in : in_values }
+				query[key] = {$in : item.value }
 				break;
 			case '$nin':
 				query[key][item.operator] = item.value;
