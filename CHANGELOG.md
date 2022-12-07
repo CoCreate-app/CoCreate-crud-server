@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.16.1...v1.17.0) (2022-12-07)
+
+
+### Features
+
+* database crud functions ([60ff480](https://github.com/CoCreate-app/CoCreate-crud-server/commit/60ff4809ed232a8a9b4b5ae95f2e0649773dec00))
+
 ## [1.16.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.16.0...v1.16.1) (2022-12-04)
 
 
