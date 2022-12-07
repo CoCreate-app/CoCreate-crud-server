@@ -34,7 +34,7 @@ class CoCreateBackup {
 	// 	try {
 	// 		let binaryData = null;
 	// 		const result = data.data;
-	// 		const orgId = socket.config.orgId ;
+	// 		const organization_id = socket.config.organization_id ;
 	// 		if (export_type === 'csv') {
 	// 			binaryData = await json2csv.json2csvAsync(JSON.parse(JSON.stringify(result)), {
 	// 				emptyFieldValue: ''
@@ -43,9 +43,9 @@ class CoCreateBackup {
 	// 			binaryData = Buffer.from(JSON.stringify(result));
 	// 		}
 			
-	// 		this.wsManager.send(socket, 'downloadFileInfo', {file_name: `backup_${data['collection']}.${export_type}`, binaryData, export_type}, orgId);
+	// 		this.wsManager.send(socket, 'downloadFileInfo', {file_name: `backup_${data['collection']}.${export_type}`, binaryData, export_type}, organization_id);
 
-	// 		this.wsManager.sendBinary(socket, binaryData, orgId);
+	// 		this.wsManager.sendBinary(socket, binaryData, organization_id);
 
 	// 	} catch (error) {
 	// 		console.log('export error', error); 
@@ -68,14 +68,14 @@ class CoCreateBackup {
 	// 	try {
 			
 	// 		var collection = this.dbClient.db(data['namespace']).collection(data["collection"]);
-	// 		const orgId = socket.config.orgId
+	// 		const organization_id = socket.config.organization_id
 			
 	// 		var query = {};
 			
 	// 		collection.find(query).toArray(async function(error, result) {
 	// 			if (!error) {
 	// 				let binaryData = null;
-	// 				self.wsManager.send(socket, 'downloadFileInfo', {file_name: `backup_${data['collection']}.${export_type}`}, orgId);
+	// 				self.wsManager.send(socket, 'downloadFileInfo', {file_name: `backup_${data['collection']}.${export_type}`}, organization_id);
 	// 				if (export_type === 'csv') {
 	// 					binaryData = await json2csv.json2csvAsync(JSON.parse(JSON.stringify(result)), {
 	// 						emptyFieldValue: ''
@@ -84,7 +84,7 @@ class CoCreateBackup {
 	// 					binaryData = Buffer.from(JSON.stringify(result));
 	// 				}
 
-	// 				self.wsManager.sendBinary(socket, binaryData, orgId);
+	// 				self.wsManager.sendBinary(socket, binaryData, organization_id);
 	// 			}
 	// 		});
 	// 	} catch (error) {
@@ -106,7 +106,7 @@ class CoCreateBackup {
 		
 	// 	console.log('import:', importCollection, importType, importFile)
 	// 	const self = this;
-	// 	//	const orgId = socket.config.orgId
+	// 	//	const organization_id = socket.config.organization_id
 	// 	if (!importCollection || !importType) {
 	// 		return;
 	// 	}
@@ -123,16 +123,16 @@ class CoCreateBackup {
 	// 		// todo: validate json / if json is object error happens
 	// 		jsonData.map((item) => delete item._id);
 	// 		console.log('json: ', jsonData)
-	// 		var collection = this.dbClient.db(orgId).collection(importCollection);
+	// 		var collection = this.dbClient.db(organization_id).collection(importCollection);
 	// 		// console.log(this.importCollection)
 	// 		collection.insertMany(jsonData, function(err, result) {
 	// 			if (!err) {
 	// 				self.wsManager.send(socket, 'importedFile2DB', {
-	// 					'database': orgId,
+	// 					'database': organization_id,
 	// 					'collection': importCollection,
 	// 					'import_type': importType,
 	// 					'data': result
-	// 				}, orgId)
+	// 				}, organization_id)
 	// 			}
 	// 		})
 			

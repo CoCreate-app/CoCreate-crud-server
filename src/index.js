@@ -32,6 +32,26 @@ class CoCreateCrudServer {
 		return data
 	}
 
+	async createDatabase(data) {
+		data = await this.db('', 'createDatabase', data)
+		return data
+	}
+
+	async readDatabase(data) {
+		data = await this.db('', 'readDatabase', data)
+		return data
+	}
+	
+	async updateDatabase(data) {
+		data = await this.db('', 'updateDatabase', data)
+		return data
+	}
+
+	async deleteDatabase(data) {
+		data = await this.db('', 'deleteDatabase', data)
+		return data
+	}
+
 	async createCollection(data) {
 		data = await this.db('', 'createCollection', data)
 		return data
@@ -42,11 +62,6 @@ class CoCreateCrudServer {
 		return data
 	}
 	
-	async readCollections(data) {
-		data = await this.db('', 'readCollections', data)
-		return data
-	}
-
 	async updateCollection(data) {
 		data = await this.db('', 'updateCollection', data)
 		return data
