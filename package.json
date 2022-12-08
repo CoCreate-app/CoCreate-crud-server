@@ -43,10 +43,6 @@
     "@cocreate/docs": "^1.4.13",
     "@cocreate/utils": "^1.14.2",
     "csvtojson": "^2.0.10",
-    "json-2-csv": "^3.10.3",
-    "mongodb": "^4.4.0"
-  },
-  "devDependencies": {
-    "express": "^4.17.1"
+    "json-2-csv": "^3.10.3"
   }
 }
