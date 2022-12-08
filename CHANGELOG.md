@@ -1,3 +1,10 @@
+## [1.17.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.17.1...v1.17.2) (2022-12-08)
+
+
+### Bug Fixes
+
+* removed mongodb dependency ([1ba76b3](https://github.com/CoCreate-app/CoCreate-crud-server/commit/1ba76b3fddb89982744716339c382af5b26c18f9))
+
 ## [1.17.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.17.0...v1.17.1) (2022-12-07)
 
 
