@@ -20,9 +20,7 @@
     "html5-framework",
     "javascript-framework"
   ],
-  "publishConfig": {
-    "access": "public"
-  },
+  "publishConfig": { "access": "public" },
   "scripts": {
     "demo": "PORT=5000 node demo/server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -40,8 +38,8 @@
   },
   "homepage": "https://cocreate.app/docs/CoCreate-crud-server",
   "dependencies": {
-    "@cocreate/docs": "^1.4.15",
-    "@cocreate/utils": "^1.15.0",
+    "@cocreate/docs": "^1.4.16",
+    "@cocreate/utils": "^1.15.1",
     "csvtojson": "^2.0.10",
     "json-2-csv": "^3.10.3"
   }
