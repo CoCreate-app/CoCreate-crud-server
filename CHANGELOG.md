@@ -1,3 +1,10 @@
+## [1.17.16](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.17.15...v1.17.16) (2022-12-30)
+
+
+### Bug Fixes
+
+* update config sources to use template  braces with entry on src ([e130e5f](https://github.com/CoCreate-app/CoCreate-crud-server/commit/e130e5f48fdcf508caa4bbad8eaec4f885addaec))
+
 ## [1.17.15](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.17.14...v1.17.15) (2022-12-29)
 
 
