@@ -95,6 +95,9 @@ class CoCreateCrudServer {
 	async db(socket, action, data) {
 		return new Promise(async (resolve) => {
 			try {
+				if (socket.dbs && socket.dbs.mongodb)
+					data['dbs'] = socket.dbs.mongodb[0]
+
 				if (!data['timeStamp'])
 					data['timeStamp'] = new Date().toISOString()
 
