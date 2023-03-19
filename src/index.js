@@ -95,9 +95,6 @@ class CoCreateCrudServer {
 	async db(socket, action, data) {
 		return new Promise(async (resolve) => {
 			try {
-				if (socket.dbs && socket.dbs.mongodb)
-					data['dbs'] = socket.dbs.mongodb[0]
-
 				if (!data['timeStamp'])
 					data['timeStamp'] = new Date().toISOString()
 
@@ -120,6 +117,9 @@ class CoCreateCrudServer {
 				for (let i = 0; i < data.db.length; i++) {
 					dbsLength -= 1
 					if (this.databases[data.db[i]]) {
+						if (socket.dbs && socket.dbs[data.db[i]])
+							data['dbs'] = socket.dbs[data.db[i]][0]
+	
 						this.databases[data.db[i]][action](data).then((data) => {
 							//ToDo: sorting should take place here in order to return sorted values from multiple dbs
 							if (!dbsLength) {
