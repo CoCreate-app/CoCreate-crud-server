@@ -1,3 +1,15 @@
+# [1.18.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.17.29...v1.18.0) (2023-03-19)
+
+
+### Bug Fixes
+
+* dynamically get dburl per db type ([3c32d12](https://github.com/CoCreate-app/CoCreate-crud-server/commit/3c32d1262c54e72aae007a2333f0493cd5c4b036))
+
+
+### Features
+
+* send custom db urls with database request to store in user defined database ([70be46f](https://github.com/CoCreate-app/CoCreate-crud-server/commit/70be46fef1e25406f311ae809adc27a8e38f5018))
+
 ## [1.17.29](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.17.28...v1.17.29) (2023-02-01)
 
 
