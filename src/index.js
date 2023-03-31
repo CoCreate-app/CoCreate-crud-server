@@ -6,6 +6,7 @@ class CoCreateCrudServer {
 	constructor(wsManager, databases) {
 		this.wsManager = wsManager
 		this.databases = databases
+		this.databaseUrls = new Map()
 		this.ObjectId = ObjectId
 		this.init();
 	}
@@ -95,20 +96,43 @@ class CoCreateCrudServer {
 	async db(socket, action, data) {
 		return new Promise(async (resolve) => {
 			try {
+				if (!data.organization_id)
+					resolve()
+
+				let dbs = this.databaseUrls.get(data.organization_id)
+				if (dbs == 'false')
+					resolve()
+
+				if (!dbs) {
+					let organization = await this.databases['mongodb']['readDocument']({
+						database: process.env.organization_id,
+						collection: 'organizations',
+						document: [{_id: data.organization_id}],
+						organization_id: process.env.organization_id
+					})
+					if (organization && organization.document && organization.document[0])
+						organization = organization.document[0]
+					if (organization && organization.dbs) {
+						dbs = organization.dbs
+						this.databaseUrls.set(data.organization_id, dbs)
+						console.log('organization or dbs urls could not be found')
+					} else {
+						this.databaseUrls.set(data.organization_id, 'false')
+						console.log('organization or dbs urls could not be found')
+						resolve()
+					}
+				}
+		
 				if (!data['timeStamp'])
 					data['timeStamp'] = new Date().toISOString()
 
                 if (action == 'updateDocument' && data.upsert != false)
                     data.upsert = true
-
+				
 				// ToDo: support stats from multiple dbs 
                 if (data.collection || action == 'databaseStats') {
-                    if (!data.db)
-                        data['db'] = ['indexeddb', 'mongodb']
                     if (!data.database)
-                        data['database'] = data.organization_id || process.env.organization_id
-                    if (!data.organization_id)
-                        data['organization_id'] = process.env.organization_id
+                        data['database'] = data.organization_id
                 }
 
 				if (!data.db || !data.db.length)
@@ -117,8 +141,9 @@ class CoCreateCrudServer {
 				for (let i = 0; i < data.db.length; i++) {
 					dbsLength -= 1
 					if (this.databases[data.db[i]]) {
-						if (socket.dbs && socket.dbs[data.db[i]])
-							data['dbs'] = socket.dbs[data.db[i]][0]
+						// ToDo: for loop on each dbs url					
+						if (dbs && dbs[data.db[i]])
+							data['dbs'] = dbs[data.db[i]][0]
 	
 						this.databases[data.db[i]][action](data).then((data) => {
 							//ToDo: sorting should take place here in order to return sorted values from multiple dbs
