@@ -1,3 +1,10 @@
+## [1.19.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.19.0...v1.19.1) (2023-04-11)
+
+
+### Bug Fixes
+
+* pass dbUrl to constructor ([7900c05](https://github.com/CoCreate-app/CoCreate-crud-server/commit/7900c0539998cb5f42cd27aed3844d0d43f5370b))
+
 # [1.19.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.18.0...v1.19.0) (2023-04-11)
 
 
