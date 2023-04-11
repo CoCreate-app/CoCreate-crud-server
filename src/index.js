@@ -175,8 +175,8 @@ class CoCreateCrudServer {
 
 						if (db.name && this.databases[db.name]) {
 
-							for (let i = 0; i < db.urls.length; i++) {
-								data['dbUrl'] = db.urls[i]
+							for (let i = 0; i < db.url.length; i++) {
+								data['dbUrl'] = db.url[i]
 								data = await this.databases[db.name][action](data)
 							}				
 	
