@@ -1,3 +1,10 @@
+# [1.20.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.19.1...v1.20.0) (2023-04-11)
+
+
+### Features
+
+* use platform database to get databases from organization ([8b2f9b3](https://github.com/CoCreate-app/CoCreate-crud-server/commit/8b2f9b39538448ff1d9a718b580d81cbcbaf52d5))
+
 ## [1.19.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.19.0...v1.19.1) (2023-04-11)
 
 
