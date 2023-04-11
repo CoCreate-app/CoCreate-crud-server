@@ -1,3 +1,10 @@
+## [1.20.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.20.0...v1.20.1) (2023-04-11)
+
+
+### Bug Fixes
+
+* urls typo ([94b4f83](https://github.com/CoCreate-app/CoCreate-crud-server/commit/94b4f8377aff42c59364e357e34199107f437a52))
+
 # [1.20.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.19.1...v1.20.0) (2023-04-11)
 
 
