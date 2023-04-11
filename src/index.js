@@ -151,6 +151,8 @@ class CoCreateCrudServer {
 						if (dbUrl && dbUrl[data.db[i]]) {
 							data['dbUrl'] = dbUrl[data.db[i]][0]
 							data = await this.databases[data.db[i]][action](data)
+
+							// ToDo: sync orgdb and platformdb specified keys from collections organizations and users
 							if (data.collection === 'organization' || data.collection === 'user') {
 								let syncKeys
 								if (data.collection === 'organizations')
