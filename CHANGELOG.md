@@ -1,3 +1,16 @@
+# [1.19.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.18.0...v1.19.0) (2023-04-11)
+
+
+### Bug Fixes
+
+* renamed domans to hosts ([312353a](https://github.com/CoCreate-app/CoCreate-crud-server/commit/312353a9ec03d65b05d749675db9c73a1e16e069))
+
+
+### Features
+
+* custom dburls stored and fetched from platform db organizations. sync fields from org and user to platform prototype ([183839b](https://github.com/CoCreate-app/CoCreate-crud-server/commit/183839b02655ac4d7edf24375b9012ad80feeee9))
+* if dbUrls not defined query platform db ([05fecfe](https://github.com/CoCreate-app/CoCreate-crud-server/commit/05fecfe999f471541717765e606aa57649398821))
+
 # [1.18.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.17.29...v1.18.0) (2023-03-19)
 
 
