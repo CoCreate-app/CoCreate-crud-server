@@ -6,8 +6,8 @@ class CoCreateCrudServer {
 	constructor(wsManager, databases) {
 		this.wsManager = wsManager
 		this.databases = databases
-		this.databaseUrls = new Map()
 		this.ObjectId = ObjectId
+		this.databaseUrls = new Map();
 		this.init();
 	}
 		
@@ -99,27 +99,33 @@ class CoCreateCrudServer {
 				if (!data.organization_id)
 					resolve()
 
-				let dbs = this.databaseUrls.get(data.organization_id)
-				if (dbs == 'false')
+				let dbUrl = this.databaseUrls.get(data.organization_id)
+				if (dbUrl == 'false')
 					resolve()
 
-				if (!dbs) {
-					let organization = await this.databases['mongodb']['readDocument']({
-						database: process.env.organization_id,
-						collection: 'organizations',
-						document: [{_id: data.organization_id}],
-						organization_id: process.env.organization_id
-					})
-					if (organization && organization.document && organization.document[0])
-						organization = organization.document[0]
-					if (organization && organization.dbs) {
-						dbs = organization.dbs
-						this.databaseUrls.set(data.organization_id, dbs)
-						console.log('organization or dbs urls could not be found')
+				if (!dbUrl) {
+					if (data.organization_id === process.env.organization_id) {
+						dbUrl = {mongodb: [process.env.MONGO_URL]}
+						console.log('platform dbUrl crud', dbUrl)
+						this.databaseUrls.set(data.organization_id, dbUrl)
 					} else {
-						this.databaseUrls.set(data.organization_id, 'false')
-						console.log('organization or dbs urls could not be found')
-						resolve()
+						let organization = await this.databases['mongodb']['readDocument']({
+							database: process.env.organization_id,
+							collection: 'organizations',
+							document: [{_id: data.organization_id}],
+							organization_id: process.env.organization_id
+						})
+						if (organization && organization.document && organization.document[0])
+							organization = organization.document[0]
+						if (organization && organization.databases) {
+							dbUrl = organization.databases
+							this.databaseUrls.set(data.organization_id, dbUrl)
+							console.log('organization dbUrl queried from platform')
+						} else {
+							this.databaseUrls.set(data.organization_id, 'false')
+							console.log('organization or dbUrl urls could not be found')
+							resolve()
+						}
 					}
 				}
 		
@@ -141,31 +147,48 @@ class CoCreateCrudServer {
 				for (let i = 0; i < data.db.length; i++) {
 					dbsLength -= 1
 					if (this.databases[data.db[i]]) {
-						// ToDo: for loop on each dbs url					
-						if (dbs && dbs[data.db[i]])
-							data['dbs'] = dbs[data.db[i]][0]
-	
-						this.databases[data.db[i]][action](data).then((data) => {
-							//ToDo: sorting should take place here in order to return sorted values from multiple dbs
-							if (!dbsLength) {
-								if (socket) {
-									this.wsManager.broadcast(socket, action, data);
-									process.emit('changed-document', data)
-									resolve()
-								} else {
-									resolve(data)
+						// ToDo: for loop on each dbUrl					
+						if (dbUrl && dbUrl[data.db[i]]) {
+							data['dbUrl'] = dbUrl[data.db[i]][0]
+							data = await this.databases[data.db[i]][action](data)
+							if (data.collection === 'organization' || data.collection === 'user') {
+								let syncKeys
+								if (data.collection === 'organizations')
+									syncKeys = ['name', 'logo', 'databases', 'hosts', 'apis']
+								else if (data.collection === 'users')
+									syncKeys = ['name', 'email', 'password', 'avatar']
+
+								if (syncKeys && syncKeys.length) {
+									let platformUpdate = {
+										dbUrl: process.env.MONGO_URL,
+										database: process.env.organization_id,
+										collection: data.collection,
+										document: [{}],
+										organization_id: process.env.organization_id
+									}
+
+									let document = data.document[0] || data.document
+									if (document) {
+										for (let key of syncKeys) {
+											if (document[key])
+												platformUpdate.document[0][key] = document[key]
+										}
+									}
 								}
+
+								this.databases['mongodb'][action]()
 							}
-						})
-					} else {
-						if (!dbsLength) {
-							if (socket) {
-								this.wsManager.broadcast(socket, action, data);
-								process.emit('changed-document', data)
-								resolve()
-							} else {
-								resolve(data)
-							}
+							//ToDo: sorting should take place here in order to return sorted values from multiple dbs
+						}
+					} 
+					
+					if (!dbsLength) {
+						if (socket) {
+							this.wsManager.broadcast(socket, action, data);
+							process.emit('changed-document', data)
+							resolve()
+						} else {
+							resolve(data)
 						}
 					}
 				}
