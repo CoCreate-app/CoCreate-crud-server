@@ -3,9 +3,10 @@
 const {ObjectId, searchData, sortData} = require("@cocreate/utils");
 
 class CoCreateCrudServer {
-	constructor(wsManager, databases) {
+	constructor(wsManager, databases, dbUrl) {
 		this.wsManager = wsManager
 		this.databases = databases
+		this.dbUrl = dbUrl
 		this.ObjectId = ObjectId
 		this.databaseUrls = new Map();
 		this.init();
@@ -105,7 +106,7 @@ class CoCreateCrudServer {
 
 				if (!dbUrl) {
 					if (data.organization_id === process.env.organization_id) {
-						dbUrl = {mongodb: [process.env.MONGO_URL]}
+						dbUrl = this.dbUrl
 						console.log('platform dbUrl crud', dbUrl)
 						this.databaseUrls.set(data.organization_id, dbUrl)
 					} else {
@@ -162,7 +163,7 @@ class CoCreateCrudServer {
 
 								if (syncKeys && syncKeys.length) {
 									let platformUpdate = {
-										dbUrl: process.env.MONGO_URL,
+										dbUrl: dbUrl[data.db[i]][0],
 										database: process.env.organization_id,
 										collection: data.collection,
 										document: [{}],
