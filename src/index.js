@@ -105,22 +105,27 @@ class CoCreateCrudServer {
 					resolve()
 
 				if (!dbUrl) {
-					let organization = await this.databases[this.database.name]['readDocument']({
-						dbUrl: this.database.url[0],
-						database: process.env.organization_id,
-						collection: 'organizations',
-						document: [{_id: data.organization_id}],
-						organization_id: process.env.organization_id
-					})
-					if (organization && organization.document && organization.document[0])
-						organization = organization.document[0]
-					if (organization && organization.databases) {
-						dbUrl = organization.databases
+					if (data.organization_id === process.env.organization_id) {
+						dbUrl = { [this.database.name]: this.database}
 						this.databaseUrls.set(data.organization_id, dbUrl)
 					} else {
-						this.databaseUrls.set(data.organization_id, 'false')
-						console.log('organization or dbUrl urls could not be found')
-						resolve()
+						let organization = await this.databases[this.database.name]['readDocument']({
+							dbUrl: this.database.url[0],
+							database: process.env.organization_id,
+							collection: 'organizations',
+							document: [{_id: data.organization_id}],
+							organization_id: process.env.organization_id
+						})
+						if (organization && organization.document && organization.document[0])
+							organization = organization.document[0]
+						if (organization && organization.databases) {
+							dbUrl = organization.databases
+							this.databaseUrls.set(data.organization_id, dbUrl)
+						} else {
+							this.databaseUrls.set(data.organization_id, 'false')
+							console.log('organization or dbUrl urls could not be found')
+							resolve()
+						}
 					}
 				}
 		
