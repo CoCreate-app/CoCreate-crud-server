@@ -98,11 +98,11 @@ class CoCreateCrudServer {
 		return new Promise(async (resolve) => {
 			try {
 				if (!data.organization_id)
-					resolve()
+					return resolve()
 
 				let dbUrl = this.databaseUrls.get(data.organization_id)
-				if (dbUrl === 'false' || dbUrl === false)
-					resolve()
+				if (dbUrl === false)
+					return resolve({dbUrl: false, error: 'database url could not be found'})
 
 				if (!dbUrl) {
 					if (data.organization_id === process.env.organization_id) {
@@ -122,9 +122,11 @@ class CoCreateCrudServer {
 							dbUrl = organization.databases
 							this.databaseUrls.set(data.organization_id, dbUrl)
 						} else {
-							this.databaseUrls.set(data.organization_id, 'false')
-							console.log('organization or dbUrl urls could not be found')
-							resolve()
+							this.databaseUrls.set(data.organization_id, false)
+							if (organization)
+								return resolve({dbUrl: false, error: 'database url could not be found'})
+							else
+								return resolve({organization: false, error: 'organization could not be found'})
 						}
 					}
 				}
