@@ -1,3 +1,10 @@
+## [1.20.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.20.2...v1.20.3) (2023-05-10)
+
+
+### Bug Fixes
+
+* return resolve ([eafc5e5](https://github.com/CoCreate-app/CoCreate-crud-server/commit/eafc5e59c59e3a3835a85b6e46a164f11fc6a80b))
+
 ## [1.20.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.20.1...v1.20.2) (2023-05-07)
 
 
