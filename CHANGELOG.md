@@ -1,3 +1,10 @@
+## [1.20.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.20.4...v1.20.5) (2023-05-11)
+
+
+### Bug Fixes
+
+* replace key ([84d197d](https://github.com/CoCreate-app/CoCreate-crud-server/commit/84d197d316beb82a92e73769c7d145b76ea0ac83))
+
 ## [1.20.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.20.3...v1.20.4) (2023-05-10)
 
 
