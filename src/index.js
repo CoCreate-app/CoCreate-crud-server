@@ -194,6 +194,10 @@ class CoCreateCrudServer {
 					
 				delete data.dbUrl
 				if (socket) {
+					if (data.organization_id === process.env.organization_id && socket.config.organization_id !== data.organization_id) {
+						data.organization_id = socket.config.organization_id
+					}
+					
 					this.wsManager.broadcast(socket, action, data);
 					process.emit('changed-document', data)
 					resolve()
