@@ -137,7 +137,7 @@ class CoCreateCrudServer {
                 if (action == 'updateDocument' && data.upsert != false)
                     data.upsert = true
 				
-				// ToDo: support stats from multiple dbs 
+				// TODO: support stats from multiple dbs 
                 if (data.collection || action === 'databaseStats') {
                     if (!data.database)
                         data['database'] = data.organization_id
@@ -187,7 +187,7 @@ class CoCreateCrudServer {
 								data = await this.databases[db.name][action](data)
 							}				
 	
-							//ToDo: sorting should take place here in order to return sorted values from multiple dbs
+							//TODO: sorting should take place here in order to return sorted values from multiple dbs
 						}
 					}
 				}

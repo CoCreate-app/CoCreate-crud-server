@@ -120,7 +120,7 @@ class CoCreateBackup {
 	// 		else {
 	// 			jsonData = JSON.parse(importFile.toString());	
 	// 		}
-	// 		// todo: validate json / if json is object error happens
+	// 		// TODO: validate json / if json is object error happens
 	// 		jsonData.map((item) => delete item._id);
 	// 		console.log('json: ', jsonData)
 	// 		var collection = this.dbClient.db(organization_id).collection(importCollection);
