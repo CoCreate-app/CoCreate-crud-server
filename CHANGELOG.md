@@ -1,3 +1,16 @@
+# [1.21.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.20.5...v1.21.0) (2023-05-19)
+
+
+### Bug Fixes
+
+*  wsManager listeners & add async/await consistency ([f8b21be](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f8b21beafa41888ea85c16391880fb1bfce10231))
+
+
+### Features
+
+* Refactor code to ensure data.db is always an Array ([ce76271](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ce76271518a0b7525e6dbbd80d7dc25e8184692d))
+* update data.organization_id if previously transformed to platform_id ([bb95274](https://github.com/CoCreate-app/CoCreate-crud-server/commit/bb9527425ee5cb13c81933a658a6a732ac306407))
+
 ## [1.20.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.20.4...v1.20.5) (2023-05-11)
 
 
