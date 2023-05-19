@@ -172,9 +172,10 @@ class CoCreateCrudServer {
                     }
 
                 }
-
                 if (!data.db || !data.db.length)
                     data.db = ['mongodb']
+                else if (!Array.isArray(data.db))
+                    data.db = [data.db]
 
                 for (let i = 0; i < data.db.length; i++) {
                     if (dbUrl && dbUrl[data.db[i]]) {
