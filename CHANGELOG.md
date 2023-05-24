@@ -1,3 +1,10 @@
+# [1.22.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.21.1...v1.22.0) (2023-05-24)
+
+
+### Features
+
+* Supports multiple databases to be used independently or as a mesh. ([32e0897](https://github.com/CoCreate-app/CoCreate-crud-server/commit/32e08973f4b8cb1f5bf031417adc683e9d00ce9e))
+
 ## [1.21.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.21.0...v1.21.1) (2023-05-20)
 
 
