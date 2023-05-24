@@ -3,114 +3,113 @@
 const { ObjectId, searchData, sortData } = require("@cocreate/utils");
 
 class CoCreateCrudServer {
-    constructor(wsManager, databases, database) {
+    constructor(wsManager, databases, db) {
         this.wsManager = wsManager
         this.databases = databases
-        this.database = database
+        this.db = db
         this.ObjectId = ObjectId
-        this.databaseUrls = new Map();
+        this.dbUrls = new Map();
         this.init();
     }
 
     init() {
         if (this.wsManager) {
-            this.wsManager.on('createDatabase', (socket, data) => this.db(socket, 'createDatabase', data))
-            this.wsManager.on('readDatabase', (socket, data) => this.db(socket, 'readDatabase', data))
-            this.wsManager.on('updateDatabase', (socket, data) => this.db(socket, 'updateDatabase', data))
-            this.wsManager.on('deleteDatabase', (socket, data) => this.db(socket, 'deleteDatabase', data))
-            this.wsManager.on('createCollection', (socket, data) => this.db(socket, 'createCollection', data))
-            this.wsManager.on('readCollection', (socket, data) => this.db(socket, 'readCollection', data))
-            this.wsManager.on('updateCollection', (socket, data) => this.db(socket, 'updateCollection', data))
-            this.wsManager.on('deleteCollection', (socket, data) => this.db(socket, 'deleteCollection', data))
-            this.wsManager.on('createDocument', (socket, data) => this.db(socket, 'createDocument', data))
-            this.wsManager.on('readDocument', (socket, data) => this.db(socket, 'readDocument', data))
-            this.wsManager.on('updateDocument', (socket, data) => this.db(socket, 'updateDocument', data))
-            this.wsManager.on('deleteDocument', (socket, data) => this.db(socket, 'deleteDocument', data))
+            this.wsManager.on('createDatabase', (socket, data) => this.crud(socket, 'createDatabase', data))
+            this.wsManager.on('readDatabase', (socket, data) => this.crud(socket, 'readDatabase', data))
+            this.wsManager.on('updateDatabase', (socket, data) => this.crud(socket, 'updateDatabase', data))
+            this.wsManager.on('deleteDatabase', (socket, data) => this.crud(socket, 'deleteDatabase', data))
+            this.wsManager.on('createCollection', (socket, data) => this.crud(socket, 'createCollection', data))
+            this.wsManager.on('readCollection', (socket, data) => this.crud(socket, 'readCollection', data))
+            this.wsManager.on('updateCollection', (socket, data) => this.crud(socket, 'updateCollection', data))
+            this.wsManager.on('deleteCollection', (socket, data) => this.crud(socket, 'deleteCollection', data))
+            this.wsManager.on('createDocument', (socket, data) => this.crud(socket, 'createDocument', data))
+            this.wsManager.on('readDocument', (socket, data) => this.crud(socket, 'readDocument', data))
+            this.wsManager.on('updateDocument', (socket, data) => this.crud(socket, 'updateDocument', data))
+            this.wsManager.on('deleteDocument', (socket, data) => this.crud(socket, 'deleteDocument', data))
         }
     }
 
     async databaseStats(data) {
-        data = await this.db('', 'databaseStats', data)
+        data = await this.crud('', 'databaseStats', data)
         return data
     }
 
     async createDatabase(data) {
-        data = await this.db('', 'createDatabase', data)
+        data = await this.crud('', 'createDatabase', data)
         return data
     }
 
     async readDatabase(data) {
-        data = await this.db('', 'readDatabase', data)
+        data = await this.crud('', 'readDatabase', data)
         return data
     }
 
     async updateDatabase(data) {
-        data = await this.db('', 'updateDatabase', data)
+        data = await this.crud('', 'updateDatabase', data)
         return data
     }
 
     async deleteDatabase(data) {
-        data = await this.db('', 'deleteDatabase', data)
+        data = await this.crud('', 'deleteDatabase', data)
         return data
     }
 
     async createCollection(data) {
-        data = await this.db('', 'createCollection', data)
+        data = await this.crud('', 'createCollection', data)
         return data
     }
 
     async readCollection(data) {
-        data = await this.db('', 'readCollection', data)
+        data = await this.crud('', 'readCollection', data)
         return data
     }
 
     async updateCollection(data) {
-        data = await this.db('', 'updateCollection', data)
+        data = await this.crud('', 'updateCollection', data)
         return data
     }
 
     async deleteCollection(data) {
-        data = await this.db('', 'deleteCollection', data)
+        data = await this.crud('', 'deleteCollection', data)
         return data
     }
 
     async createDocument(data) {
-        data = await this.db('', 'createDocument', data)
+        data = await this.crud('', 'createDocument', data)
         return data
     }
 
     async readDocument(data) {
-        data = await this.db('', 'readDocument', data)
+        data = await this.crud('', 'readDocument', data)
         return data
     }
 
     async updateDocument(data) {
-        data = await this.db('', 'updateDocument', data)
+        data = await this.crud('', 'updateDocument', data)
         return data
     }
 
     async deleteDocument(data) {
-        data = await this.db('', 'deleteDocument', data)
+        data = await this.crud('', 'deleteDocument', data)
         return data
     }
 
-    async db(socket, action, data) {
+    async crud(socket, action, data) {
         return new Promise(async (resolve) => {
             try {
                 if (!data.organization_id)
                     return resolve()
 
-                let dbUrl = this.databaseUrls.get(data.organization_id)
+                let dbUrl = this.dbUrls.get(data.organization_id)
                 if (dbUrl === false)
                     return resolve({ dbUrl: false, error: 'database url could not be found' })
 
                 if (!dbUrl) {
                     if (data.organization_id === process.env.organization_id) {
-                        dbUrl = { [this.database.name]: this.database }
-                        this.databaseUrls.set(data.organization_id, dbUrl)
+                        dbUrl = this.db
+                        this.dbUrls.set(data.organization_id, dbUrl)
                     } else {
-                        let organization = await this.databases[this.database.name]['readDocument']({
-                            dbUrl: this.database.url[0],
+                        let organization = await this.readDocument({
                             database: process.env.organization_id,
                             collection: 'organizations',
                             document: [{ _id: data.organization_id }],
@@ -120,9 +119,9 @@ class CoCreateCrudServer {
                             organization = organization.document[0]
                         if (organization && organization.databases) {
                             dbUrl = organization.databases
-                            this.databaseUrls.set(data.organization_id, dbUrl)
+                            this.dbUrls.set(data.organization_id, dbUrl)
                         } else {
-                            this.databaseUrls.set(data.organization_id, false)
+                            this.dbUrls.set(data.organization_id, false)
                             if (organization)
                                 return resolve({ dbUrl: false, error: 'database url could not be found' })
                             else
@@ -151,7 +150,6 @@ class CoCreateCrudServer {
 
                         if (syncKeys && syncKeys.length) {
                             let platformUpdate = {
-                                dbUrl: this.database.url,
                                 database: process.env.organization_id,
                                 collection: data.collection,
                                 document: [{}],
@@ -166,26 +164,28 @@ class CoCreateCrudServer {
                                 }
                             }
 
-                            this.databases[this.database.name][action](platformUpdate)
+                            this[action](platformUpdate)
                         }
 
                     }
 
                 }
-                if (!data.db || !data.db.length)
-                    data.db = ['mongodb']
-                else if (!Array.isArray(data.db))
+
+                if (!data.db || !data.db.length) {
+                    data.db = [Object.keys(dbUrl)[0]]
+                } else if (!Array.isArray(data.db))
                     data.db = [data.db]
 
                 for (let i = 0; i < data.db.length; i++) {
                     if (dbUrl && dbUrl[data.db[i]]) {
                         let db = dbUrl[data.db[i]]
 
-                        if (db.name && this.databases[db.name]) {
-
+                        if (db.provider && this.databases[db.provider]) {
+                            if (!Array.isArray(db.url))
+                                db.url = [db.url]
                             for (let i = 0; i < db.url.length; i++) {
                                 data['dbUrl'] = db.url[i]
-                                data = await this.databases[db.name][action](data)
+                                data = await this.databases[db.provider][action](data)
                             }
 
                             //TODO: sorting should take place here in order to return sorted values from multiple dbs
@@ -212,7 +212,7 @@ class CoCreateCrudServer {
                 }
             } catch (error) {
                 if (socket) {
-                    errorHandler(data, error)
+                    this.errorHandler(data, error)
                     this.wsManager.send(socket, action, data);
                     resolve()
                 } else {
