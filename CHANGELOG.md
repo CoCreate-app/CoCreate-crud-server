@@ -1,3 +1,11 @@
+## [1.22.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.22.1...v1.22.2) (2023-06-04)
+
+
+### Bug Fixes
+
+* [@v3](https://github.com/v3) ([9807ae7](https://github.com/CoCreate-app/CoCreate-crud-server/commit/9807ae7b0c773d8e10efdf5365420ed9b0953fc6))
+* html formating ([c972e3a](https://github.com/CoCreate-app/CoCreate-crud-server/commit/c972e3ab69fc8cc57e59f2bcadb983de8e35bf55))
+
 ## [1.22.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.22.0...v1.22.1) (2023-05-25)
 
 
