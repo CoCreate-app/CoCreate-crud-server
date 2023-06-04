@@ -1,3 +1,10 @@
+## [1.22.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.22.3...v1.22.4) (2023-06-04)
+
+
+### Bug Fixes
+
+* Refactor CoCreate.config.js to remove hard-coded credentials ([04dd637](https://github.com/CoCreate-app/CoCreate-crud-server/commit/04dd637505bb4b6d167f94d12f5fc475ebff2cb1))
+
 ## [1.22.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.22.2...v1.22.3) (2023-06-04)
 
 
