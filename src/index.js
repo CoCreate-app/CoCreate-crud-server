@@ -1,14 +1,24 @@
 'use strict';
 
 const { ObjectId, searchData, sortData } = require("@cocreate/utils");
+const { config } = require('@cocreate/cli')
 
 class CoCreateCrudServer {
-    constructor(wsManager, databases, db) {
+    constructor(wsManager, databases) {
         this.wsManager = wsManager
         this.databases = databases
-        this.db = db
         this.ObjectId = ObjectId
         this.dbUrls = new Map();
+        config([
+            {
+                key: 'organization_id',
+                prompt: 'Enter your organization_id: ',
+            },
+            {
+                key: 'db',
+                prompt: 'Enter your db object as json.string: ',
+            }
+        ])//
         this.init();
     }
 
@@ -106,7 +116,7 @@ class CoCreateCrudServer {
 
                 if (!dbUrl) {
                     if (data.organization_id === process.env.organization_id) {
-                        dbUrl = this.db
+                        dbUrl = process.env.db
                         this.dbUrls.set(data.organization_id, dbUrl)
                     } else {
                         let organization = await this.readDocument({
