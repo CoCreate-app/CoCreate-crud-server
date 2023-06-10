@@ -1,3 +1,15 @@
+# [1.23.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.22.4...v1.23.0) (2023-06-10)
+
+
+### Bug Fixes
+
+* Update dependencies versions for [@cocreate](https://github.com/cocreate) libraries ([37bc497](https://github.com/CoCreate-app/CoCreate-crud-server/commit/37bc49757ecf2204b7b2fe6ff3910fd6bc3ad42f))
+
+
+### Features
+
+* Add CLI prompts for "organization_id" and "db" string ([e665b47](https://github.com/CoCreate-app/CoCreate-crud-server/commit/e665b47ccdefb39499510c76101fbf6f62eac5ef))
+
 ## [1.22.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.22.3...v1.22.4) (2023-06-04)
 
 
