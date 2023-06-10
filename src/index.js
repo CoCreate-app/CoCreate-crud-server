@@ -154,7 +154,7 @@ class CoCreateCrudServer {
                     if (action === 'updateDocument' && data.organization_id !== process.env.organization_id) {
                         let syncKeys
                         if (data.collection === 'organizations')
-                            syncKeys = ['name', 'logo', 'databases', 'hosts', 'apis']
+                            syncKeys = ['name', 'logo', 'databases', 'host', 'apis']
                         else if (data.collection === 'users')
                             syncKeys = ['name', 'email', 'password', 'avatar']
 
