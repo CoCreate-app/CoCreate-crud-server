@@ -16,7 +16,7 @@ class CoCreateCrudServer {
             },
             {
                 key: 'storage',
-                prompt: 'Enter your db object as json.string: ',
+                prompt: 'Enter a JSON.stringify storage object'
             }
         ])//
         this.init();
