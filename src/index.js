@@ -8,14 +8,14 @@ class CoCreateCrudServer {
         this.wsManager = wsManager
         this.databases = databases
         this.ObjectId = ObjectId
-        this.dbUrls = new Map();
+        this.storages = new Map();
         config([
             {
                 key: 'organization_id',
                 prompt: 'Enter your organization_id: ',
             },
             {
-                key: 'db',
+                key: 'storage',
                 prompt: 'Enter your db object as json.string: ',
             }
         ])//
@@ -110,14 +110,15 @@ class CoCreateCrudServer {
                 if (!data.organization_id)
                     return resolve()
 
-                let dbUrl = this.dbUrls.get(data.organization_id)
-                if (dbUrl === false)
-                    return resolve({ dbUrl: false, error: 'database url could not be found' })
+                let storage = this.storages.get(data.organization_id)
+                if (storage === false)
+                    return resolve({ storage: false, error: 'A storage or database could not be found' })
 
-                if (!dbUrl) {
+                if (!storage) {
                     if (data.organization_id === process.env.organization_id) {
-                        dbUrl = process.env.db
-                        this.dbUrls.set(data.organization_id, dbUrl)
+                        storage = process.env.storage
+                        if (storage)
+                            this.storages.set(data.organization_id, JSON.parse(storage))
                     } else {
                         let organization = await this.readDocument({
                             database: process.env.organization_id,
@@ -127,13 +128,13 @@ class CoCreateCrudServer {
                         })
                         if (organization && organization.document && organization.document[0])
                             organization = organization.document[0]
-                        if (organization && organization.databases) {
-                            dbUrl = organization.databases
-                            this.dbUrls.set(data.organization_id, dbUrl)
+                        if (organization && organization.storage) {
+                            storage = organization.storage
+                            this.storages.set(data.organization_id, storage)
                         } else {
-                            this.dbUrls.set(data.organization_id, false)
+                            this.storages.set(data.organization_id, false)
                             if (organization)
-                                return resolve({ dbUrl: false, error: 'database url could not be found' })
+                                return resolve({ storage: false, error: 'database url could not be found' })
                             else
                                 return resolve({ organization: false, error: 'organization could not be found' })
                         }
@@ -181,14 +182,14 @@ class CoCreateCrudServer {
 
                 }
 
-                if (!data.db || !data.db.length) {
-                    data.db = [Object.keys(dbUrl)[0]]
-                } else if (!Array.isArray(data.db))
-                    data.db = [data.db]
+                if (!data.storage || !data.storage.length) {
+                    data.storage = [Object.keys(storage)[0]]
+                } else if (!Array.isArray(data.storage))
+                    data.storage = [data.storage]
 
-                for (let i = 0; i < data.db.length; i++) {
-                    if (dbUrl && dbUrl[data.db[i]]) {
-                        let db = dbUrl[data.db[i]]
+                for (let i = 0; i < data.storage.length; i++) {
+                    if (storage && storage[data.storage[i]]) {
+                        let db = storage[data.storage[i]]
 
                         if (db.provider && this.databases[db.provider]) {
                             if (!Array.isArray(db.url))
@@ -234,7 +235,7 @@ class CoCreateCrudServer {
 
     errorHandler(data, error, database, collection) {
         if (typeof error == 'object')
-            error['db'] = 'mongodb'
+            error['storage'] = 'mongodb'
         else
             error = { location: 'crudServer', message: error }
 
