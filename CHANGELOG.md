@@ -1,3 +1,10 @@
+## [1.23.10](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.9...v1.23.10) (2023-06-11)
+
+
+### Bug Fixes
+
+* testing workflow ([2eb0c9c](https://github.com/CoCreate-app/CoCreate-crud-server/commit/2eb0c9cc4e0d62dcaa2bd8341b152a0e4216ca33))
+
 ## [1.23.9](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.8...v1.23.9) (2023-06-11)
 
 
