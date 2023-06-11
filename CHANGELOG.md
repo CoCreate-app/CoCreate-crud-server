@@ -1,3 +1,10 @@
+## [1.23.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.4...v1.23.5) (2023-06-11)
+
+
+### Bug Fixes
+
+* postintall error ([ca27a71](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ca27a719fde5fac604c3775681914427f1bf0ef6))
+
 ## [1.23.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.3...v1.23.4) (2023-06-11)
 
 
