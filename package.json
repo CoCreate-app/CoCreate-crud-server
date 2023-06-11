@@ -39,10 +39,8 @@
     "url": "https://github.com/CoCreate-app/CoCreate-crud-server/issues"
   },
   "homepage": "https://cocreate.app/docs/CoCreate-crud-server",
-  "devDependencies": {
-    "@cocreate/cli": "^1.33.0"
-  },
   "dependencies": {
+    "@cocreate/cli": "^1.33.0",
     "@cocreate/utils": "^1.21.5",
     "csvtojson": "^2.0.10",
     "json-2-csv": "^3.10.3"
