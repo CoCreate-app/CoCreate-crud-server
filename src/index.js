@@ -9,7 +9,7 @@ class CoCreateCrudServer {
         this.databases = databases
         this.ObjectId = ObjectId
         this.storages = new Map();
-        config([
+        this.config = config([
             {
                 key: 'organization_id',
                 prompt: 'Enter your organization_id: ',
@@ -18,8 +18,19 @@ class CoCreateCrudServer {
                 key: 'storage',
                 prompt: 'Enter a JSON.stringify storage object'
             }
-        ])//
-        this.init();
+        ])
+        if (typeof this.config.storage === 'string')
+            this.config.storage = JSON.parse(this.config.storage)
+        let databases = Object.keys(this.config.storage)
+        let dbUrl = databases[0].url[0]
+        if (!this.config.organization_id)
+            console.log('Could not find the organization_id')
+        if (!dbUrl)
+            console.log('Could not find a url in your storage object')
+        if (dbUrl && this.config.organization_id)
+            this.init();
+        else
+            process.exit()
     }
 
     init() {
