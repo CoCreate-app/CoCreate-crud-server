@@ -1,3 +1,11 @@
+## [1.23.13](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.12...v1.23.13) (2023-06-13)
+
+
+### Bug Fixes
+
+* config usages ([1b2acba](https://github.com/CoCreate-app/CoCreate-crud-server/commit/1b2acba583d5f1944aa5e589ec8b166312f5379a))
+* updated storage propt to Enter a JSON.stringify storage object ([3cee400](https://github.com/CoCreate-app/CoCreate-crud-server/commit/3cee400e458052db99fc18f2ddf2103a5721e500))
+
 ## [1.23.12](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.11...v1.23.12) (2023-06-11)
 
 
