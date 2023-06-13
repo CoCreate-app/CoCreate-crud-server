@@ -1,7 +1,7 @@
 'use strict';
 
 const { ObjectId, searchData, sortData } = require("@cocreate/utils");
-const { config } = require('@cocreate/cli')
+const config = require('@cocreate/config')
 
 class CoCreateCrudServer {
     constructor(wsManager, databases) {
@@ -9,31 +9,30 @@ class CoCreateCrudServer {
         this.databases = databases
         this.ObjectId = ObjectId
         this.storages = new Map();
-        this.config = config([
-            {
-                key: 'organization_id',
-                prompt: 'Enter your organization_id: ',
-            },
-            {
-                key: 'storage',
-                prompt: 'Enter a JSON.stringify storage object'
-            }
-        ])
-        if (typeof this.config.storage === 'string')
-            this.config.storage = JSON.parse(this.config.storage)
-        let databases = Object.keys(this.config.storage)
-        let dbUrl = databases[0].url[0]
+        this.init()
+    }
+
+    async init() {
+        this.config = await config({
+            organization_id: { prompt: 'Enter your organization_id: ' },
+            storage: { prompt: 'Enter a JSON.stringify storage object: ' }
+        })
+
+        let dbUrl
+        if (this.config.storage) {
+            if (typeof this.config.storage === 'string')
+                this.config.storage = JSON.parse(this.config.storage)
+            let defaultStorage = Object.keys(this.config.storage)
+            dbUrl = defaultStorage[0].url[0]
+        }
+
         if (!this.config.organization_id)
             console.log('Could not find the organization_id')
         if (!dbUrl)
             console.log('Could not find a url in your storage object')
-        if (dbUrl && this.config.organization_id)
-            this.init();
-        else
+        if (!dbUrl && !this.config.organization_id)
             process.exit()
-    }
 
-    init() {
         if (this.wsManager) {
             this.wsManager.on('createDatabase', (socket, data) => this.crud(socket, 'createDatabase', data))
             this.wsManager.on('readDatabase', (socket, data) => this.crud(socket, 'readDatabase', data))
