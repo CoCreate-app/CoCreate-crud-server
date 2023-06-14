@@ -13,9 +13,18 @@ class CoCreateCrudServer {
     }
 
     async init() {
-        this.config = await config({
-            organization_id: { prompt: 'Enter your organization_id: ' },
-            storage: { prompt: 'Enter a JSON.stringify storage object: ' }
+        let config = await config({
+            'organization_id': { prompt: 'Enter your organization_id: ' },
+            'name': {
+                prompt: 'Enter a friendly name for the new storage: ',
+                variable: true
+            },
+            'storage.{{name}}.provider': {
+                prompt: 'Enter the storage provider, ex mongodb: '
+            },
+            'storage.{{name}}.url': {
+                prompt: 'Enter the storage providers url: '
+            }
         })
 
         let dbUrl
