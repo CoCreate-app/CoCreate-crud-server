@@ -1,7 +1,7 @@
 'use strict';
 
 const { ObjectId, searchData, sortData } = require("@cocreate/utils");
-const config = require('@cocreate/config')
+const Config = require('@cocreate/config')
 
 class CoCreateCrudServer {
     constructor(wsManager, databases) {
@@ -13,7 +13,7 @@ class CoCreateCrudServer {
     }
 
     async init() {
-        let config = await config({
+        this.config = await Config({
             'organization_id': { prompt: 'Enter your organization_id: ' },
             'name': {
                 prompt: 'Enter a friendly name for the new storage: ',
