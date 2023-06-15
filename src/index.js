@@ -32,7 +32,7 @@ class CoCreateCrudServer {
             if (typeof this.config.storage === 'string')
                 this.config.storage = JSON.parse(this.config.storage)
             let defaultStorage = Object.keys(this.config.storage)
-            dbUrl = defaultStorage[0].url[0]
+            dbUrl = this.config.storage[defaultStorage[0]].url
         }
 
         if (!this.config.organization_id)
