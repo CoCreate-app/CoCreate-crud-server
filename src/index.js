@@ -134,16 +134,16 @@ class CoCreateCrudServer {
                     return resolve({ storage: false, error: 'A storage or database could not be found' })
 
                 if (!storage) {
-                    if (data.organization_id === process.env.organization_id) {
-                        storage = process.env.storage
+                    if (data.organization_id === this.config.orgaization_id) {
+                        storage = pthis.config.storage
                         if (storage)
                             this.storages.set(data.organization_id, JSON.parse(storage))
                     } else {
                         let organization = await this.readDocument({
-                            database: process.env.organization_id,
+                            database: this.config.organization_id,
                             collection: 'organizations',
                             document: [{ _id: data.organization_id }],
-                            organization_id: process.env.organization_id
+                            organization_id: this.config.organization_id
                         })
                         if (organization && organization.document && organization.document[0])
                             organization = organization.document[0]
@@ -171,7 +171,7 @@ class CoCreateCrudServer {
                     if (!data.database)
                         data['database'] = data.organization_id
 
-                    if (action === 'updateDocument' && data.organization_id !== process.env.organization_id) {
+                    if (action === 'updateDocument' && data.organization_id !== this.config.organization_id) {
                         let syncKeys
                         if (data.collection === 'organizations')
                             syncKeys = ['name', 'logo', 'databases', 'host', 'apis']
@@ -180,10 +180,10 @@ class CoCreateCrudServer {
 
                         if (syncKeys && syncKeys.length) {
                             let platformUpdate = {
-                                database: process.env.organization_id,
+                                database: this.config.organization_id,
                                 collection: data.collection,
                                 document: [{}],
-                                organization_id: process.env.organization_id
+                                organization_id: this.config.organization_id
                             }
 
                             let document = data.document[0] || data.document
@@ -225,10 +225,10 @@ class CoCreateCrudServer {
 
                 delete data.dbUrl
                 if (socket) {
-                    if (data.organization_id === process.env.organization_id && socket.config.organization_id !== data.organization_id) {
+                    if (data.organization_id === this.config.organization_id && socket.config.organization_id !== data.organization_id) {
                         this.wsManager.broadcast({
                             config: {
-                                organization_id: process.env.organization_id,
+                                organization_id: this.config.organization_id,
                             }
                         }, action, { ...data });
                         data.organization_id = socket.config.organization_id
