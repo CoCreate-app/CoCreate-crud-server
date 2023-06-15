@@ -15,9 +15,9 @@ class CoCreateCrudServer {
     async init() {
         this.config = await Config({
             'organization_id': { prompt: 'Enter your organization_id: ' },
-            'name': {
+            'storage': {
                 prompt: 'Enter a friendly name for the new storage: ',
-                variable: true
+                variable: 'name'
             },
             'storage.{{name}}.provider': {
                 prompt: 'Enter the storage provider, ex mongodb: '
@@ -126,18 +126,34 @@ class CoCreateCrudServer {
     async crud(socket, action, data) {
         return new Promise(async (resolve) => {
             try {
-                if (!data.organization_id)
+                if (!data.organization_id || !this.config)
                     return resolve()
+                if (!this.config)
+                    this.config = await Config({
+                        'organization_id': { prompt: 'Enter your organization_id: ' },
+                        'storage': {
+                            prompt: 'Enter a friendly name for the new storage: ',
+                            variable: 'name'
+                        },
+                        'storage.{{name}}.provider': {
+                            prompt: 'Enter the storage provider, ex mongodb: '
+                        },
+                        'storage.{{name}}.url': {
+                            prompt: 'Enter the storage providers url: '
+                        }
+                    })
+
+
 
                 let storage = this.storages.get(data.organization_id)
                 if (storage === false)
                     return resolve({ storage: false, error: 'A storage or database could not be found' })
 
                 if (!storage) {
-                    if (data.organization_id === this.config.orgaization_id) {
-                        storage = pthis.config.storage
+                    if (data.organization_id === this.config.organization_id) {
+                        storage = this.config.storage
                         if (storage)
-                            this.storages.set(data.organization_id, JSON.parse(storage))
+                            this.storages.set(data.organization_id, storage)
                     } else {
                         let organization = await this.readDocument({
                             database: this.config.organization_id,
