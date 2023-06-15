@@ -1,3 +1,10 @@
+## [1.24.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.24.0...v1.24.1) (2023-06-15)
+
+
+### Bug Fixes
+
+* this.config ([af0cb69](https://github.com/CoCreate-app/CoCreate-crud-server/commit/af0cb691c329748656002523d890066979d07e0c))
+
 # [1.24.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.15...v1.24.0) (2023-06-15)
 
 
