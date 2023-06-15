@@ -1,3 +1,10 @@
+## [1.24.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.24.1...v1.24.2) (2023-06-15)
+
+
+### Bug Fixes
+
+* dbUrl ([b8b8f7d](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b8b8f7d1f91e6d7c7053379c1a27def02647f84c))
+
 ## [1.24.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.24.0...v1.24.1) (2023-06-15)
 
 
