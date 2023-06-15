@@ -1,3 +1,10 @@
+## [1.24.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.24.2...v1.24.3) (2023-06-15)
+
+
+### Bug Fixes
+
+* process.env.storage replaced with this.config.storage ([547d9db](https://github.com/CoCreate-app/CoCreate-crud-server/commit/547d9db0a41d0a77b6032245292b32e38b85ace0))
+
 ## [1.24.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.24.1...v1.24.2) (2023-06-15)
 
 
