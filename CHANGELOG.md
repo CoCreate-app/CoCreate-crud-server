@@ -1,3 +1,10 @@
+# [1.24.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.15...v1.24.0) (2023-06-15)
+
+
+### Features
+
+* add @cocreate/config ([1710d45](https://github.com/CoCreate-app/CoCreate-crud-server/commit/1710d457ff9ab000d1c4f4bc57c0fcd62d648b1a))
+
 ## [1.23.15](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.23.14...v1.23.15) (2023-06-14)
 
 
