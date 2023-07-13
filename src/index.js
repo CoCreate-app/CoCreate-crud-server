@@ -234,7 +234,15 @@ class CoCreateCrudServer {
                                 data = await this.databases[db.provider][action](data)
                             }
 
-                            //TODO: sorting should take place here in order to return sorted values from multiple dbs
+                            if (data.filter) {
+                                if (data.filter.sort && data.filter.sort.length)
+                                    data[data.type] = sortData(array, data.filter.sort)
+                                if (data.filter.index && data.filter.limit) {
+                                    data[data.type] = data[data.type].slice(data.filter.index, data.filter.limit)
+                                }
+                                data.filter.count = data[data.type].length
+                            }
+
                         }
                     }
                 }
