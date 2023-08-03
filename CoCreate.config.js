@@ -4,8 +4,8 @@ module.exports = {
     "host": "",
     "sources": [
         {
-            "collection": "files",
-            "document": {
+            "array": "files",
+            "object": {
                 "_id": "6204253480b409001727b73e",
                 "name": "index.html",
                 "path": "/docs/crud-server/index.html",
