@@ -1,3 +1,17 @@
+# [1.25.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.24.7...v1.25.0) (2023-08-16)
+
+
+### Bug Fixes
+
+* crud attributes renamed ([757fa5a](https://github.com/CoCreate-app/CoCreate-crud-server/commit/757fa5a51bc511be8fd428ae9d64a1456cc536e8))
+* Refactored *-target to *-selector ([fab5662](https://github.com/CoCreate-app/CoCreate-crud-server/commit/fab5662929f208bb5da7c47f0a10d673ef261fb7))
+
+
+### Features
+
+* Add sorting functionality for returning sorted values from multiple storages. ([667ad70](https://github.com/CoCreate-app/CoCreate-crud-server/commit/667ad70f8704de0fc8ff504e831fa64d954da012))
+* name attribute and variable renamed to key ([d5cf8bc](https://github.com/CoCreate-app/CoCreate-crud-server/commit/d5cf8bcd1bea68a480a9a8dec6cf129e6942c8ed))
+
 ## [1.24.7](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.24.6...v1.24.7) (2023-06-16)
 
 
