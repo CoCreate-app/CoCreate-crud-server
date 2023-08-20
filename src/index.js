@@ -27,19 +27,19 @@ class CoCreateCrudServer {
             }
         })
 
-        let dbUrl
+        let storageUrl
         if (this.config.storage) {
             if (typeof this.config.storage === 'string')
                 this.config.storage = JSON.parse(this.config.storage)
             let defaultStorage = Object.keys(this.config.storage)
-            dbUrl = this.config.storage[defaultStorage[0]].url
+            storageUrl = this.config.storage[defaultStorage[0]].url
         }
 
         if (!this.config.organization_id)
             console.log('Could not find the organization_id')
-        if (!dbUrl)
+        if (!storageUrl)
             console.log('Could not find a url in your storage object')
-        if (!dbUrl && !this.config.organization_id)
+        if (!storageUrl && !this.config.organization_id)
             process.exit()
 
         if (this.wsManager) {
@@ -82,15 +82,15 @@ class CoCreateCrudServer {
 
 
 
-                let storage = this.storages.get(data.organization_id)
-                if (storage === false)
+                let storages = this.storages.get(data.organization_id)
+                if (storages === false)
                     return resolve({ storage: false, error: 'A storage or database could not be found' })
 
-                if (!storage) {
+                if (!storages) {
                     if (data.organization_id === this.config.organization_id) {
-                        storage = this.config.storage
-                        if (storage)
-                            this.storages.set(data.organization_id, storage)
+                        storages = this.config.storage
+                        if (storages)
+                            this.storages.set(data.organization_id, storages)
                     } else {
                         let organization = await this.send({
                             method: 'read.object',
@@ -102,8 +102,8 @@ class CoCreateCrudServer {
                         if (organization && organization.object && organization.object[0])
                             organization = organization.object[0]
                         if (organization && organization.storage) {
-                            storage = organization.storage
-                            this.storages.set(data.organization_id, storage)
+                            storages = organization.storage
+                            this.storages.set(data.organization_id, storages)
                         } else {
                             this.storages.set(data.organization_id, false)
                             if (organization)
@@ -117,6 +117,7 @@ class CoCreateCrudServer {
                 if (!data['timeStamp'])
                     data['timeStamp'] = new Date().toISOString()
 
+                // TODO: manage error handling if if no method defined
                 if (data.method.startsWith('update') && data.upsert != false)
                     data.upsert = true
 
@@ -157,23 +158,26 @@ class CoCreateCrudServer {
                 }
 
                 if (!data.storage || !data.storage.length) {
-                    data.storage = [Object.keys(storage)[0]]
+                    data.storage = [Object.keys(storages)[0]]
                 } else if (!Array.isArray(data.storage))
                     data.storage = [data.storage]
 
                 for (let i = 0; i < data.storage.length; i++) {
-                    if (storage && storage[data.storage[i]]) {
-                        let db = storage[data.storage[i]]
+                    if (storages && storages[data.storage[i]]) {
+                        let storage = storages[data.storage[i]]
 
-                        if (db.provider && this.databases[db.provider]) {
-                            if (!Array.isArray(db.url))
-                                db.url = [db.url]
-                            for (let i = 0; i < db.url.length; i++) {
-                                data['dbUrl'] = db.url[i]
-                                data = await this.databases[db.provider][action](data)
+                        if (storage.provider && this.databases[storage.provider]) {
+                            if (!Array.isArray(storage.url))
+                                storage.url = [storage.url]
+                            for (let i = 0; i < storage.url.length; i++) {
+                                data['storageName'] = data.storage[i]
+                                data['storageUrl'] = storage.url[i]
+                                data = await this.databases[storage.provider][action](data)
                             }
 
                             if (data.filter) {
+                                if (!data.type)
+                                    data.type = data.method.split('.').pop()
                                 if (data.filter.sort && data.filter.sort.length)
                                     data[data.type] = sortData(array, data.filter.sort)
                                 if (data.filter.index && data.filter.limit) {
@@ -186,7 +190,9 @@ class CoCreateCrudServer {
                     }
                 }
 
-                delete data.dbUrl
+                delete data.storageUrl
+                delete data.storageName
+
                 if (socket) {
                     if (data.organization_id === this.config.organization_id && socket.config.organization_id !== data.organization_id) {
                         this.wsManager.broadcast({
