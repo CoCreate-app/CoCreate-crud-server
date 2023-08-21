@@ -1,3 +1,17 @@
+# [1.27.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.26.0...v1.27.0) (2023-08-21)
+
+
+### Bug Fixes
+
+* /dist/CoCreate.js updated to https://CoCreate.app/dist/CoCreate.js ([1f82f69](https://github.com/CoCreate-app/CoCreate-crud-server/commit/1f82f6921aa6dc39410263eea7e4ee4b535d7039))
+* replace cdn with /dist ([7ad2004](https://github.com/CoCreate-app/CoCreate-crud-server/commit/7ad20046820f19a12917edd13b379da652ac391b))
+* update file uploader ([f6000d9](https://github.com/CoCreate-app/CoCreate-crud-server/commit/f6000d9e0ed2569d35d8cd7f81b7dece04446c25))
+
+
+### Features
+
+* handling stats from multiple storages. ([5d06d16](https://github.com/CoCreate-app/CoCreate-crud-server/commit/5d06d169ce12ed4000e529f54fc3404380997f57))
+
 # [1.26.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.25.0...v1.26.0) (2023-08-17)
 
 
