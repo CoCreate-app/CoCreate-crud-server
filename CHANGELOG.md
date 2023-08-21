@@ -1,3 +1,10 @@
+## [1.28.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.1...v1.28.2) (2023-08-21)
+
+
+### Bug Fixes
+
+* removed build as no webpack.config exist ([b496d33](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b496d330cc8ef14d8addc84bebc2706087e6225d))
+
 ## [1.28.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.0...v1.28.1) (2023-08-21)
 
 
