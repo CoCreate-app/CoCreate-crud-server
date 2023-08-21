@@ -40,8 +40,8 @@
   },
   "homepage": "https://cocreate.app/docs/CoCreate-crud-server",
   "dependencies": {
-    "@cocreate/config": "^1.2.0",
-    "@cocreate/utils": "^1.22.0",
+    "@cocreate/config": "^1.4.0",
+    "@cocreate/utils": "^1.23.1",
     "csvtojson": "^2.0.10",
     "json-2-csv": "^3.10.3"
   }
