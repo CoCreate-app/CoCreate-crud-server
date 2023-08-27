@@ -169,9 +169,11 @@ class CoCreateCrudServer {
                         if (storage.provider && this.databases[storage.provider]) {
                             if (!Array.isArray(storage.url))
                                 storage.url = [storage.url]
+
                             for (let i = 0; i < storage.url.length; i++) {
                                 data['storageName'] = data.storage[i]
                                 data['storageUrl'] = storage.url[i]
+
                                 data = await this.databases[storage.provider][action](data)
                             }
 
@@ -180,9 +182,9 @@ class CoCreateCrudServer {
                                     data.type = data.method.split('.').pop()
                                 if (data.filter.sort && data.filter.sort.length)
                                     data[data.type] = sortData(array, data.filter.sort)
-                                if (data.filter.index && data.filter.limit) {
+                                if (data.filter.index && data.filter.limit)
                                     data[data.type] = data[data.type].slice(data.filter.index, data.filter.limit)
-                                }
+
                                 data.filter.count = data[data.type].length
                             }
 
