@@ -49,18 +49,14 @@ class CoCreateCrudServer {
             for (let i = 0; i < method.length; i++) {
                 for (let j = 0; j < type.length; j++) {
                     const action = method[i] + '.' + type[j];
-                    this.wsManager.on(action, (socket, data) => this.crud(socket, data))
+                    this.wsManager.on(action, (socket, data) =>
+                        this.send(data, socket))
                 }
             }
         }
     }
 
-    async send(data) {
-        data = await this.crud('', data)
-        return data
-    }
-
-    async crud(socket, data) {
+    async send(data, socket) {
         return new Promise(async (resolve) => {
             try {
                 if (!data.organization_id || !this.config)
@@ -121,9 +117,7 @@ class CoCreateCrudServer {
                 if (data.method.startsWith('update') && data.upsert != false)
                     data.upsert = true
 
-                let action = data.method.replace(/\.([a-z])/g, (_, match) => match.toUpperCase());
-                // TODO: support stats from multiple dbs 
-                if (data.array || data.method === 'databaseStats') {
+                if (data.array) {
                     if (!data.database)
                         data['database'] = data.organization_id
 
@@ -150,7 +144,7 @@ class CoCreateCrudServer {
                                 }
                             }
 
-                            this[action](platformUpdate)
+                            this.send(platformUpdate)
                         }
 
                     }
@@ -174,18 +168,18 @@ class CoCreateCrudServer {
                                 data['storageName'] = data.storage[i]
                                 data['storageUrl'] = storage.url[i]
 
-                                data = await this.databases[storage.provider][action](data)
+                                data = await this.databases[storage.provider].send(data)
                             }
 
-                            if (data.filter) {
+                            if (data.$filter) {
                                 if (!data.type)
                                     data.type = data.method.split('.').pop()
-                                if (data.filter.sort && data.filter.sort.length)
-                                    data[data.type] = sortData(array, data.filter.sort)
-                                if (data.filter.index && data.filter.limit)
-                                    data[data.type] = data[data.type].slice(data.filter.index, data.filter.limit)
+                                if (data.$filter.sort && data.$filter.sort.length)
+                                    data[data.type] = sortData(array, data.$filter.sort)
+                                if (data.$filter.index && data.$filter.limit)
+                                    data[data.type] = data[data.type].slice(data.$filter.index, data.$filter.limit)
 
-                                data.filter.count = data[data.type].length
+                                data.$filter.count = data[data.type].length
                             }
 
                         }
