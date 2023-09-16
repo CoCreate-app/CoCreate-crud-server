@@ -164,9 +164,9 @@ class CoCreateCrudServer {
                             if (!Array.isArray(storage.url))
                                 storage.url = [storage.url]
 
-                            for (let i = 0; i < storage.url.length; i++) {
+                            for (let j = 0; j < storage.url.length; j++) {
                                 data['storageName'] = data.storage[i]
-                                data['storageUrl'] = storage.url[i]
+                                data['storageUrl'] = storage.url[j]
 
                                 data = await this.databases[storage.provider].send(data)
                             }
