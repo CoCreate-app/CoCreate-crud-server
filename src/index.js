@@ -49,14 +49,14 @@ class CoCreateCrudServer {
             for (let i = 0; i < method.length; i++) {
                 for (let j = 0; j < type.length; j++) {
                     const action = method[i] + '.' + type[j];
-                    this.wsManager.on(action, (socket, data) =>
-                        this.send(data, socket))
+                    this.wsManager.on(action, (data) =>
+                        this.send(data))
                 }
             }
         }
     }
 
-    async send(data, socket) {
+    async send(data) {
         return new Promise(async (resolve) => {
             try {
                 if (!data.organization_id || !this.config)
@@ -189,26 +189,26 @@ class CoCreateCrudServer {
                 delete data.storageUrl
                 delete data.storageName
 
-                if (socket) {
-                    if (data.organization_id === this.config.organization_id && socket.config.organization_id !== data.organization_id) {
+                if (data.socket) {
+                    if (data.organization_id === this.config.organization_id && data.socket.config.organization_id !== data.organization_id) {
                         this.wsManager.broadcast({
                             config: {
                                 organization_id: this.config.organization_id,
                             }
                         }, { ...data });
-                        data.organization_id = socket.config.organization_id
+                        data.organization_id = data.socket.config.organization_id
                     }
 
-                    this.wsManager.broadcast(socket, data);
+                    this.wsManager.broadcast(data);
                     process.emit('changed-object', data)
                     resolve()
                 } else {
                     resolve(data)
                 }
             } catch (error) {
-                if (socket) {
+                if (data.socket) {
                     this.errorHandler(data, error)
-                    this.wsManager.send(socket, data);
+                    this.wsManager.send(data);
                     resolve()
                 } else {
                     resolve(data)
