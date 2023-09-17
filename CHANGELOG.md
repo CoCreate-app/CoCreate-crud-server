@@ -1,3 +1,12 @@
+## [1.28.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.2...v1.28.3) (2023-09-17)
+
+
+### Bug Fixes
+
+* merge send and crud functions to send ([9cee69e](https://github.com/CoCreate-app/CoCreate-crud-server/commit/9cee69ef3dfb5ccf922ca7f3cab5259bf4181b12))
+* nested for loop [i] to [j] ([90c2523](https://github.com/CoCreate-app/CoCreate-crud-server/commit/90c2523f1e315d59c89e3a69427e3c6b25bae071))
+* socket referenced in the data object. data.socket ([8023572](https://github.com/CoCreate-app/CoCreate-crud-server/commit/8023572223f4e91906333be7bf2fb022a7daa8f6))
+
 ## [1.28.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.1...v1.28.2) (2023-08-21)
 
 
