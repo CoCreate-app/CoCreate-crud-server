@@ -1,3 +1,11 @@
+## [1.28.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.3...v1.28.4) (2023-09-18)
+
+
+### Bug Fixes
+
+*  Add path and pathname ([32633f7](https://github.com/CoCreate-app/CoCreate-crud-server/commit/32633f701448af59dcb6da2339a9a43d6bda9612))
+* Update dCoCreate dpendencies to latest versions ([2780cdb](https://github.com/CoCreate-app/CoCreate-crud-server/commit/2780cdb314ddbc348bbe01c67bf86a5b8f00815b))
+
 ## [1.28.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.2...v1.28.3) (2023-09-17)
 
 
