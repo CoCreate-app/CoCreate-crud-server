@@ -76,8 +76,6 @@ class CoCreateCrudServer {
                         }
                     })
 
-
-
                 let storages = this.storages.get(data.organization_id)
                 if (storages === false)
                     return resolve({ storage: false, error: 'A storage or database could not be found' })
@@ -110,8 +108,8 @@ class CoCreateCrudServer {
                     }
                 }
 
-                if (!data['timeStamp'])
-                    data['timeStamp'] = new Date().toISOString()
+                // if (!data['timeStamp'])
+                data['timeStamp'] = new Date(data['timeStamp'])
 
                 // TODO: manage error handling if if no method defined
                 if (data.method.startsWith('update') && data.upsert != false)
