@@ -188,16 +188,16 @@ class CoCreateCrudServer {
                 delete data.storageName
 
                 if (data.socket) {
-                    if (data.organization_id === this.config.organization_id && data.socket.config.organization_id !== data.organization_id) {
-                        this.wsManager.broadcast({
+                    if (data.organization_id === this.config.organization_id && data.socket.organization_id !== data.organization_id) {
+                        this.wsManager.send({
                             config: {
                                 organization_id: this.config.organization_id,
                             }
                         }, { ...data });
-                        data.organization_id = data.socket.config.organization_id
+                        data.organization_id = data.socket.organization_id
                     }
 
-                    this.wsManager.broadcast(data);
+                    this.wsManager.send(data);
                     process.emit('changed-object', data)
                     resolve()
                 } else {
