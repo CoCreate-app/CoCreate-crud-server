@@ -1,3 +1,12 @@
+## [1.28.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.4...v1.28.5) (2023-10-09)
+
+
+### Bug Fixes
+
+* broadcast depreciated in favor of send() ([e5097b2](https://github.com/CoCreate-app/CoCreate-crud-server/commit/e5097b270e6eaa2d80b7b91aeab97906f5f1729f))
+* removed timeStamp.toISOString() ([e09bcd5](https://github.com/CoCreate-app/CoCreate-crud-server/commit/e09bcd5d090e4aed1484661b0e5d28d27b0b4ee4))
+* timestamp and sort() param ([44614c9](https://github.com/CoCreate-app/CoCreate-crud-server/commit/44614c9e5ccf6d0710f7162d1ab83dfddd2b8cd6))
+
 ## [1.28.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.3...v1.28.4) (2023-09-18)
 
 
