@@ -78,7 +78,7 @@ class CoCreateCrudServer {
 
                 let storages = this.storages.get(data.organization_id)
                 if (storages === false)
-                    return resolve({ storage: false, error: 'A storage or database could not be found' })
+                    return resolve({ serverStorage: false, error: 'A storage or database could not be found' })
 
                 if (!storages) {
                     if (data.organization_id === this.config.organization_id) {
@@ -93,17 +93,15 @@ class CoCreateCrudServer {
                             object: [{ _id: data.organization_id }],
                             organization_id: this.config.organization_id
                         })
-                        if (organization && organization.object && organization.object[0])
-                            organization = organization.object[0]
-                        if (organization && organization.storage) {
-                            storages = organization.storage
-                            this.storages.set(data.organization_id, storages)
-                        } else {
-                            this.storages.set(data.organization_id, false)
-                            if (organization)
-                                return resolve({ storage: false, error: 'database url could not be found' })
+                        if (organization
+                            && organization.object
+                            && organization.object[0]) {
+                            if (organization.object[0].storage)
+                                this.storages.set(data.organization_id, organization.object[0].storage)
                             else
-                                return resolve({ organization: false, error: 'organization could not be found' })
+                                return resolve({ serverStorage: false, error: 'A storage url could not be found' })
+                        } else {
+                            return resolve({ serverOrganization: false, error: 'An organization could not be found' })
                         }
                     }
                 }
