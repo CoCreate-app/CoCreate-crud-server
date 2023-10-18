@@ -199,18 +199,15 @@ class CoCreateCrudServer {
 
                     this.wsManager.send(data);
                     process.emit('changed-object', data)
-                    resolve()
-                } else {
-                    resolve(data)
                 }
+                resolve(data)
             } catch (error) {
                 if (data.socket) {
                     this.errorHandler(data, error)
                     this.wsManager.send(data);
-                    resolve()
-                } else {
-                    resolve(data)
                 }
+
+                resolve(data)
             }
         });
     }
