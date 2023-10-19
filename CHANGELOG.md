@@ -1,3 +1,10 @@
+## [1.28.9](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.8...v1.28.9) (2023-10-19)
+
+
+### Bug Fixes
+
+* handling of data.socket and no data.socket ([421ff57](https://github.com/CoCreate-app/CoCreate-crud-server/commit/421ff57d99c69b89808d35051bc45af5b4d473ca))
+
 ## [1.28.8](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.7...v1.28.8) (2023-10-16)
 
 
