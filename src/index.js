@@ -112,7 +112,7 @@ class CoCreateCrudServer {
                     data['timeStamp'] = new Date()
 
                 // TODO: manage error handling if if no method defined
-                if (data.method.startsWith('update') && data.upsert != false)
+                if (data.method.startsWith('update.') && data.upsert != false)
                     data.upsert = true
 
                 if (data.array) {
