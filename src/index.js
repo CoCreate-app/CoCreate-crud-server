@@ -8,7 +8,7 @@ class CoCreateCrudServer {
         this.wsManager = wsManager
         this.databases = databases
         this.ObjectId = ObjectId
-        this.storages = new Map();
+        this.organizations = {};
         this.init()
     }
 
@@ -76,35 +76,9 @@ class CoCreateCrudServer {
                         }
                     })
 
-                let storages = this.storages.get(data.organization_id)
-                if (storages === false)
-                    return resolve({ serverStorage: false, error: 'A storage or database could not be found' })
-
-                if (!storages) {
-                    if (data.organization_id === this.config.organization_id) {
-                        storages = this.config.storage
-                        if (storages)
-                            this.storages.set(data.organization_id, storages)
-                    } else {
-                        let organization = await this.send({
-                            method: 'read.object',
-                            database: this.config.organization_id,
-                            array: 'organizations',
-                            object: [{ _id: data.organization_id }],
-                            organization_id: this.config.organization_id
-                        })
-                        if (organization
-                            && organization.object
-                            && organization.object[0]) {
-                            if (organization.object[0].storage)
-                                this.storages.set(data.organization_id, organization.object[0].storage)
-                            else
-                                return resolve({ serverStorage: false, error: 'A storage url could not be found' })
-                        } else {
-                            return resolve({ serverOrganization: false, error: 'An organization could not be found' })
-                        }
-                    }
-                }
+                let storages = await this.getStorage(data)
+                if (storages.error)
+                    return resolve(storages)
 
                 if (data['timeStamp'])
                     data['timeStamp'] = new Date(data['timeStamp'])
@@ -144,9 +118,7 @@ class CoCreateCrudServer {
 
                             this.send(platformUpdate)
                         }
-
                     }
-
                 }
 
                 if (!data.storage || !data.storage.length) {
@@ -170,14 +142,13 @@ class CoCreateCrudServer {
                             }
 
                             if (data.$filter) {
-                                if (!data.type)
-                                    data.type = data.method.split('.').pop()
+                                let type = data.method.split(".")[1]
                                 if (data.$filter.sort && data.$filter.sort.length)
-                                    data[data.type] = sortData(data[data.type], data.$filter.sort)
+                                    data[type] = sortData(data[type], data.$filter.sort)
                                 if (data.$filter.index && data.$filter.limit)
-                                    data[data.type] = data[data.type].slice(data.$filter.index, data.$filter.limit)
+                                    data[type] = data[type].slice(data.$filter.index, data.$filter.limit)
 
-                                data.$filter.count = data[data.type].length
+                                data.$filter.count = data[type].length
                             }
 
                         }
@@ -211,6 +182,48 @@ class CoCreateCrudServer {
             }
         });
     }
+
+    async getStorage(data) {
+        if (this.organizations[data.organization_id])
+            return await this.organizations[data.organization_id]
+
+        if (data.organization_id === this.config.organization_id) {
+            this.organizations[data.organization_id] = this.config.storage
+            return this.config.storage
+        } else {
+            if (this.organizations[data.organization_id]) {
+                return await this.organizations[data.organization_id]
+            } else {
+                this.organizations[data.organization_id] = this.getOrganization(data)
+                this.organizations[data.organization_id] = await this.organizations[data.organization_id]
+                return this.organizations[data.organization_id]
+            }
+        }
+
+    }
+
+    async getOrganization(data) {
+        let organization = await this.send({
+            method: 'read.object',
+            database: this.config.organization_id,
+            array: 'organizations',
+            object: [{ _id: data.organization_id }],
+            organization_id: this.config.organization_id
+        })
+
+        if (organization
+            && organization.object
+            && organization.object[0]) {
+            if (organization.object[0].storage) {
+                return organization.object[0].storage
+            } else
+                return { serverStorage: false, error: 'A storage url could not be found' }
+        } else {
+            return { serverOrganization: false, error: 'An organization could not be found' }
+        }
+
+    }
+
 
     errorHandler(data, error, database, array) {
         if (typeof error == 'object')
