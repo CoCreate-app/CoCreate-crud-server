@@ -43,12 +43,12 @@ class CoCreateCrudServer {
             process.exit()
 
         if (this.wsManager) {
-            const method = ['create', 'read', 'update', 'delete'];
             const type = ['storage', 'database', 'array', 'index', 'object'];
+            const method = ['create', 'read', 'update', 'delete'];
 
-            for (let i = 0; i < method.length; i++) {
-                for (let j = 0; j < type.length; j++) {
-                    const action = method[i] + '.' + type[j];
+            for (let i = 0; i < type.length; i++) {
+                for (let j = 0; j < method.length; j++) {
+                    const action = type[i] + '.' + method[j];
                     this.wsManager.on(action, (data) =>
                         this.send(data))
                 }
@@ -86,14 +86,14 @@ class CoCreateCrudServer {
                     data['timeStamp'] = new Date()
 
                 // TODO: manage error handling if if no method defined
-                if (data.method.startsWith('update.') && data.upsert != false)
+                if (data.method.endsWith('.update') && data.upsert != false)
                     data.upsert = true
 
                 if (data.array) {
                     if (!data.database)
                         data['database'] = data.organization_id
 
-                    if (data.method.startsWith('update.object') && data.organization_id !== this.config.organization_id) {
+                    if (data.method === 'object.update' && data.organization_id !== this.config.organization_id) {
                         let syncKeys
                         if (data.array === 'organizations')
                             syncKeys = ['name', 'logo', 'databases', 'host', 'apis']
@@ -142,7 +142,7 @@ class CoCreateCrudServer {
                             }
 
                             if (data.$filter) {
-                                let type = data.method.split(".")[1]
+                                let type = data.method.split(".")[0]
                                 if (data.$filter.sort && data.$filter.sort.length)
                                     data[type] = sortData(data[type], data.$filter.sort)
 
@@ -202,7 +202,7 @@ class CoCreateCrudServer {
 
     async getOrganization(data) {
         let organization = await this.send({
-            method: 'read.object',
+            method: 'object.read',
             database: this.config.organization_id,
             array: 'organizations',
             object: [{ _id: data.organization_id }],
