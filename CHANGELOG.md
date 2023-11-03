@@ -1,3 +1,17 @@
+# [1.29.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.11...v1.29.0) (2023-11-03)
+
+
+### Bug Fixes
+
+* removed limit slice ([26c6cc1](https://github.com/CoCreate-app/CoCreate-crud-server/commit/26c6cc1c3f8c760b0c8d90f9ab0923896c2cce59))
+* update dependencies to the lates versions ([e2ddb24](https://github.com/CoCreate-app/CoCreate-crud-server/commit/e2ddb2440daa92bdcd547b355ef75933eced2947))
+* update method to use object.update etc ([b6400da](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b6400da90f16fd98d59ef18b06f40980f91b67d7))
+
+
+### Features
+
+* get orgainization and storage once using promise ([1dac253](https://github.com/CoCreate-app/CoCreate-crud-server/commit/1dac2539cb5167da803130d0a94458e02318f63e))
+
 ## [1.28.11](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.10...v1.28.11) (2023-10-25)
 
 
