@@ -112,7 +112,7 @@ class CoCreateCrudServer {
                             if (object) {
                                 for (let key of syncKeys) {
                                     if (object[key])
-                                        platformUpdate.object[0][key] = object[key]
+                                        platformobject.update[0][key] = object[key]
                                 }
                             }
 
