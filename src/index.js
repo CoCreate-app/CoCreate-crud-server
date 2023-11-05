@@ -80,10 +80,8 @@ class CoCreateCrudServer {
                 if (storages.error)
                     return resolve(storages)
 
-                if (data['timeStamp'])
-                    data['timeStamp'] = new Date(data['timeStamp'])
-                else
-                    data['timeStamp'] = new Date()
+                if (!data['timeStamp'])
+                    data['timeStamp'] = new Date().toISOString()
 
                 // TODO: manage error handling if if no method defined
                 if (data.method.endsWith('.update') && data.upsert != false)
