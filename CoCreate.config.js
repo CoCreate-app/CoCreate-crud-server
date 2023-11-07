@@ -12,8 +12,7 @@ module.exports = {
                 "pathname": "/docs/crud-server/index.html",
                 "src": "{{./docs/index.html}}",
                 "host": [
-                    "*",
-                    "general.cocreate.app"
+                    "*"
                 ],
                 "directory": "crud-server",
                 "content-type": "text/html",
