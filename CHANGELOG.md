@@ -1,3 +1,13 @@
+## [1.29.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.29.0...v1.29.1) (2023-11-09)
+
+
+### Bug Fixes
+
+* date updated to ISO format ([78efb88](https://github.com/CoCreate-app/CoCreate-crud-server/commit/78efb886aee6b8f2522a32180315781c4824f79d))
+* meta name typo ([cb45152](https://github.com/CoCreate-app/CoCreate-crud-server/commit/cb45152c9895a92cd27c3ddbeb055ad67e0a2f4c))
+* update crud methods ([76e0135](https://github.com/CoCreate-app/CoCreate-crud-server/commit/76e0135f34976beec3c2bbd0f14ec2338b1fecac))
+* update host ([efeddaf](https://github.com/CoCreate-app/CoCreate-crud-server/commit/efeddaff4f791f8c4d3d288f5e108b152eec07c8))
+
 # [1.29.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.28.11...v1.29.0) (2023-11-03)
 
 
