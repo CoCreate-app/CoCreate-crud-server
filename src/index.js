@@ -145,6 +145,7 @@ class CoCreateCrudServer {
                                     data[type] = sortData(data[type], data.$filter.sort)
                                 if (!data.$filter.index)
                                     data.$filter.index = 0
+                                data.$filter.startingIndex = data.$filter.index
                                 data.$filter.index += data[type].length
                             }
 
