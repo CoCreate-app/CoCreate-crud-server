@@ -1,3 +1,16 @@
+# [1.30.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.29.1...v1.30.0) (2023-11-12)
+
+
+### Bug Fixes
+
+* bump dependencies for latest features ([4a787c6](https://github.com/CoCreate-app/CoCreate-crud-server/commit/4a787c6045b2a6e27f79bdeca52ec42fc275ccfa))
+* set $filter.index ([414946f](https://github.com/CoCreate-app/CoCreate-crud-server/commit/414946fbb1528b65017dae5eb5e00b99c742f10a))
+
+
+### Features
+
+* set starting index ([3fca777](https://github.com/CoCreate-app/CoCreate-crud-server/commit/3fca7775e2351d84b831f416bd2c361338e5b08c))
+
 ## [1.29.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.29.0...v1.29.1) (2023-11-09)
 
 
