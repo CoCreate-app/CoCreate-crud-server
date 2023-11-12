@@ -143,8 +143,9 @@ class CoCreateCrudServer {
                                 let type = data.method.split(".")[0]
                                 if (data.$filter.sort && data.$filter.sort.length)
                                     data[type] = sortData(data[type], data.$filter.sort)
-
-                                data.$filter.count = data[type].length
+                                if (!data.$filter.index)
+                                    data.$filter.index = 0
+                                data.$filter.index += data[type].length
                             }
 
                         }
