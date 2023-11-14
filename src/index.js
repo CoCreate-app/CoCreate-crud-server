@@ -94,8 +94,8 @@ class CoCreateCrudServer {
                     if (data.method === 'object.update' && data.organization_id !== this.config.organization_id) {
                         let syncKeys
                         if (data.array === 'organizations')
-                            syncKeys = ['name', 'logo', 'databases', 'host', 'apis']
-                        else if (data.array === 'users')
+                            syncKeys = ['name', 'logo', 'storage', 'host']
+                        else if (data.array === 'userssss')
                             syncKeys = ['name', 'email', 'password', 'avatar']
 
                         if (syncKeys && syncKeys.length) {
@@ -110,7 +110,7 @@ class CoCreateCrudServer {
                             if (object) {
                                 for (let key of syncKeys) {
                                     if (object[key])
-                                        platformobject.update[0][key] = object[key]
+                                        platformUpdate.object[0][key] = object[key]
                                 }
                             }
 
