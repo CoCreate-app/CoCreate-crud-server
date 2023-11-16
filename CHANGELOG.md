@@ -1,3 +1,10 @@
+## [1.30.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.30.0...v1.30.1) (2023-11-16)
+
+
+### Bug Fixes
+
+* prevent syncing of organization users with platform ([b0e43b9](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b0e43b9df2e408674a1ffd7c0ad455a0464fc489))
+
 # [1.30.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.29.1...v1.30.0) (2023-11-12)
 
 
