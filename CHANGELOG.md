@@ -1,3 +1,10 @@
+# [1.31.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.30.1...v1.31.0) (2023-11-19)
+
+
+### Features
+
+* update dependecies for th latest features and bug fixes ([298e860](https://github.com/CoCreate-app/CoCreate-crud-server/commit/298e8608d2ee26321e185016ef869cb81961273a))
+
 ## [1.30.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.30.0...v1.30.1) (2023-11-16)
 
 
