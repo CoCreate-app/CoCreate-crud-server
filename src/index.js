@@ -61,24 +61,14 @@ class CoCreateCrudServer {
             try {
                 if (!data.organization_id || !this.config)
                     return resolve()
-                if (!this.config)
-                    this.config = await Config({
-                        'organization_id': { prompt: 'Enter your organization_id: ' },
-                        'storage': {
-                            prompt: 'Enter a friendly name for the new storage: ',
-                            variable: 'name'
-                        },
-                        'storage.{{name}}.provider': {
-                            prompt: 'Enter the storage provider, ex mongodb: '
-                        },
-                        'storage.{{name}}.url': {
-                            prompt: 'Enter the storage providers url: '
-                        }
-                    })
 
-                let storages = await this.getStorage(data)
-                if (storages.error)
-                    return resolve(storages)
+                let organization = await this.getOrganization(data)
+                if (organization.error)
+                    return resolve(organization)
+
+                let storages = organization.storage
+                if (!storages)
+                    return resolve({ serverStorage: false, error: 'A storage url could not be found' })
 
                 if (!data['timeStamp'])
                     data['timeStamp'] = new Date().toISOString()
@@ -181,18 +171,18 @@ class CoCreateCrudServer {
         });
     }
 
-    async getStorage(data) {
+    async getOrganization(data) {
         if (this.organizations[data.organization_id])
             return await this.organizations[data.organization_id]
 
         if (data.organization_id === this.config.organization_id) {
-            this.organizations[data.organization_id] = this.config.storage
-            return this.config.storage
+            this.organizations[data.organization_id] = this.config
+            return this.config
         } else {
             if (this.organizations[data.organization_id]) {
                 return await this.organizations[data.organization_id]
             } else {
-                this.organizations[data.organization_id] = this.getOrganization(data)
+                this.organizations[data.organization_id] = this.getOrg(data)
                 this.organizations[data.organization_id] = await this.organizations[data.organization_id]
                 return this.organizations[data.organization_id]
             }
@@ -200,7 +190,7 @@ class CoCreateCrudServer {
 
     }
 
-    async getOrganization(data) {
+    async getOrg(data) {
         let organization = await this.send({
             method: 'object.read',
             database: this.config.organization_id,
@@ -212,10 +202,7 @@ class CoCreateCrudServer {
         if (organization
             && organization.object
             && organization.object[0]) {
-            if (organization.object[0].storage) {
-                return organization.object[0].storage
-            } else
-                return { serverStorage: false, error: 'A storage url could not be found' }
+            return organization.object[0]
         } else {
             return { serverOrganization: false, error: 'An organization could not be found' }
         }
