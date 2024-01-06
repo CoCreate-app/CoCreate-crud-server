@@ -184,22 +184,13 @@ class CoCreateCrudServer {
     }
 
     async getOrganization(organization_id, platform) {
-        if (this.organizations[organization_id])
+        if (this.organizations[organization_id]) {
             return await this.organizations[organization_id]
-
-        if (organization_id === this.config.organization_id) {
-            this.organizations[organization_id] = this.config
-            return this.config
         } else {
-            if (this.organizations[organization_id]) {
-                return await this.organizations[organization_id]
-            } else {
-                this.organizations[organization_id] = this.getOrg(organization_id, null, platform)
-                this.organizations[organization_id] = await this.organizations[organization_id]
-                return this.organizations[organization_id]
-            }
+            this.organizations[organization_id] = this.getOrg(organization_id, null, platform)
+            this.organizations[organization_id] = await this.organizations[organization_id]
+            return this.organizations[organization_id]
         }
-
     }
 
     async getOrg(organization_id, host, platform = true) {
@@ -223,6 +214,9 @@ class CoCreateCrudServer {
             }
         else
             return { serverOrganization: false, error: 'An organization could not be found' }
+
+        if (data.organization_id === this.config.organization_id)
+            this.organizations[organization_id] = this.config
 
         let organization = await this.send(data)
 
