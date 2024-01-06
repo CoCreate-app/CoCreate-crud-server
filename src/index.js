@@ -112,7 +112,7 @@ class CoCreateCrudServer {
 
                 if (organization.host) {
                     let host = organization.host
-                    for (let i = 0; i < host; i++) {
+                    for (let i = 0; i < host.length; i++) {
                         if (host[i].name === data.host) {
                             if (host[i].storage)
                                 data.storage = host[i].storage
