@@ -110,6 +110,23 @@ class CoCreateCrudServer {
                     }
                 }
 
+                if (organization.host) {
+                    let host = organization.host
+                    for (let i = 0; i < host; i++) {
+                        if (host[i].name === data.host) {
+                            if (host[i].storage)
+                                data.storage = host[i].storage
+                            if (host[i].database)
+                                data.database = host[i].database
+                            if (host[i].array)
+                                data.array = host[i].array
+                            if (host[i].files)
+                                data = { ...data, ...host[i].crud }
+                            break
+                        }
+                    }
+                }
+
                 if (!data.storage || !data.storage.length) {
                     data.storage = [Object.keys(storages)[0]]
                 } else if (!Array.isArray(data.storage))
@@ -209,7 +226,7 @@ class CoCreateCrudServer {
         else if (host)
             data.$filter = {
                 query: [
-                    { key: "host", value: [host], operator: "$in" }
+                    { key: "host", value: [host], operator: "$elemMatch" }
                 ]
             }
         else
