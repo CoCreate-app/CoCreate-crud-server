@@ -9,6 +9,7 @@ class CoCreateCrudServer {
         this.databases = databases
         this.ObjectId = ObjectId
         this.organizations = {};
+        this.hosts = {};
         this.init()
     }
 
@@ -62,7 +63,7 @@ class CoCreateCrudServer {
                 if (!data.organization_id || !this.config)
                     return resolve()
 
-                let organization = await this.getOrganization(data)
+                let organization = await this.getOrganization(data.organization_id)
                 if (organization.error)
                     return resolve(organization)
 
@@ -171,33 +172,59 @@ class CoCreateCrudServer {
         });
     }
 
-    async getOrganization(data) {
-        if (this.organizations[data.organization_id])
-            return await this.organizations[data.organization_id]
+    async getHost(host) {
+        if (this.hosts[host]) {
+            return await this.hosts[host]
+        } else {
+            this.hosts[host] = this.getOrg(null, host)
+            this.hosts[host] = await this.hosts[host]
+            return this.hosts[host]
+        }
 
-        if (data.organization_id === this.config.organization_id) {
-            this.organizations[data.organization_id] = this.config
+    }
+
+    async getOrganization(organization_id, platform) {
+        if (this.organizations[organization_id])
+            return await this.organizations[organization_id]
+
+        if (organization_id === this.config.organization_id) {
+            this.organizations[organization_id] = this.config
             return this.config
         } else {
-            if (this.organizations[data.organization_id]) {
-                return await this.organizations[data.organization_id]
+            if (this.organizations[organization_id]) {
+                return await this.organizations[organization_id]
             } else {
-                this.organizations[data.organization_id] = this.getOrg(data)
-                this.organizations[data.organization_id] = await this.organizations[data.organization_id]
-                return this.organizations[data.organization_id]
+                this.organizations[organization_id] = this.getOrg(organization_id, null, platform)
+                this.organizations[organization_id] = await this.organizations[organization_id]
+                return this.organizations[organization_id]
             }
         }
 
     }
 
-    async getOrg(data) {
-        let organization = await this.send({
+    async getOrg(organization_id, host, platform = true) {
+        let data = {
             method: 'object.read',
             database: this.config.organization_id,
             array: 'organizations',
-            object: [{ _id: data.organization_id }],
             organization_id: this.config.organization_id
-        })
+        }
+
+        if (!platform)
+            data.database = data.organization_id = organization_id
+
+        if (organization_id)
+            data.object = [{ _id: organization_id }]
+        else if (host)
+            data.$filter = {
+                query: [
+                    { key: "host", value: [host], operator: "$in" }
+                ]
+            }
+        else
+            return { serverOrganization: false, error: 'An organization could not be found' }
+
+        let organization = await this.send(data)
 
         if (organization
             && organization.object
