@@ -125,8 +125,6 @@ class CoCreateCrudServer {
                                 data.database = host[i].database
                             if (host[i].array)
                                 data.array = host[i].array
-                            if (host[i].files)
-                                data = { ...data, ...host[i].crud }
                             break
                         }
                     }
