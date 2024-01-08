@@ -1,3 +1,22 @@
+# [1.34.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.33.0...v1.34.0) (2024-01-08)
+
+
+### Bug Fixes
+
+* applied host to define environment/branch ([7a61c24](https://github.com/CoCreate-app/CoCreate-crud-server/commit/7a61c24c1ef879170106ab3aafa365f5078f6cb7))
+* crud defaults defined by host ([b362deb](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b362deb42945bc6326cfe590a61f532ac8206aa7))
+* data.host data.socket.host ([00eb3a0](https://github.com/CoCreate-app/CoCreate-crud-server/commit/00eb3a030219e78617796f6a2f1fd10a2cec012f))
+* getOrganization then get storage from organization returned ([8253876](https://github.com/CoCreate-app/CoCreate-crud-server/commit/8253876601dca41a58566ffad1542e63080e842e))
+* removed host.crud ([ee1743a](https://github.com/CoCreate-app/CoCreate-crud-server/commit/ee1743abd580efe9045cdd7bcdae7d6b8e206744))
+* requesting organization for platform ([edd65c5](https://github.com/CoCreate-app/CoCreate-crud-server/commit/edd65c50ab232cdb24010a7a447cf7924f94ff0b))
+* typo host.length ([b97e059](https://github.com/CoCreate-app/CoCreate-crud-server/commit/b97e0590ee867634415583ae9a89b9462c7fa3b0))
+
+
+### Features
+
+* bumped CoCreate dependencies to their latest versions ([0aad6d7](https://github.com/CoCreate-app/CoCreate-crud-server/commit/0aad6d794b114993abffd58c83042b95838fe036))
+* crud.getHost and crud.getorganization ([4445e27](https://github.com/CoCreate-app/CoCreate-crud-server/commit/4445e27891b65b53647d18031add25f2de16b417))
+
 # [1.33.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.32.0...v1.33.0) (2023-11-25)
 
 
