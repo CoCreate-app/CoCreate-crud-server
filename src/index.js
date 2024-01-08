@@ -216,6 +216,7 @@ class CoCreateCrudServer {
     async getOrg(organization_id, host, platform = true) {
         let data = {
             method: 'object.read',
+            host,
             database: this.config.organization_id,
             array: 'organizations',
             organization_id: this.config.organization_id
