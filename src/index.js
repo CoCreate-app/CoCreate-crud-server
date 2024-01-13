@@ -229,9 +229,7 @@ class CoCreateCrudServer {
             data.object = [{ _id: organization_id }]
         else if (host)
             data.$filter = {
-                query: [
-                    { key: "host", value: [host], operator: "$elemMatch" }
-                ]
+                query: { host: { $elemMatch: { name: [host] } } }
             }
         else
             return { serverOrganization: false, error: 'An organization could not be found' }
