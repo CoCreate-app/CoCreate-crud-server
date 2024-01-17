@@ -1,3 +1,11 @@
+## [1.34.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.0...v1.34.1) (2024-01-17)
+
+
+### Bug Fixes
+
+* getOrg query ([5a8ebf1](https://github.com/CoCreate-app/CoCreate-crud-server/commit/5a8ebf1cfa47331dbbd28e562af8e046d3a35f24))
+* update to support new query system ([d97a68f](https://github.com/CoCreate-app/CoCreate-crud-server/commit/d97a68ff74831601fb777ab452769ebbf3870b36))
+
 # [1.34.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.33.0...v1.34.0) (2024-01-08)
 
 
