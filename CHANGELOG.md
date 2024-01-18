@@ -1,3 +1,10 @@
+## [1.34.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.1...v1.34.2) (2024-01-18)
+
+
+### Bug Fixes
+
+* improved handling of organization object ([7798bf7](https://github.com/CoCreate-app/CoCreate-crud-server/commit/7798bf7b4feba9b0bcc226c37d890b3c6b9b5e99))
+
 ## [1.34.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.0...v1.34.1) (2024-01-17)
 
 
