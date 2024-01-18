@@ -64,6 +64,17 @@ class CoCreateCrudServer {
                     return resolve()
 
                 let organization = await this.getOrganization(data.organization_id)
+
+                // if (data.host && this.hosts[data.host])
+                //     organization = await this.getHost(data.host)
+                // else
+                // organization = await this.getOrganization(data.organization_id)
+
+                // if (data.host)
+                //     organization = await this.getHost(data.organization_id)
+                // else
+                //     organization = await this.getOrganization(data.organization_id)
+
                 if (organization.error)
                     return resolve(organization)
 
@@ -196,7 +207,15 @@ class CoCreateCrudServer {
         if (this.hosts[host]) {
             return await this.hosts[host]
         } else {
-            this.hosts[host] = this.getOrg(null, host)
+            let organization_id = null
+            let platform = true
+            if (this.organizations[organization_id]) {
+                let org = await this.organizations[organization_id]
+                organization_id = org._id
+                platform = false
+            }
+
+            this.hosts[host] = this.getOrg(organization_id, host, platform)
             this.hosts[host] = await this.hosts[host]
             return this.hosts[host]
         }
@@ -229,24 +248,37 @@ class CoCreateCrudServer {
             data.object = [{ _id: organization_id }]
         else if (host)
             data.$filter = {
-                query: { host: { $elemMatch: { name: { $in: [host] } } } }
+                query: { host: { $elemMatch: { name: { $in: [host] } } } },
+                limit: 1
             }
         else
             return { serverOrganization: false, error: 'An organization could not be found' }
 
-        if (data.organization_id === this.config.organization_id)
-            this.organizations[organization_id] = this.config
+        if (!this.organizations[data.organization_id] && data.organization_id === this.config.organization_id)
+            this.organizations[data.organization_id] = { ...this.config, isConfig: true }
 
         let organization = await this.send(data)
 
         if (organization
             && organization.object
             && organization.object[0]) {
-            return organization.object[0]
-        } else {
-            return { serverOrganization: false, error: 'An organization could not be found' }
-        }
+            this.organizations[organization.object[0]._id] = organization.object[0]
+            if (platform) {
+                delete data.$filter
+                data.database = data.organization_id = organization.object[0]._id
+                let org = await this.send(data)
+                if (org
+                    && org.object
+                    && org.object[0]) {
+                    return org.object[0]
 
+                } else {
+                    return { serverOrganization: false, error: 'An organization could not be found in the specified dbUrl' }
+                }
+            }
+            return organization.object[0]
+        }
+        return { serverOrganization: false, error: 'An organization could not be found' }
     }
 
 
