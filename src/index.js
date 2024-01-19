@@ -63,17 +63,7 @@ class CoCreateCrudServer {
                 if (!data.organization_id || !this.config)
                     return resolve()
 
-                let organization = await this.getOrganization(data.organization_id)
-
-                // if (data.host && this.hosts[data.host])
-                //     organization = await this.getHost(data.host)
-                // else
-                // organization = await this.getOrganization(data.organization_id)
-
-                // if (data.host)
-                //     organization = await this.getHost(data.organization_id)
-                // else
-                //     organization = await this.getOrganization(data.organization_id)
+                let organization = await this.getOrganization(data)
 
                 if (organization.error)
                     return resolve(organization)
@@ -116,7 +106,7 @@ class CoCreateCrudServer {
                                 }
                             }
 
-                            this.send(platformUpdate)
+                            // this.send(platformUpdate)
                         }
                     }
                 }
@@ -203,107 +193,29 @@ class CoCreateCrudServer {
         });
     }
 
-    async getHost(host) {
-        if (this.hosts[host]) {
-            return await this.hosts[host]
-        } else {
-            let organization_id = null
-            let platform = true
-            if (this.organizations[organization_id]) {
-                let org = await this.organizations[organization_id]
-                organization_id = org._id
-                platform = false
-            }
 
-            this.hosts[host] = this.getOrg(organization_id, host, platform)
-            this.hosts[host] = await this.hosts[host]
-            return this.hosts[host]
-        }
-
-    }
-
-    async getOrganization(organization_id, platform) {
-        if (this.organizations[organization_id]) {
-            return await this.organizations[organization_id]
-        } else {
-            this.organizations[organization_id] = this.getOrg(organization_id, null, platform)
-            this.organizations[organization_id] = await this.organizations[organization_id]
-            return this.organizations[organization_id]
-        }
-    }
-
-    async getOrg(organization_id, host, platform = true) {
-        let data = {
-            method: 'object.read',
-            host,
-            database: this.config.organization_id,
-            array: 'organizations',
-            organization_id: this.config.organization_id
-        }
-
-        if (!platform)
-            data.database = data.organization_id = organization_id
-
-        if (organization_id)
-            data.object = [{ _id: organization_id }]
-        else if (host)
-            data.$filter = {
-                query: { host: { $elemMatch: { name: { $in: [host] } } } },
-                limit: 1
-            }
-        else
-            return { serverOrganization: false, error: 'An organization could not be found' }
-
-        if (!this.organizations[data.organization_id] && data.organization_id === this.config.organization_id)
-            this.organizations[data.organization_id] = { ...this.config, isConfig: true }
-
-        let organization = await this.send(data)
-
-        if (organization
-            && organization.object
-            && organization.object[0]) {
-            this.organizations[organization.object[0]._id] = organization.object[0]
-            if (platform) {
-                delete data.$filter
-                data.database = data.organization_id = organization.object[0]._id
-                let org = await this.send(data)
-                if (org
-                    && org.object
-                    && org.object[0]) {
-                    return org.object[0]
-
-                } else {
-                    return { serverOrganization: false, error: 'An organization could not be found in the specified dbUrl' }
-                }
-            }
-            return organization.object[0]
-        }
-        return { serverOrganization: false, error: 'An organization could not be found' }
-    }
-
-    async getOrganizationNew(data) {
+    async getOrganization(data) {
         if (this.hosts[data.host]) {
             return await this.hosts[data.host]
         } else if (this.organizations[data.organization_id]) {
-            if (data.host) {
-                this.hosts[data.host] = this.getOrgNew(data, false)
-                this.hosts[data.host] = await this.hosts[data.host]
-                return this.hosts[data.host]
-            }
             return await this.organizations[data.organization_id]
         } else {
-            this.organizations[data.organization_id] = this.getOrgNew(data)
-            this.organizations[data.organization_id] = await this.organizations[data.organization_id]
-            return this.organizations[data.organization_id]
+            if (data.organization_id) {
+                this.organizations[data.organization_id] = this.getOrg(data)
+                this.organizations[data.organization_id] = await this.organizations[data.organization_id]
+                return this.organizations[data.organization_id]
+            } else if (data.host) {
+                // this.hosts[data.host] = this.getOrg(data)
+                this.hosts[data.host] = await this.getOrg(data)
+                return this.hosts[data.host]
+            }
         }
-
-
     }
 
-    async getOrgNew(data) {
+    async getOrg(data) {
         let query = {
             method: 'object.read',
-            host,
+            host: data.host,
             database: this.config.organization_id,
             array: 'organizations',
             organization_id: this.config.organization_id
@@ -330,7 +242,7 @@ class CoCreateCrudServer {
         if (organization
             && organization.object
             && organization.object[0]) {
-            if (!this.organizations[data.organization_id] || this.organizations[query.organization_id].isConfig) {
+            if (!this.organizations[organization.object[0]._id] || this.organizations[query.organization_id].isConfig) {
                 this.organizations[organization.object[0]._id] = organization.object[0]
 
                 delete query.$filter
@@ -339,14 +251,17 @@ class CoCreateCrudServer {
                 if (org
                     && org.object
                     && org.object[0]) {
+                    if (data.host)
+                        this.hosts[data.host] = org.object[0]
                     return org.object[0]
-
                 } else {
                     return { serverOrganization: false, error: 'An organization could not be found in the specified dbUrl' }
                 }
+            } else {
+                if (data.host)
+                    this.hosts[data.host] = organization.object[0]
+                return organization.object[0]
             }
-            return organization.object[0]
-
         }
         return { serverOrganization: false, error: 'An organization could not be found' }
     }
