@@ -1,3 +1,10 @@
+## [1.34.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.2...v1.34.3) (2024-01-30)
+
+
+### Bug Fixes
+
+* removed getHostOld() and getOrganizationOld() ([956c472](https://github.com/CoCreate-app/CoCreate-crud-server/commit/956c472c4ebbc8eeb36f4d612f19ec70ffba241c))
+
 ## [1.34.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.1...v1.34.2) (2024-01-18)
 
 
