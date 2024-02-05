@@ -1,3 +1,10 @@
+## [1.34.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.3...v1.34.4) (2024-02-05)
+
+
+### Bug Fixes
+
+* Removed https://cdn.cocreate.app/latest/CoCreate.min.css ([224a04d](https://github.com/CoCreate-app/CoCreate-crud-server/commit/224a04d61a65dca145a0968c41d95875ec92159e))
+
 ## [1.34.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.2...v1.34.3) (2024-01-30)
 
 
