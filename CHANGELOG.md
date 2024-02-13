@@ -1,3 +1,10 @@
+## [1.34.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.4...v1.34.5) (2024-02-13)
+
+
+### Bug Fixes
+
+* upsert defaults to false if undefined ([05d981a](https://github.com/CoCreate-app/CoCreate-crud-server/commit/05d981a00ba6cf87088c2201ceba7ad8cb0b6c3e))
+
 ## [1.34.4](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.3...v1.34.4) (2024-02-05)
 
 
