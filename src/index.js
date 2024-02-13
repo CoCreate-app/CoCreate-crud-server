@@ -75,10 +75,6 @@ class CoCreateCrudServer {
                 if (!data['timeStamp'])
                     data['timeStamp'] = new Date().toISOString()
 
-                // TODO: manage error handling if if no method defined
-                if (data.method.endsWith('.update') && data.upsert != false)
-                    data.upsert = true
-
                 if (data.array) {
                     if (!data.database)
                         data['database'] = data.organization_id
