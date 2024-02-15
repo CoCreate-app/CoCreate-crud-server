@@ -60,8 +60,10 @@ class CoCreateCrudServer {
     async send(data) {
         return new Promise(async (resolve) => {
             try {
-                if (!data.organization_id || !this.config)
-                    return resolve()
+                if (!data.organization_id || !this.config) {
+                    data.error = 'Missing an organization_id'
+                    return resolve(data)
+                }
 
                 let organization = await this.getOrganization(data)
 
