@@ -1,3 +1,10 @@
+## [1.34.6](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.5...v1.34.6) (2024-02-15)
+
+
+### Bug Fixes
+
+* handle error !data.organization_id ([c2b7e7c](https://github.com/CoCreate-app/CoCreate-crud-server/commit/c2b7e7c81246c4fc7f639199c834a8df9d473033))
+
 ## [1.34.5](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.4...v1.34.5) (2024-02-13)
 
 
