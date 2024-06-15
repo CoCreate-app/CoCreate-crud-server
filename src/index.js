@@ -1,6 +1,6 @@
 'use strict';
 
-const { ObjectId, searchData, sortData } = require("@cocreate/utils");
+const { ObjectId, sortData } = require("@cocreate/utils");
 const Config = require('@cocreate/config')
 
 class CoCreateCrudServer {
