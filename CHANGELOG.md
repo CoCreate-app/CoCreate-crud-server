@@ -1,3 +1,10 @@
+## [1.34.7](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.6...v1.34.7) (2024-06-23)
+
+
+### Bug Fixes
+
+* removed searchData ([e47f40f](https://github.com/CoCreate-app/CoCreate-crud-server/commit/e47f40f5ca0a30b854a26e2a2e180678d2cd56d5))
+
 ## [1.34.6](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.5...v1.34.6) (2024-02-15)
 
 
