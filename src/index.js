@@ -130,14 +130,22 @@ class CoCreateCrudServer {
                 }
 
                 if (!data.storage || !data.storage.length) {
-                    data.storage = [Object.keys(storages)[0]]
+                    if (Array.isArray(data.storage))
+                        data.storage = storages[0].name
+                    else
+                        data.storage = [Object.keys(storages)[0]]
                 } else if (!Array.isArray(data.storage))
                     data.storage = [data.storage]
 
                 for (let i = 0; i < data.storage.length; i++) {
-                    if (storages && storages[data.storage[i]]) {
-                        let storage = storages[data.storage[i]]
+                    let storage;
+                    if (Array.isArray(storages)) {
+                        storage = storages.find((name) => name === data.storage[i]);
+                    } else if (typeof storages === 'object' && storages !== null) {
+                        storage = storages[data.storage[i]];
+                    }
 
+                    if (storage) {
                         if (storage.provider && this.databases[storage.provider]) {
                             if (!Array.isArray(storage.url))
                                 storage.url = [storage.url]
