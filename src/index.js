@@ -142,7 +142,7 @@ class CoCreateCrudServer {
                 for (let i = 0; i < data.storage.length; i++) {
                     let storage;
                     if (Array.isArray(storages)) {
-                        storage = storages.find((name) => name === data.storage[i]);
+                        storage = storages.find((obj) => obj.name === data.storage[i]);
                     } else if (typeof storages === 'object' && storages !== null) {
                         storage = storages[data.storage[i]];
                     }
