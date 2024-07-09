@@ -130,11 +130,13 @@ class CoCreateCrudServer {
                 }
 
                 if (!data.storage || !data.storage.length) {
-                    if (Array.isArray(data.storage))
+                    if (Array.isArray(storages))
                         data.storage = storages[0].name
                     else
                         data.storage = [Object.keys(storages)[0]]
-                } else if (!Array.isArray(data.storage))
+                }
+
+                if (!Array.isArray(data.storage))
                     data.storage = [data.storage]
 
                 for (let i = 0; i < data.storage.length; i++) {
