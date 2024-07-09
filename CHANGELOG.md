@@ -1,3 +1,10 @@
+# [1.35.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.9...v1.35.0) (2024-07-09)
+
+
+### Features
+
+* handle storage as array or object ([821c1d0](https://github.com/CoCreate-app/CoCreate-crud-server/commit/821c1d0634ade577f265526cd5d5020a723f58ab))
+
 ## [1.34.9](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.34.8...v1.34.9) (2024-06-23)
 
 
