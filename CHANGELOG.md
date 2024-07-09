@@ -1,3 +1,10 @@
+## [1.35.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.35.1...v1.35.2) (2024-07-09)
+
+
+### Bug Fixes
+
+* storages.find ([71fd2ac](https://github.com/CoCreate-app/CoCreate-crud-server/commit/71fd2ac06db494792fdc2748e8bf5725157d7200))
+
 ## [1.35.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.35.0...v1.35.1) (2024-07-09)
 
 
