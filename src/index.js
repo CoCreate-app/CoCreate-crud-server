@@ -187,7 +187,7 @@ class CoCreateCrudServer {
                     }
 
                     this.wsManager.send(data);
-                    process.emit('changed-object', data)
+                    process.emit('crud-event', data)
                 }
                 resolve(data)
             } catch (error) {
