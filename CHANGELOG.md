@@ -1,3 +1,10 @@
+## [1.35.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.35.2...v1.35.3) (2024-09-21)
+
+
+### Bug Fixes
+
+* crud-event ([9548190](https://github.com/CoCreate-app/CoCreate-crud-server/commit/9548190cc259eeb2ae54d6d5285d25f0e373e6b6))
+
 ## [1.35.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.35.1...v1.35.2) (2024-07-09)
 
 
