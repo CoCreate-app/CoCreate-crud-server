@@ -1,3 +1,16 @@
+# [1.36.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.35.3...v1.36.0) (2024-11-04)
+
+
+### Bug Fixes
+
+* crud-event ([2629944](https://github.com/CoCreate-app/CoCreate-crud-server/commit/262994454a13f258e63c42f71396fee844a1d5e6))
+* prettier.config options ([090d1d6](https://github.com/CoCreate-app/CoCreate-crud-server/commit/090d1d61ee0c24c9c1dedc7454fe57a486abb904))
+
+
+### Features
+
+* add prettier.config.js and format files ([cbf1805](https://github.com/CoCreate-app/CoCreate-crud-server/commit/cbf18057aee90a6c7b75b7ccec70eb12cc3e71d9))
+
 ## [1.35.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.35.2...v1.35.3) (2024-09-21)
 
 
