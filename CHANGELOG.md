@@ -1,3 +1,10 @@
+## [1.36.1](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.36.0...v1.36.1) (2025-04-30)
+
+
+### Bug Fixes
+
+* webpack.config and devdependencies ([94fbffe](https://github.com/CoCreate-app/CoCreate-crud-server/commit/94fbffe09a4e292ecc5f759a9f2cd58364014376))
+
 # [1.36.0](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.35.3...v1.36.0) (2024-11-04)
 
 
