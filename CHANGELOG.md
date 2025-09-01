@@ -1,3 +1,11 @@
+## [1.36.3](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.36.2...v1.36.3) (2025-09-01)
+
+
+### Bug Fixes
+
+* ensure organization is set in hosts when host is provided by platform only ([96cc9e6](https://github.com/CoCreate-app/CoCreate-crud-server/commit/96cc9e69a639c1ecd206324a3e43c578b11e4566))
+* return organization object when host is provided ([0fd5870](https://github.com/CoCreate-app/CoCreate-crud-server/commit/0fd58708ca5392b718a920abefc6a21f72eae83c))
+
 ## [1.36.2](https://github.com/CoCreate-app/CoCreate-crud-server/compare/v1.36.1...v1.36.2) (2025-05-01)
 
 
