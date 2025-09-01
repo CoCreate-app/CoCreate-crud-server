@@ -263,7 +263,9 @@ class CoCreateCrudServer {
                         this.hosts[data.host] = org.object[0]
                     return org.object[0]
                 } else {
-                    return { serverOrganization: false, error: 'An organization could not be found in the specified dbUrl' }
+                    if (data.host) 
+                        
+                    // return { serverOrganization: false, error: 'An organization could not be found in the specified dbUrl' }
                 }
             } else {
                 if (data.host)
